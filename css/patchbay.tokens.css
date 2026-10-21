@@ -38,6 +38,7 @@
   --pb-overlay-hover:    rgba(255, 255, 255, 0.08);
   --pb-overlay-press:    rgba(0, 0, 0, 0.25);
   --pb-overlay-scrim:    rgba(0, 0, 0, 0.82);
+  --pb-stripe:          rgba(0, 0, 0, 0.80);  /* hazard bands on striped progress */
   --pb-shadow-control:   inset 0 0 0 1px #2e2e2e;   /* hard 1px rim, no blur */
   --pb-shadow-overlay:   0 0 0 1px #4a4a4a, 6px 6px 0 0 #000;  /* hard offset */
 
