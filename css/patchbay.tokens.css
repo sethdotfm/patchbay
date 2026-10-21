@@ -1,0 +1,232 @@
+/* ==========================================================================
+   PATCHBAY — Design tokens
+   A hard-edged, near-black design system for dense signal-routing and
+   device-control UIs.
+
+   This is the ONLY file you should edit to re-skin the system.
+   Every rule in patchbay.css reads from these custom properties, so
+   changing a value here propagates everywhere. Never hard-code a colour
+   in a component.
+
+   Load order matters:
+     1. bootstrap.min.css        (v5 base)
+     2. patchbay.tokens.css      (this file)
+     3. patchbay.css             (component layer)
+     4. your page CSS            (layout only)
+   ========================================================================== */
+
+:root {
+
+  /* ----------------------------------------------------------------------
+     SURFACE RAMP
+     A 7-step near-black ramp, dead neutral. Steps are small and hard;
+     depth reads from 1px edges, not from soft light or shadow.
+     ---------------------------------------------------------------------- */
+  --pb-surface-sunken:   #000000;  /* input wells, grid canvas             */
+  --pb-surface-base:     #080808;  /* page background                      */
+  --pb-surface-raised:   #0f0f0f;  /* panels, cards, zebra rows            */
+  --pb-surface-overlay:  #141414;  /* modals, popovers                     */
+  --pb-surface-high:     #121212;  /* toolbars, headers (flat, not lifted) */
+  --pb-surface-control:  #1e1e1e;  /* buttons, resting controls            */
+  --pb-surface-hover:    #2c2c2c;  /* control hover                        */
+
+  --pb-edge-hard:        #000000;
+  --pb-edge:             #6e6e6e;  /* ≥3:1 on every surface — control outlines */
+  --pb-edge-soft:        rgba(255, 255, 255, 0.12);
+  --pb-edge-light:       rgba(255, 255, 255, 0.24);
+
+  --pb-overlay-hover:    rgba(255, 255, 255, 0.08);
+  --pb-overlay-press:    rgba(0, 0, 0, 0.25);
+  --pb-overlay-scrim:    rgba(0, 0, 0, 0.82);
+  --pb-shadow-control:   inset 0 0 0 1px #2e2e2e;   /* hard 1px rim, no blur */
+  --pb-shadow-overlay:   0 0 0 1px #4a4a4a, 6px 6px 0 0 #000;  /* hard offset */
+
+
+  /* ----------------------------------------------------------------------
+     ACCENT
+     One accent: a cool periwinkle that sits apart from every status hue,
+     so "selected" can never be mistaken for "healthy" or "warning".
+     ---------------------------------------------------------------------- */
+  --pb-accent:           #8b93ff;
+  --pb-accent-hover:     #a3a9ff;
+  --pb-accent-muted:     rgba(139, 147, 255, 0.60);
+  --pb-accent-wash:      rgba(139, 147, 255, 0.14);
+  --pb-accent-tab:       rgba(139, 147, 255, 0.10);
+  --pb-accent-subtab:    rgba(139, 147, 255, 0.07);
+
+  --pb-commit:           #f2b84b;  /* unsaved work — amber              */
+  --pb-commit-hover:     #f6c96f;
+  --pb-protect:          #d0559b;  /* write-protected / locked — magenta */
+  --pb-brand:            #e8673c;  /* top-level navigation chrome only   */
+
+
+  /* ----------------------------------------------------------------------
+     STATUS — five states, never colour alone.
+     ---------------------------------------------------------------------- */
+  --pb-status-ok:        #5ccf8f;
+  --pb-status-warn:      #f2b84b;
+  --pb-status-error:     #f0605a;
+  --pb-status-info:      #6cb8f0;
+  --pb-status-idle:      #9b958c;
+
+
+  /* ----------------------------------------------------------------------
+     ROUTING ROLES — muted so hundreds can tile and the accent still wins.
+     ---------------------------------------------------------------------- */
+  --pb-source:           #3f5d52;  /* sage    */
+  --pb-source-hover:     #4a6a5e;
+  --pb-dest:             #5c5340;  /* khaki   */
+  --pb-dest-hover:       #685e49;
+  --pb-tieline:          #4c4a6c;  /* slate   */
+  --pb-tieline-hover:    #58567b;
+
+
+  /* ----------------------------------------------------------------------
+     SIGNAL IDENTITY — per-level colours for shuffles and meters, walked
+     around the hue wheel in a fixed lightness band.
+     ---------------------------------------------------------------------- */
+  --pb-signal-video:     #7ed98a;
+  --pb-signal-01:        #e8735e;
+  --pb-signal-02:        #e8a35e;
+  --pb-signal-03:        #e3d06a;
+  --pb-signal-04:        #a8d86a;
+  --pb-signal-05:        #5fd09a;
+  --pb-signal-06:        #5ccfc9;
+  --pb-signal-07:        #5fb2e8;
+  --pb-signal-08:        #7d8ef0;
+  --pb-signal-09:        #a67ef0;
+  --pb-signal-10:        #d27be6;
+  --pb-signal-11:        #e87bb3;
+  --pb-signal-12:        #c99a7a;
+  --pb-signal-13:        #9fb3a0;
+  --pb-signal-14:        #a3b4d4;
+  --pb-signal-15:        #d4c3a3;
+  --pb-signal-16:        #c4a3d4;
+
+
+  /* ----------------------------------------------------------------------
+     TEXT & ICON — cold white.
+     ---------------------------------------------------------------------- */
+  --pb-text:             #e6e6e6;
+  --pb-text-strong:      #ffffff;
+  --pb-text-muted:       rgba(230, 230, 230, 0.64);
+  --pb-text-disabled:    rgba(230, 230, 230, 0.36);
+  --pb-text-on-accent:   #14131f;
+  --pb-icon:             rgba(230, 230, 230, 0.90);
+  --pb-icon-disabled:    rgba(230, 230, 230, 0.36);
+
+
+  /* ----------------------------------------------------------------------
+     TYPOGRAPHY
+     IBM Plex Sans for UI, Plex Mono for every number an operator compares.
+     ---------------------------------------------------------------------- */
+  --pb-font: "IBM Plex Sans", "Segoe UI", -apple-system, BlinkMacSystemFont,
+             "Helvetica Neue", Arial, sans-serif;
+  --pb-font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo,
+                  Consolas, monospace;
+
+  --pb-text-2xs:   10px;
+  --pb-text-xs:    11px;
+  --pb-text-sm:    13px;  /* BASE */
+  --pb-text-md:    14px;
+  --pb-text-lg:    17px;
+  --pb-text-xl:    22px;
+
+  --pb-weight-normal:   400;
+  --pb-weight-medium:   500;
+  --pb-weight-bold:     600;
+
+  --pb-leading-tight:  1.2;
+  --pb-leading-normal: 1.5;
+  --pb-tracking-button: 0.06em;
+  --pb-tracking-label:  0.08em;  /* small-caps section labels */
+
+
+  /* ----------------------------------------------------------------------
+     SPACE — 4px grid.
+     ---------------------------------------------------------------------- */
+  --pb-space-1:   2px;
+  --pb-space-2:   4px;
+  --pb-space-3:   6px;
+  --pb-space-4:   8px;
+  --pb-space-5:  12px;
+  --pb-space-6:  14px;
+  --pb-space-7:  16px;
+  --pb-space-8:  20px;
+  --pb-space-9:  24px;
+  --pb-space-10: 32px;
+
+
+  /* ----------------------------------------------------------------------
+     SIZING
+     ---------------------------------------------------------------------- */
+  --pb-control-h:     30px;
+  --pb-control-h-sm:  24px;
+  --pb-control-h-lg:  40px;
+  --pb-icon-btn-w:    30px;
+  --pb-icon-size:     18px;
+  --pb-icon-size-sm:  14px;
+  --pb-row-h:         34px;
+  --pb-toolbar-h:     40px;
+  --pb-tab-h:         36px;
+  --pb-grid-row-h:    28px;
+
+  /* No rounding anywhere. Every edge is a hard right angle. */
+  --pb-radius-control: 0;
+  --pb-radius-input:   0;
+  --pb-radius-chip:    0;
+  --pb-radius-overlay: 0;
+  --pb-radius-panel:   0;
+
+  --pb-border-w:       1px;
+  --pb-accent-bar-w:   2px;
+  --pb-state-border-w: 3px;
+
+  --pb-scroll-w:       10px;
+  --pb-scroll-thumb:   #6e6e6e;
+  --pb-scroll-track:   transparent;
+
+  --pb-split-w:        9px;
+
+
+  /* ----------------------------------------------------------------------
+     MOTION
+     ---------------------------------------------------------------------- */
+  --pb-motion-instant: 0ms;
+  --pb-motion-fast:    100ms;
+  --pb-motion-normal:  160ms;
+  --pb-motion-drawer:  220ms;
+  --pb-ease:           cubic-bezier(0.25, 0.1, 0.25, 1);
+
+
+  /* ----------------------------------------------------------------------
+     Z-INDEX
+     ---------------------------------------------------------------------- */
+  --pb-z-sticky:   100;
+  --pb-z-summary:  300;
+  --pb-z-drawer:   500;
+  --pb-z-scrim:    900;
+  --pb-z-modal:   1000;
+  --pb-z-dropdown:1100;
+  --pb-z-tooltip: 1200;
+
+
+  /* ----------------------------------------------------------------------
+     BOOTSTRAP BRIDGE
+     ---------------------------------------------------------------------- */
+  --bs-body-bg:        var(--pb-surface-base);
+  --bs-body-color:     var(--pb-text);
+  --bs-body-font-family: var(--pb-font);
+  --bs-body-font-size: var(--pb-text-sm);
+  --bs-border-color:   var(--pb-edge);
+  --bs-primary:        var(--pb-accent);
+  --bs-gutter-x:       0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --pb-motion-fast:   0ms;
+    --pb-motion-normal: 0ms;
+    --pb-motion-drawer: 0ms;
+  }
+}
