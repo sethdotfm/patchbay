@@ -19,6 +19,7 @@
     <button class="pb-btn pb-btn--ghost pb-btn--sm">File</button>
     <button class="pb-btn pb-btn--ghost pb-btn--sm">Edit</button>
     <span class="pb-toolbar__spacer"></span>
+    <button class="pb-btn pb-btn--ghost pb-btn--sm" id="theme-toggle">Light mode</button>
     <span class="pb-status"><span aria-hidden="true" class="pb-dot pb-dot--ok"></span> Connected</span>
   </div>
 
@@ -148,5 +149,22 @@
     </div>
 
   </div>
+  <script>
+    // No data-theme means "follow the OS"; the toggle forces the other one.
+    const root = document.documentElement;
+    const toggle = document.getElementById("theme-toggle");
+    const osLight = matchMedia("(prefers-color-scheme: light)");
+    const isLight = () => (root.dataset.theme || (osLight.matches ? "light" : "dark")) === "light";
+    const sync = () => { toggle.textContent = isLight() ? "Dark mode" : "Light mode"; };
+    toggle.addEventListener("click", () => {
+      root.classList.add("pb-theme-transition");
+      root.dataset.theme = isLight() ? "dark" : "light";
+      sync();
+      const ms = parseFloat(getComputedStyle(root).getPropertyValue("--pb-motion-theme")) || 0;
+      setTimeout(() => root.classList.remove("pb-theme-transition"), ms + 50);
+    });
+    osLight.addEventListener("change", sync);
+    sync();
+  </script>
 </body>
 </html>

@@ -1,0 +1,62 @@
+# Patchbay CSS — rules for LLMs
+Hard-edged light/dark CSS for dense device-control UIs. Prefix pb-, BEM (block__el--mod). [x] = optional modifier.
+Load: IBM Plex Sans/Mono → css/bootstrap.min.css → css/patchbay.tokens.css → css/patchbay.css → page CSS.
+
+## Rules
+- Never hard-code colour/size/radius/shadow; use var(--pb-*). New value → new token in patchbay.tokens.css.
+- Page CSS = layout only. New component → new pb- section in patchbay.css, tokens only.
+- Bootstrap = reset + optional JS only. No Bootstrap utilities (d-flex, mb-3, text-*, bg-*) or bare components (btn, form-control, card, nav-tabs). If Bootstrap JS needs its class, pair it: btn pb-btn, form-control pb-input, form-select pb-select, form-check-input pb-check__input, dropdown-menu pb-menu, dropdown-item pb-menu__item, modal-content pb-modal, navbar pb-toolbar.
+- No border-radius. Shadows hard, no blur. Never remove focus outlines.
+- One accent (--pb-accent) = selection/focus only.
+- Status = ok|warn|error|info|idle only, always with text, never colour alone.
+- --pb-commit and --pb-status-warn share a colour but not a meaning: commit = unsaved user edits (pb-btn--commit for Apply/Save); warn = device/system state.
+- pb-btn--danger = irreversible only. Switch = instant effect; needs Apply → checkbox.
+- Theme follows OS; force with <html data-theme="dark|light">. Never style per theme (tokens use light-dark()).
+
+## A11y markup
+- label for↔id on each pb-form__label; label for a group of controls → <span id> + role=group aria-labelledby.
+- Latched buttons: aria-pressed (pb-btn--selected = non-ARIA fallback).
+- Tabs: role=tablist; tab role=tab id aria-selected aria-controls=panelId; panel role=tabpanel aria-labelledby=tabId.
+- Menu role=menu, li role=none, item role=menuitem. Modal role=dialog aria-labelledby. Switch input role=switch.
+- Progress role=progressbar aria-valuenow/min/max aria-label. Spinner role=status aria-label.
+- Dots aria-hidden=true. Icon-only buttons aria-label. Swatch rows role=img aria-label.
+- Keyboard handling (arrows, focus trap) is app JS.
+
+## Components
+Layout: pb-page > pb-split[--vertical] > pb-pane[--divided] (+pb-split-handle; drag JS yours). pb-panel[--flush] > pb-header[--sm] (+pb-header__actions) + pb-body[--flush]. pb-divider[--hard|--vertical], pb-note[--error|--warn], pb-scroll.
+Toolbar: pb-toolbar > pb-toolbar__title|__group|__sep|__spacer (spacer pushes rest right).
+Button: pb-btn + --outline (cancel) --ghost (no plate) --icon (square; ghost+icon for toolbar icons) --icon-lg --commit --danger --sm --lg --block. pb-btn-group. Latching look: <input type=radio|checkbox name=grp class="pb-btn-check" id=x><label class="pb-btn" for=x>Text</label>.
+Chip: pb-chip[--selected|--static] + pb-chip__remove; pb-chip-input = contenteditable container.
+Inputs: pb-input[--invalid], pb-textarea[--fixed], pb-range. Widths pb-w-xs|sm|md|lg|xl|auto. Required wrappers:
+  <span class="pb-select-wrap"><select class="pb-select"></span>
+  <span class="pb-number-wrap"><input type=number class="pb-input"></span>
+  pb-input-group > pb-input + pb-input-group__addon
+Check/radio: <label class="pb-check"><input type=checkbox|radio class="pb-check__input"><span class="pb-check__label">Text</span></label>
+Switch: identical but <input type=checkbox role=switch class="pb-switch__input">.
+Form: pb-form[--label-sm|--label-lg] > pairs of pb-form__label + pb-form__field; pb-form__full spans both; pb-form__gap spacer; pb-form__label--indent dependent row. pb-fieldset + legend.
+Tabs: pb-tabs[--sub|--vertical] > pb-tab (aria-selected or .active); pb-tabpanel.active shows.
+Menu: pb-menu[--scroll] > pb-menu__item (.active/aria-current) + __hint __divider __section __label; submenu pb-menu__sub[--left] inside li.
+Modal: pb-modal-backdrop; pb-modal[--xs|sm|md|lg|fit|resize] > pb-modal__header[--info|warn|error|ok] (>pb-modal__title) + pb-modal__body[--flush] + pb-modal__footer. Footer: cancel left, confirm right; [--end] all right, single-action. pb-modal-demo = docs only.
+Drawer: pb-drawer[--right|--wide] + --open; > pb-drawer__body.
+Progress: pb-progress[--indeterminate] > pb-progress__bar[--ok|warn|error][--striped][--animated], width inline. pb-spinner[--sm|--lg].
+Empty-pane loader: <div class="pb-loading"><span class="pb-spinner pb-spinner--lg" role=status aria-label="Loading"></span>Loading sources…</div>
+Table: pb-table[--compact|--numeric]; selected tr aria-selected=true or .pb-selected; sortable th[aria-sort]; .pb-num; pb-cell-select editable. Fixed-height scroll: pb-grid > pb-grid-body > table.pb-table (thead sticky).
+Status: <span class="pb-status"><span class="pb-dot pb-dot--ok" aria-hidden=true></span>Text</span>. pb-dot--pulse = unacked alarm. pb-badge--ok|warn|error|info. pb-alert--ok|warn|error > pb-alert__title.
+Reduced motion: pulse and --animated stop; spinners keep turning. Text must carry meaning.
+Routing: pb-btn pb-xpt pb-xpt--source|dest|tieline [+--locked|--protected]. pb-level pb-level--video|01…16 swatch.
+Summary: pb-summary > pb-summary__item > __key + __val; clickable child needs data-interactive.
+Window state, on outermost element, only for these states: pb-state-commit (unsaved), pb-state-protect (locked DB).
+Icons: Lucide sprite at icons/lucide.svg. Never write path data. Use only ids that exist (check: grep 'id="name"' icons/lucide.svg):
+  <svg class="pb-icon" viewBox="0 0 24 24" aria-hidden=true><use href="icons/lucide.svg#name"/></svg>
+  viewBox is required (symbols have none). CSS sets 18px, 1.6 stroke, currentColor. [--sm|--lg|--filled|--ok|--warn|--error|--info]. External <use> needs http(s), not file://.
+Utils: pb-row[--tight|--wrap] pb-col pb-grow pb-push pb-text-strong|muted|disabled|num|mono pb-truncate pb-sr-only pb-code.
+Theme crossfade: add pb-theme-transition to <html>, set data-theme, remove after --pb-motion-theme.
+
+## Tokens (--pb-*)
+surface-sunken|base|raised|overlay|high|control|hover · edge-hard|edge|edge-soft|edge-light · accent[-hover|-muted|-wash] · commit · protect · status-ok|warn|error|info|idle · status-warn-fill · source|dest|tieline[-hover] · signal-video|01–16 · text[-strong|-muted|-disabled|-on-accent] · text-2xs|xs|sm(13px)|md|lg|xl · weight-normal|medium|bold · space-1…10 = 2,4,6,8,12,14,16,20,24,32px · control-h(30)[-sm|-lg] · row-h · toolbar-h · radius-* = 0 · motion-fast|normal|drawer|theme · z-sticky|summary|drawer|scrim|modal|dropdown|tooltip
+
+## Example
+<div class="pb-panel"><div class="pb-header">Output</div><div class="pb-body"><div class="pb-form">
+<label class="pb-form__label" for="fmt">Format</label>
+<div class="pb-form__field"><span class="pb-select-wrap"><select id="fmt" class="pb-select pb-w-md"><option>1080p59.94</option></select></span></div>
+</div></div></div>

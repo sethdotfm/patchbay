@@ -16,31 +16,34 @@
    ========================================================================== */
 
 :root {
+  /* Follows the OS by default. Every colour token below is
+     light-dark(<light>, <dark>), resolved from this property. */
+  color-scheme: light dark;
 
   /* ----------------------------------------------------------------------
      SURFACE RAMP
      A 7-step near-black ramp, dead neutral. Steps are small and hard;
      depth reads from 1px edges, not from soft light or shadow.
      ---------------------------------------------------------------------- */
-  --pb-surface-sunken:   #000000;  /* input wells, grid canvas             */
-  --pb-surface-base:     #080808;  /* page background                      */
-  --pb-surface-raised:   #0f0f0f;  /* panels, cards, zebra rows            */
-  --pb-surface-overlay:  #141414;  /* modals, popovers                     */
-  --pb-surface-high:     #121212;  /* toolbars, headers (flat, not lifted) */
-  --pb-surface-control:  #1e1e1e;  /* buttons, resting controls            */
-  --pb-surface-hover:    #2c2c2c;  /* control hover                        */
+  --pb-surface-sunken:   light-dark(#ffffff, #000000);  /* input wells, grid canvas             */
+  --pb-surface-base:     light-dark(#e4e4e4, #080808);  /* page background                      */
+  --pb-surface-raised:   light-dark(#f5f5f5, #0f0f0f);  /* panels, cards, zebra rows            */
+  --pb-surface-overlay:  light-dark(#ffffff, #141414);  /* modals, popovers                     */
+  --pb-surface-high:     light-dark(#ebebeb, #121212);  /* toolbars, headers (flat, not lifted) */
+  --pb-surface-control:  light-dark(#dcdcdc, #1e1e1e);  /* buttons, resting controls            */
+  --pb-surface-hover:    light-dark(#cdcdcd, #2c2c2c);  /* control hover                        */
 
   --pb-edge-hard:        #000000;
-  --pb-edge:             #6e6e6e;  /* ≥3:1 on every surface — control outlines */
-  --pb-edge-soft:        rgba(255, 255, 255, 0.12);
-  --pb-edge-light:       rgba(255, 255, 255, 0.24);
+  --pb-edge:             light-dark(#767676, #6e6e6e);  /* ≥3:1 on every surface — control outlines */
+  --pb-edge-soft:        light-dark(rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.12));
+  --pb-edge-light:       light-dark(rgba(0, 0, 0, 0.30), rgba(255, 255, 255, 0.24));
 
-  --pb-overlay-hover:    rgba(255, 255, 255, 0.08);
-  --pb-overlay-press:    rgba(0, 0, 0, 0.25);
-  --pb-overlay-scrim:    rgba(0, 0, 0, 0.82);
+  --pb-overlay-hover:    light-dark(rgba(0, 0, 0, 0.06), rgba(255, 255, 255, 0.08));
+  --pb-overlay-press:    light-dark(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.25));
+  --pb-overlay-scrim:    light-dark(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.82));
   --pb-stripe:          rgba(0, 0, 0, 0.80);  /* hazard bands on striped progress */
-  --pb-shadow-control:   inset 0 0 0 1px #2e2e2e;   /* hard 1px rim, no blur */
-  --pb-shadow-overlay:   0 0 0 1px #4a4a4a, 6px 6px 0 0 #000;  /* hard offset */
+  --pb-shadow-control:   inset 0 0 0 1px light-dark(#9a9a9a, #2e2e2e);  /* hard 1px rim, no blur */
+  --pb-shadow-overlay:   0 0 0 1px light-dark(#000, #4a4a4a), 6px 6px 0 0 #000;  /* hard offset */
 
 
   /* ----------------------------------------------------------------------
@@ -48,73 +51,84 @@
      One accent: a cool periwinkle that sits apart from every status hue,
      so "selected" can never be mistaken for "healthy" or "warning".
      ---------------------------------------------------------------------- */
-  --pb-accent:           #8b93ff;
-  --pb-accent-hover:     #a3a9ff;
-  --pb-accent-muted:     rgba(139, 147, 255, 0.60);
-  --pb-accent-wash:      rgba(139, 147, 255, 0.14);
-  --pb-accent-tab:       rgba(139, 147, 255, 0.10);
-  --pb-accent-subtab:    rgba(139, 147, 255, 0.07);
+  --pb-accent:           light-dark(#3a44c4, #8b93ff);
+  --pb-accent-hover:     light-dark(#2d36a8, #a3a9ff);
+  --pb-accent-muted:     light-dark(rgba(58, 68, 196, 0.60), rgba(139, 147, 255, 0.60));
+  --pb-accent-wash:      light-dark(rgba(58, 68, 196, 0.12), rgba(139, 147, 255, 0.14));
+  --pb-accent-tab:       light-dark(rgba(58, 68, 196, 0.10), rgba(139, 147, 255, 0.10));
+  --pb-accent-subtab:    light-dark(rgba(58, 68, 196, 0.07), rgba(139, 147, 255, 0.07));
 
-  --pb-commit:           #f2b84b;  /* unsaved work — amber              */
-  --pb-commit-hover:     #f6c96f;
-  --pb-protect:          #d0559b;  /* write-protected / locked — magenta */
-  --pb-brand:            #e8673c;  /* top-level navigation chrome only   */
+  --pb-danger-hover:     light-dark(#8f1820, #e55a5a);
+  --pb-commit:           light-dark(#8a4a00, #f2b84b);  /* unsaved work — amber              */
+  --pb-commit-hover:     light-dark(#733d00, #f6c96f);
+  --pb-protect:          light-dark(#b02a78, #d0559b);  /* write-protected / locked — magenta */
+  --pb-brand:            light-dark(#c2410c, #e8673c);  /* top-level navigation chrome only   */
 
 
   /* ----------------------------------------------------------------------
      STATUS — five states, never colour alone.
      ---------------------------------------------------------------------- */
-  --pb-status-ok:        #5ccf8f;
-  --pb-status-warn:      #f2b84b;
-  --pb-status-error:     #f0605a;
-  --pb-status-info:      #6cb8f0;
-  --pb-status-idle:      #9b958c;
+  --pb-status-ok:        light-dark(#11643b, #5ccf8f);
+  --pb-status-warn:      light-dark(#8a4a00, #f2b84b);
+  --pb-status-error:     light-dark(#ad1f27, #f0605a);
+  --pb-status-info:      light-dark(#165990, #6cb8f0);
+  --pb-status-idle:      light-dark(#575757, #9b958c);
+  /* Warn as a fill (progress, dots). Brighter than the text-safe warn in
+     light mode; still ≥3:1 against the white track. */
+  --pb-status-warn-fill: light-dark(#c27a00, #f2b84b);
 
 
   /* ----------------------------------------------------------------------
      ROUTING ROLES — muted so hundreds can tile and the accent still wins.
      ---------------------------------------------------------------------- */
-  --pb-source:           #3f5d52;  /* sage    */
-  --pb-source-hover:     #4a6a5e;
-  --pb-dest:             #5c5340;  /* khaki   */
-  --pb-dest-hover:       #685e49;
-  --pb-tieline:          #4c4a6c;  /* slate   */
-  --pb-tieline-hover:    #58567b;
+  --pb-source:           light-dark(#c4dbd1, #3f5d52);  /* sage    */
+  --pb-source-hover:     light-dark(#b0cec1, #4a6a5e);
+  --pb-dest:             light-dark(#e2d7c0, #5c5340);  /* khaki   */
+  --pb-dest-hover:       light-dark(#d5c7aa, #685e49);
+  --pb-tieline:          light-dark(#d3d2e8, #4c4a6c);  /* slate   */
+  --pb-tieline-hover:    light-dark(#c1c0de, #58567b);
 
 
   /* ----------------------------------------------------------------------
      SIGNAL IDENTITY — per-level colours for shuffles and meters, walked
      around the hue wheel in a fixed lightness band.
      ---------------------------------------------------------------------- */
-  --pb-signal-video:     #7ed98a;
-  --pb-signal-01:        #e8735e;
-  --pb-signal-02:        #e8a35e;
-  --pb-signal-03:        #e3d06a;
-  --pb-signal-04:        #a8d86a;
-  --pb-signal-05:        #5fd09a;
-  --pb-signal-06:        #5ccfc9;
-  --pb-signal-07:        #5fb2e8;
-  --pb-signal-08:        #7d8ef0;
-  --pb-signal-09:        #a67ef0;
-  --pb-signal-10:        #d27be6;
-  --pb-signal-11:        #e87bb3;
-  --pb-signal-12:        #c99a7a;
-  --pb-signal-13:        #9fb3a0;
-  --pb-signal-14:        #a3b4d4;
-  --pb-signal-15:        #d4c3a3;
-  --pb-signal-16:        #c4a3d4;
+  --pb-signal-video:     light-dark(#2f9e44, #7ed98a);
+  --pb-signal-01:        light-dark(#d4462e, #e8735e);
+  --pb-signal-02:        light-dark(#d9822b, #e8a35e);
+  --pb-signal-03:        light-dark(#b89a12, #e3d06a);
+  --pb-signal-04:        light-dark(#6f9e1f, #a8d86a);
+  --pb-signal-05:        light-dark(#1f9e6a, #5fd09a);
+  --pb-signal-06:        light-dark(#17948e, #5ccfc9);
+  --pb-signal-07:        light-dark(#1f7fc4, #5fb2e8);
+  --pb-signal-08:        light-dark(#4a5fd6, #7d8ef0);
+  --pb-signal-09:        light-dark(#7a4fd6, #a67ef0);
+  --pb-signal-10:        light-dark(#b03fc4, #d27be6);
+  --pb-signal-11:        light-dark(#c93f86, #e87bb3);
+  --pb-signal-12:        light-dark(#9a6440, #c99a7a);
+  --pb-signal-13:        light-dark(#5f7f61, #9fb3a0);
+  --pb-signal-14:        light-dark(#5c7299, #a3b4d4);
+  --pb-signal-15:        light-dark(#9a8559, #d4c3a3);
+  --pb-signal-16:        light-dark(#8a5f9e, #c4a3d4);
 
 
   /* ----------------------------------------------------------------------
      TEXT & ICON — cold white.
      ---------------------------------------------------------------------- */
-  --pb-text:             #e6e6e6;
-  --pb-text-strong:      #ffffff;
-  --pb-text-muted:       rgba(230, 230, 230, 0.64);
-  --pb-text-disabled:    rgba(230, 230, 230, 0.36);
-  --pb-text-on-accent:   #14131f;
-  --pb-icon:             rgba(230, 230, 230, 0.90);
-  --pb-icon-disabled:    rgba(230, 230, 230, 0.36);
+  --pb-text:             light-dark(#141414, #e6e6e6);
+  --pb-text-strong:      light-dark(#000000, #ffffff);
+  --pb-text-muted:       light-dark(rgba(0, 0, 0, 0.66), rgba(230, 230, 230, 0.64));
+  --pb-text-disabled:    light-dark(rgba(0, 0, 0, 0.38), rgba(230, 230, 230, 0.36));
+  --pb-text-on-accent:   light-dark(#ffffff, #14131f);
+  --pb-icon:             light-dark(rgba(0, 0, 0, 0.85), rgba(230, 230, 230, 0.90));
+  --pb-icon-disabled:    light-dark(rgba(0, 0, 0, 0.38), rgba(230, 230, 230, 0.36));
+
+
+  /* Control glyphs. Data-URI SVGs cannot read custom properties, so each
+     theme supplies its own, drawn in its --pb-text-on-accent colour. */
+  --pb-glyph-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2314131f' stroke-width='2.5' stroke-linecap='square' d='M3.5 8.5 6.4 11.4 12.5 5'/%3E%3C/svg%3E");
+  --pb-glyph-dash:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2314131f' stroke-width='2.5' d='M4 8h8'/%3E%3C/svg%3E");
+  --pb-glyph-radio: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%2314131f'/%3E%3C/svg%3E");
 
 
   /* ----------------------------------------------------------------------
@@ -197,6 +211,7 @@
   --pb-motion-fast:    100ms;
   --pb-motion-normal:  160ms;
   --pb-motion-drawer:  220ms;
+  --pb-motion-theme:   200ms;  /* light/dark crossfade */
   --pb-ease:           cubic-bezier(0.25, 0.1, 0.25, 1);
 
 
@@ -229,5 +244,34 @@
     --pb-motion-fast:   0ms;
     --pb-motion-normal: 0ms;
     --pb-motion-drawer: 0ms;
+    --pb-motion-theme:  0ms;
   }
+}
+
+
+/* ==========================================================================
+   THEME SWITCHING
+   Default: follow the OS. Force a theme per page with
+   <html data-theme="light"> or <html data-theme="dark">.
+
+   Colour tokens switch through color-scheme + light-dark() above. The
+   control glyphs are data-URI images, not colours, so they need their own
+   light-mode overrides here (dark ink → white ink on the darker accent).
+   ========================================================================== */
+
+:root[data-theme="dark"]  { color-scheme: dark; }
+:root[data-theme="light"] { color-scheme: light; }
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --pb-glyph-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.5' stroke-linecap='square' d='M3.5 8.5 6.4 11.4 12.5 5'/%3E%3C/svg%3E");
+    --pb-glyph-dash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.5' d='M4 8h8'/%3E%3C/svg%3E");
+    --pb-glyph-radio: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23fff'/%3E%3C/svg%3E");
+  }
+}
+
+:root[data-theme="light"] {
+  --pb-glyph-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.5' stroke-linecap='square' d='M3.5 8.5 6.4 11.4 12.5 5'/%3E%3C/svg%3E");
+  --pb-glyph-dash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.5' d='M4 8h8'/%3E%3C/svg%3E");
+  --pb-glyph-radio: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23fff'/%3E%3C/svg%3E");
 }
