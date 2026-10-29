@@ -5,6 +5,7 @@
 //   node tools/contrast.mjs                  check pairs; exit 1 on a failure
 //   node tools/contrast.mjs --dump           print every resolved token, both themes
 //   node tools/contrast.mjs --ratios         print every pair's ratio
+//   node tools/contrast.mjs --worst          worst ratio per foreground token, for the comments in the tokens file
 //   node tools/contrast.mjs [--tokens file]  use another tokens file
 //
 // --dump normalises colours to #rrggbb / rgba() and rem to px, so a token
@@ -86,6 +87,20 @@ function resolve(value, theme, seen = []) {
     const end = closeParen(out, at + 10);
     const [light, dark] = splitTop(out.slice(at + 11, end));
     out = out.slice(0, at) + (theme === "light" ? light : dark) + out.slice(end + 1);
+  }
+  // Only `color-mix(in srgb, <colour> N%, transparent)` is supported: it is
+  // the one form the tokens use, and it is just the colour at N% alpha.
+  for (let guard = 0; guard < 50; guard++) {
+    const cm = out.indexOf("color-mix(");
+    if (cm < 0) break;
+    const end = closeParen(out, cm + 9);
+    const [space, source, tail] = splitTop(out.slice(cm + 10, end));
+    const m = source.match(/^(.*\S)\s+([\d.]+)%$/);
+    const c = m && parseColor(m[1]);
+    if (space !== "in srgb" || tail !== "transparent" || !c) {
+      throw new Error(`unsupported color-mix: ${out.slice(cm, end + 1)}`);
+    }
+    out = out.slice(0, cm) + canonical({ ...c, a: c.a * (m[2] / 100) }) + out.slice(end + 1);
   }
   return out;
 }
@@ -207,6 +222,24 @@ for (const theme of ["light", "dark"]) {
       }
     }
   }
+}
+
+if (flag("--worst")) {
+  const worst = {};
+  for (const theme of ["light", "dark"]) {
+    for (const [, fgs, bgs] of PAIRS) {
+      for (const fg of fgs) for (const bgToken of bgs) {
+        const bg = colour(bgToken, theme);
+        const r = ratio(over(colour(fg, theme), bg), bg);
+        const w = (worst[fg] ??= {});
+        if (!(w[theme] <= r)) w[theme] = r;
+      }
+    }
+  }
+  for (const [t, w] of Object.entries(worst)) {
+    console.log(`${t}: ${w.dark.toFixed(2)}:1 dark \u00b7 ${w.light.toFixed(2)}:1 light`);
+  }
+  process.exit(failures ? 1 : 0);
 }
 
 console.log("Lowest ratio per group:");
