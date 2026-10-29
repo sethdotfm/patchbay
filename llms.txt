@@ -12,6 +12,11 @@ Load: IBM Plex Sans/Mono → css/bootstrap.min.css → css/patchbay.tokens.css �
 - --pb-commit and --pb-status-warn share a colour but not a meaning: commit = unsaved user edits (pb-btn--commit for Apply/Save); warn = device/system state.
 - pb-btn--danger = irreversible only. Switch = instant effect; needs Apply → checkbox.
 - Theme follows OS; force with <html data-theme="dark|light">. Never style per theme (tokens use light-dark()).
+- Sizes are rem. Scale the whole UI with html{font-size:125%}; never use zoom, never both. Hairlines (border-w, rims, bars) stay px. @media rem follows the browser's initial size, not html's.
+- Read --pb-* semantic tokens only; --pb-hue-* are primitives the semantic ones point at. Numbers use --pb-font-num (default mono; an app wanting Sans digits sets only --pb-font-num: var(--pb-font)).
+- pb-btn--commit (amber) = unsaved edits exist and this applies them. pb-btn--ok (green) = a positive finish: Done, Unlock. Not both for one action.
+- pb-w-* widths go on the wrapper (select-wrap, number-wrap, input-group), not the inner control.
+- Tooltip text is decoration: a focusable trigger needs its own name or aria-describedby. Toast stack aria-live=polite; error toast role=alert.
 
 ## A11y markup
 - label for↔id on each pb-form__label; label for a group of controls → <span id> + role=group aria-labelledby.
@@ -25,7 +30,7 @@ Load: IBM Plex Sans/Mono → css/bootstrap.min.css → css/patchbay.tokens.css �
 ## Components
 Layout: pb-page > pb-split[--vertical] > pb-pane[--divided] (+pb-split-handle; drag JS yours). pb-panel[--flush] > pb-header[--sm] (+pb-header__actions) + pb-body[--flush]. pb-divider[--hard|--vertical], pb-note[--error|--warn], pb-scroll.
 Toolbar: pb-toolbar > pb-toolbar__title|__group|__sep|__spacer (spacer pushes rest right).
-Button: pb-btn + --outline (cancel) --ghost (no plate) --icon (square; ghost+icon for toolbar icons) --icon-lg --commit --danger --sm --lg --block. pb-btn-group. Latching look: <input type=radio|checkbox name=grp class="pb-btn-check" id=x><label class="pb-btn" for=x>Text</label>.
+Button: pb-btn + --outline (cancel) --ghost (no plate) --icon (square; ghost+icon for toolbar icons) --icon-lg --commit --ok --danger --sm --lg --block --loading (spinner, label hidden; add aria-busy=true). pb-btn-group. Latching look: <input type=radio|checkbox name=grp class="pb-btn-check" id=x><label class="pb-btn" for=x>Text</label>.
 Chip: pb-chip[--selected|--static] + pb-chip__remove; pb-chip-input = contenteditable container.
 Inputs: pb-input[--invalid], pb-textarea[--fixed], pb-range. Widths pb-w-xs|sm|md|lg|xl|auto. Required wrappers:
   <span class="pb-select-wrap"><select class="pb-select"></span>
@@ -41,19 +46,28 @@ Drawer: pb-drawer[--right|--wide] + --open; > pb-drawer__body.
 Progress: pb-progress[--indeterminate] > pb-progress__bar[--ok|warn|error][--striped][--animated], width inline. pb-spinner[--sm|--lg].
 Empty-pane loader: <div class="pb-loading"><span class="pb-spinner pb-spinner--lg" role=status aria-label="Loading"></span>Loading sources…</div>
 Table: pb-table[--compact|--numeric]; selected tr aria-selected=true or .pb-selected; sortable th[aria-sort]; .pb-num; pb-cell-select editable. Fixed-height scroll: pb-grid > pb-grid-body > table.pb-table (thead sticky).
+Fields (stacked form): pb-fields > pb-field (label | pb-field__label, control, pb-hint); pb-field--error|ok colours rim + hint (hint words carry meaning); pb-input--valid. pb-section > pb-section__title (or fieldset > legend). pb-label = muted uppercase caption. Labels dim when their control is :disabled (needs :has(), Firefox 121+). Use pb-form for dense one-line rows, pb-fields for settings pages/narrow panes (--pb-field-min-w).
+Savebar: pb-savebar > pb-savebar__row (sticky bottom, status text left, buttons right).
+Tooltip: data-pb-tip="text" on a button/wrapper (not <input>), shows on hover+focus; pb-tip--top|start|end on the trigger. pb-tip = script-placed tip for truncated text (position:fixed, you set left/top).
+Toast: pb-toast-stack[aria-live=polite] > pb-toast[--ok|warn|error|info] > __icon __body(__title __msg) __close(pb-btn pb-btn--ghost pb-btn--icon pb-btn--sm). pb-enter = arrival animation (zero under reduced motion).
+Banner: pb-banner[--ok|warn|error|info] full-width strip. Conn chip: pb-conn[--ok|warn|error] with a pb-dot + words. Offline: pb-state-offline on the outermost element (pulses; steady under reduced motion).
+Role bar: pb-rolebar--source|dest|tieline|error (left bar, --pb-rolebar-w).
+KV: dl.pb-kv[--inline] > div.pb-kv__item > dt.pb-kv__key + dd.pb-kv__val. Empty: pb-empty > __title __msg __actions (+icon). Skeleton: pb-skeleton--text|heading|row, region aria-busy=true.
+Breadcrumbs: nav > ol.pb-breadcrumbs, last li aria-current=page. Pagination: nav > ul.pb-pagination of pb-btn pb-btn--sm; aria-current=page; pb-pagination__gap.
+Phone: <html data-pb-layout="phone"> drops the page min-width and reflows split/form/modal. Touch (pointer:coarse) inputs are >=16px (--pb-touch-text, px on purpose).
 Status: <span class="pb-status"><span class="pb-dot pb-dot--ok" aria-hidden=true></span>Text</span>. pb-dot--pulse = unacked alarm. pb-badge--ok|warn|error|info. pb-alert--ok|warn|error > pb-alert__title.
 Reduced motion: pulse and --animated stop; spinners keep turning. Text must carry meaning.
 Routing: pb-btn pb-xpt pb-xpt--source|dest|tieline [+--locked|--protected]. pb-level pb-level--video|01…16 swatch.
 Summary: pb-summary > pb-summary__item > __key + __val; clickable child needs data-interactive.
-Window state, on outermost element, only for these states: pb-state-commit (unsaved), pb-state-protect (locked DB).
+Window state, on outermost element, only for these states: pb-state-commit (unsaved), pb-state-protect (locked DB), pb-state-offline (link to device lost; pulses).
 Icons: Lucide sprite at icons/lucide.svg. Never write path data. Use only ids that exist (check: grep 'id="name"' icons/lucide.svg):
   <svg class="pb-icon" viewBox="0 0 24 24" aria-hidden=true><use href="icons/lucide.svg#name"/></svg>
   viewBox is required (symbols have none). CSS sets 18px, 1.6 stroke, currentColor. [--sm|--lg|--filled|--ok|--warn|--error|--info]. External <use> needs http(s), not file://.
-Utils: pb-row[--tight|--wrap] pb-col pb-grow pb-push pb-text-strong|muted|disabled|num|mono pb-truncate pb-sr-only pb-code.
+Utils: pb-row[--tight|--wrap] pb-col pb-grow pb-push pb-text-strong|muted|disabled|num|mono pb-num pb-truncate pb-clamp-2|3 pb-sr-only pb-code (also bare code, kbd).
 Theme crossfade: add pb-theme-transition to <html>, set data-theme, remove after --pb-motion-theme.
 
 ## Tokens (--pb-*)
-surface-sunken|base|raised|overlay|high|control|hover · edge-hard|edge|edge-soft|edge-light · accent[-hover|-muted|-wash] · commit · protect · status-ok|warn|error|info|idle · status-warn-fill · source|dest|tieline[-hover] · signal-video|01–16 · text[-strong|-muted|-disabled|-on-accent] · text-2xs|xs|sm(13px)|md|lg|xl · weight-normal|medium|bold · space-1…10 = 2,4,6,8,12,14,16,20,24,32px · control-h(30)[-sm|-lg] · row-h · toolbar-h · radius-* = 0 · motion-fast|normal|drawer|theme · z-sticky|summary|drawer|scrim|modal|dropdown|tooltip
+hue-* (primitives; don't read directly) · surface-sunken|base|raised|overlay|high|control|hover · edge-hard|edge|edge-soft|edge-light · accent[-hover|-muted|-wash] · commit · protect · status-ok[-hover]|warn|error|info|idle · status-warn-fill · source|dest|tieline[-hover] · signal-video|01–16 · text[-strong|-muted|-disabled|-on-accent] · font-num · text-2xs|xs|sm(13px)|md|lg|xl (rem) · weight-normal|medium|bold · space-1…10 = 2,4,6,8,12,14,16,20,24,32px · control-h(30)[-sm|-lg] · rolebar-w · page-min-w · touch-text(16px) · row-h · toolbar-h · radius-* = 0 · motion-fast|normal|drawer|theme|enter · z-sticky|summary|drawer|scrim|modal|dropdown|tooltip|toast
 
 ## Example
 <div class="pb-panel"><div class="pb-header">Output</div><div class="pb-body"><div class="pb-form">

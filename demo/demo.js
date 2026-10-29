@@ -42,6 +42,10 @@ if (themeToggle) {
 // ---- scale: the whole UI follows the root font size -----------------------
 
 const scaleButtons = $$("[data-scale]");
+{
+  const fromUrl = new URLSearchParams(location.search).get("scale");
+  if (fromUrl) scaleButtons.forEach((o) => o.setAttribute("aria-pressed", String(o.dataset.scale === String(parseFloat(fromUrl)))));
+}
 scaleButtons.forEach((b) => b.addEventListener("click", () => {
   root.style.fontSize = b.dataset.scale === "100" ? "" : `${b.dataset.scale}%`;
   scaleButtons.forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
