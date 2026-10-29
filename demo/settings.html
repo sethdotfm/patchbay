@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings &middot; Patchbay</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/patchbay.tokens.css" rel="stylesheet">
+  <link href="../css/patchbay.css" rel="stylesheet">
+  <link href="apps.css" rel="stylesheet">
+</head>
+<body data-icon-base="../">
+  <div class="app" id="app">
+    <div class="pb-toolbar" role="toolbar" aria-label="Settings">
+      <a class="pb-btn pb-btn--ghost pb-btn--sm" href="../index.html">&larr; Patchbay</a>
+      <div class="pb-toolbar__sep"></div>
+      <span class="pb-toolbar__title">Settings</span>
+      <span class="pb-toolbar__spacer"></span>
+      <span class="pb-conn pb-conn--ok"><span class="pb-dot pb-dot--ok" aria-hidden="true"></span>Connected</span>
+      <button class="pb-btn pb-btn--ghost pb-btn--sm" id="theme-toggle">Light mode</button>
+    </div>
+
+    <div class="app-scroll">
+      <div class="app-settings">
+        <nav aria-label="Sections">
+          <ol>
+            <li><a href="#router">Router</a></li>
+            <li><a href="#levels">Levels</a></li>
+            <li><a href="#appearance">Appearance</a></li>
+            <li><a href="#security">Security</a></li>
+          </ol>
+        </nav>
+
+        <form class="app-sections" id="form" novalidate>
+          <section class="pb-section" id="router">
+            <h2 class="pb-section__title">Router</h2>
+            <div class="pb-fields">
+              <div class="pb-field" id="f-addr">
+                <label for="addr">Address</label>
+                <input id="addr" class="pb-input" value="10.0.0.20:8910" aria-describedby="addr-hint" data-dirty>
+                <span class="pb-hint" id="addr-hint">host:port of the SW-P-08 router.</span>
+              </div>
+              <div class="pb-field">
+                <label for="matrix">Matrix</label>
+                <span class="pb-number-wrap"><input id="matrix" type="number" class="pb-input" value="0" min="0" max="255" data-dirty></span>
+                <span class="pb-hint">0&ndash;255</span>
+              </div>
+            </div>
+            <label class="pb-check"><input type="checkbox" class="pb-check__input" id="use-backup" data-dirty><span class="pb-check__label">Use a backup router</span></label>
+            <div class="pb-fields">
+              <div class="pb-field">
+                <label for="backup">Backup address</label>
+                <input id="backup" class="pb-input" placeholder="host:port" disabled data-dirty>
+                <span class="pb-hint">Tick the box above to enable.</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="pb-section" id="levels">
+            <h2 class="pb-section__title">Levels</h2>
+            <div class="pb-fields">
+              <div class="pb-field">
+                <label for="levels">Levels</label>
+                <span class="pb-number-wrap"><input id="levels" type="number" class="pb-input" value="16" min="1" max="256" data-dirty></span>
+              </div>
+              <div class="pb-field">
+                <label for="numbering">Numbering</label>
+                <span class="pb-select-wrap"><select id="numbering" class="pb-select" data-dirty><option>1&hellip;N</option><option>0&hellip;N&minus;1</option><option>V, A1&hellip;</option></select></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="pb-section" id="appearance">
+            <h2 class="pb-section__title">Appearance</h2>
+            <div class="pb-fields">
+              <div class="pb-field">
+                <span class="pb-field__label" id="theme-label">Theme</span>
+                <div class="pb-btn-group" role="group" aria-labelledby="theme-label">
+                  <input type="radio" name="th" class="pb-btn-check" id="th-os" checked data-pref><label class="pb-btn" for="th-os">System</label>
+                  <input type="radio" name="th" class="pb-btn-check" id="th-dark" data-pref><label class="pb-btn" for="th-dark">Dark</label>
+                  <input type="radio" name="th" class="pb-btn-check" id="th-light" data-pref><label class="pb-btn" for="th-light">Light</label>
+                </div>
+                <span class="pb-hint">Applies to this device immediately; it needs no Save.</span>
+              </div>
+              <div class="pb-field">
+                <span class="pb-field__label" id="sc-label">Interface size</span>
+                <div class="pb-btn-group" role="group" aria-labelledby="sc-label">
+                  <input type="radio" name="sc" class="pb-btn-check" id="sc-100" checked data-pref><label class="pb-btn" for="sc-100">100%</label>
+                  <input type="radio" name="sc" class="pb-btn-check" id="sc-125" data-pref><label class="pb-btn" for="sc-125">125%</label>
+                  <input type="radio" name="sc" class="pb-btn-check" id="sc-150" data-pref><label class="pb-btn" for="sc-150">150%</label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="pb-section" id="security">
+            <h2 class="pb-section__title">Security</h2>
+            <div class="pb-fields">
+              <div class="pb-field">
+                <label for="pin">Settings PIN</label>
+                <input id="pin" class="pb-input" type="password" autocomplete="off" aria-describedby="pin-hint">
+                <span class="pb-hint" id="pin-hint">Required to unlock changes to router settings.</span>
+              </div>
+            </div>
+            <div class="pb-row">
+              <button type="button" class="pb-btn pb-btn--ok" id="unlock">Unlock</button>
+              <span class="pb-hint" id="unlock-text">Locked.</span>
+            </div>
+          </section>
+
+          <div class="pb-savebar">
+            <div class="pb-savebar__row">
+              <span class="pb-hint" id="save-text" role="status">No unsaved changes.</span>
+              <span class="pb-row">
+                <button type="button" class="pb-btn pb-btn--outline" id="revert" disabled>Revert</button>
+                <button type="submit" class="pb-btn" id="save" disabled>Save</button>
+              </span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="pb-toast-stack" id="toast-stack" aria-live="polite"></div>
+
+  <script src="demo.js"></script>
+  <script>
+    (() => {
+    const $ = (id) => document.getElementById(id);
+    const form = $("form");
+    const root = document.documentElement;
+    const initial = new Map([...form.querySelectorAll("[data-dirty]")].map((el) => [el, el.type === "checkbox" ? el.checked : el.value]));
+
+    const validAddr = (v) => /^[\w.-]+:\d{1,5}$/.test(v.trim());
+
+    function validate() {
+      const field = $("f-addr"), v = $("addr").value;
+      const ok = validAddr(v);
+      field.classList.toggle("pb-field--error", !ok);
+      $("addr").setAttribute("aria-invalid", String(!ok));
+      $("addr-hint").textContent = ok ? "host:port of the SW-P-08 router." : "Enter host:port, for example 10.0.0.20:8910.";
+      return ok;
+    }
+
+    function refresh() {
+      const dirty = [...initial].some(([el, v]) => (el.type === "checkbox" ? el.checked : el.value) !== v);
+      const ok = validate();
+      $("backup").disabled = !$("use-backup").checked;
+      $("save").disabled = !dirty || !ok;
+      $("save").classList.toggle("pb-btn--commit", dirty && ok);
+      $("revert").disabled = !dirty;
+      $("app").classList.toggle("pb-state-commit", dirty);
+      $("save-text").textContent = !dirty ? "No unsaved changes." : ok ? "Unsaved changes." : "Fix the address before saving.";
+    }
+
+    form.addEventListener("input", refresh);
+    form.addEventListener("change", refresh);
+
+    $("revert").addEventListener("click", () => {
+      initial.forEach((v, el) => { if (el.type === "checkbox") el.checked = v; else el.value = v; });
+      refresh();
+    });
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if ($("save").disabled) return;
+      $("save").classList.add("pb-btn--loading");
+      $("save").setAttribute("aria-busy", "true");
+      setTimeout(() => {
+        initial.forEach((_, el) => initial.set(el, el.type === "checkbox" ? el.checked : el.value));
+        $("save").classList.remove("pb-btn--loading");
+        $("save").removeAttribute("aria-busy");
+        refresh();
+        window.dispatchEvent(new CustomEvent("demo-toast", { detail: { kind: "ok", title: "Settings saved", msg: "The router connection was restarted with the new address." } }));
+      }, 1200);
+    });
+
+    $("unlock").addEventListener("click", () => {
+      const b = $("unlock");
+      b.classList.add("pb-btn--loading");
+      b.setAttribute("aria-busy", "true");
+      setTimeout(() => {
+        b.classList.remove("pb-btn--loading");
+        b.removeAttribute("aria-busy");
+        $("unlock-text").textContent = "Unlocked until you leave Settings.";
+      }, 1000);
+    });
+
+    // Appearance applies at once, so it is not part of the dirty check.
+    document.querySelectorAll("[data-pref]").forEach((el) => el.addEventListener("change", () => {
+      if (el.name === "th") {
+        if (el.id === "th-os") delete root.dataset.theme; else root.dataset.theme = el.id === "th-dark" ? "dark" : "light";
+      } else {
+        root.style.fontSize = `${el.id.split("-")[1]}%`;
+      }
+    }));
+
+    refresh();
+    })();
+  </script>
+</body>
+</html>

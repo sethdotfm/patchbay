@@ -1,0 +1,68 @@
+/* Layout for the mock app pages only. Tokens only. */
+
+html, body { height: 100%; }
+
+.app { display: flex; flex-direction: column; height: 100%; }
+.app > .pb-grid, .app > .app-body { flex: 1 1 auto; min-height: 0; }
+.app-body { display: flex; overflow: auto; }
+
+/* ---- router ----------------------------------------------------------- */
+
+.app-xpt th[scope="col"] {
+  font-size: var(--pb-text-2xs);
+  position: sticky;
+  text-align: center;
+  top: 0;
+  z-index: 1;
+}
+
+.app-xpt th[scope="row"] {
+  background: var(--pb-surface-raised);
+  left: 0;
+  position: sticky;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.app-xpt td { padding: var(--pb-space-1); text-align: center; }
+.app-xpt .pb-btn { height: var(--pb-control-h-sm); padding: 0; width: 100%; }
+.app-lock { color: var(--pb-protect); margin-left: var(--pb-space-3); }
+
+/* ---- settings --------------------------------------------------------- */
+
+.app-settings {
+  display: grid;
+  gap: var(--pb-space-9);
+  grid-template-columns: 11rem minmax(0, 40rem);
+  margin: 0 auto;
+  max-width: 100%;
+  width: fit-content;
+  padding: var(--pb-space-8);
+}
+
+.app-settings nav { align-self: start; position: sticky; top: var(--pb-space-8); }
+.app-settings nav ol { display: flex; flex-direction: column; list-style: none; margin: 0; padding: 0; }
+.app-settings nav a { color: var(--pb-text); display: block; padding: var(--pb-space-1) var(--pb-space-3); text-decoration: none; }
+.app-settings nav a:hover { background: var(--pb-overlay-hover); }
+.app-sections { display: flex; flex-direction: column; gap: var(--pb-space-10); min-width: 0; }
+.app-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+
+@media (max-width: 52rem) {
+  .app-settings { grid-template-columns: minmax(0, 1fr); }
+  .app-settings nav { display: none; }
+}
+
+/* ---- log -------------------------------------------------------------- */
+
+.app-log { display: flex; flex: 1 1 auto; min-height: 0; position: relative; }
+.app-log__main { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; }
+.app-log__foot { align-items: center; border-top: var(--pb-border-w) solid var(--pb-edge-hard); display: flex; gap: var(--pb-space-5); justify-content: space-between; padding: var(--pb-space-3) var(--pb-space-5); }
+.app-log .pb-table tbody tr { cursor: pointer; }
+.app-log .pb-drawer { z-index: var(--pb-z-drawer); }
+
+/* ---- phone ------------------------------------------------------------ */
+
+.app-phone { margin: 0 auto; max-width: 30rem; }
+.app-phone__body { display: flex; flex-direction: column; gap: var(--pb-space-7); padding: var(--pb-space-5); }
+.app-phone__list { display: grid; gap: var(--pb-space-2); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.app-phone__list .pb-btn { height: var(--pb-control-h-lg); }

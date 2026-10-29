@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>/* frozen v1 page for screenshot diffs: ?theme=light|dark forces a theme */
+    { const t = new URLSearchParams(location.search).get("theme"); if (t) document.documentElement.dataset.theme = t;
+      document.write("<style>*{animation:none!important;transition:none!important;caret-color:transparent}</style>"); }</script>
+  <meta charset="utf-8">
+  <title>Patchbay Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/patchbay.tokens.css" rel="stylesheet">
+  <link href="../css/patchbay.css" rel="stylesheet">
+  <style>
+    /* layout only */
+    .demo { padding: 16px; display: flex; flex-direction: column; gap: 16px; max-width: 900px; }
+  </style>
+</head>
+<body>
+  <div class="pb-toolbar" role="toolbar" aria-label="Main">
+    <span class="pb-toolbar__title">Patchbay Demo</span>
+    <div class="pb-toolbar__sep"></div>
+    <button class="pb-btn pb-btn--ghost pb-btn--sm">File</button>
+    <button class="pb-btn pb-btn--ghost pb-btn--sm">Edit</button>
+    <span class="pb-toolbar__spacer"></span>
+    <button class="pb-btn pb-btn--ghost pb-btn--sm" id="theme-toggle">Light mode</button>
+    <span class="pb-status"><span aria-hidden="true" class="pb-dot pb-dot--ok"></span> Connected</span>
+  </div>
+
+  <div class="pb-tabs" role="tablist" aria-label="Sections">
+    <button class="pb-tab" role="tab" aria-selected="true">Routing</button>
+    <button class="pb-tab" role="tab" aria-selected="false">Config</button>
+    <button class="pb-tab" role="tab" aria-selected="false" disabled>Disabled</button>
+  </div>
+
+  <div class="demo">
+
+    <div class="pb-panel">
+      <div class="pb-header">Buttons</div>
+      <div class="pb-body pb-row pb-row--wrap">
+        <button class="pb-btn">Default</button>
+        <button class="pb-btn" aria-pressed="true">Selected</button>
+        <button class="pb-btn pb-btn--outline">Cancel</button>
+        <button class="pb-btn pb-btn--commit">Apply</button>
+        <button class="pb-btn pb-btn--danger">Delete</button>
+        <button class="pb-btn" disabled>Disabled</button>
+        <div class="pb-btn-group" role="group" aria-label="Mode">
+          <button class="pb-btn" aria-pressed="true">A</button>
+          <button class="pb-btn" aria-pressed="false">B</button>
+          <button class="pb-btn" aria-pressed="false">C</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pb-panel">
+      <div class="pb-header">Form</div>
+      <div class="pb-body">
+        <div class="pb-form">
+          <label class="pb-form__label" for="f-name">Name</label>
+          <div class="pb-form__field"><input id="f-name" class="pb-input pb-w-md" placeholder="Source name"></div>
+          <label class="pb-form__label" for="f-format">Format</label>
+          <div class="pb-form__field">
+            <span class="pb-select-wrap"><select id="f-format" class="pb-select pb-w-md"><option>1080p59.94</option><option>2160p59.94</option></select></span>
+          </div>
+          <label class="pb-form__label" for="f-gain">Gain</label>
+          <div class="pb-form__field"><input id="f-gain" type="range" class="pb-range pb-w-md"></div>
+          <span class="pb-form__label" id="f-options">Options</span>
+          <div class="pb-form__field" role="group" aria-labelledby="f-options">
+            <label class="pb-check"><input type="checkbox" class="pb-check__input" checked><span class="pb-check__label">Enabled</span></label>
+            <label class="pb-check"><input type="radio" name="r" class="pb-check__input" checked><span class="pb-check__label">A</span></label>
+            <label class="pb-check"><input type="radio" name="r" class="pb-check__input"><span class="pb-check__label">B</span></label>
+            <label class="pb-check"><input type="checkbox" role="switch" class="pb-switch__input" checked><span class="pb-check__label">Live</span></label>
+          </div>
+          <div class="pb-form__full pb-note">Notes and helper text look like this.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pb-panel">
+      <div class="pb-header">Chips, status &amp; progress</div>
+      <div class="pb-body pb-col" style="gap: 12px">
+        <div class="pb-row pb-row--wrap">
+          <button class="pb-chip">Chip</button>
+          <button class="pb-chip pb-chip--selected">Selected</button>
+          <span class="pb-badge pb-badge--ok">OK</span>
+          <span class="pb-badge pb-badge--warn">Warn</span>
+          <span class="pb-badge pb-badge--error">Error</span>
+          <span class="pb-badge pb-badge--info">Info</span>
+          <span class="pb-status"><span aria-hidden="true" class="pb-dot pb-dot--error pb-dot--pulse"></span> Alarm</span>
+          <span class="pb-status"><span aria-hidden="true" class="pb-dot pb-dot--idle"></span> Idle</span>
+          <span class="pb-spinner pb-spinner--sm" role="status" aria-label="Loading"></span>
+        </div>
+        <div class="pb-progress" role="progressbar" aria-label="Upload" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"><div class="pb-progress__bar" style="width: 60%"></div></div>
+        <div class="pb-progress" role="progressbar" aria-label="Sync" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"><div class="pb-progress__bar pb-progress__bar--warn pb-progress__bar--striped pb-progress__bar--animated" style="width: 35%"></div></div>
+        <div class="pb-alert pb-alert--warn" role="status"><div class="pb-alert__title">Unsaved changes</div>Press Apply to commit to the device.</div>
+      </div>
+    </div>
+
+    <div class="pb-panel">
+      <div class="pb-header">Table</div>
+      <table class="pb-table">
+        <thead><tr><th aria-sort="ascending">Destination</th><th>Source</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>MON 1</td><td>CAM 1</td><td><span class="pb-status"><span aria-hidden="true" class="pb-dot pb-dot--ok"></span> OK</span></td></tr>
+          <tr aria-selected="true"><td>MON 2</td><td>CAM 2</td><td><span class="pb-status"><span aria-hidden="true" class="pb-dot pb-dot--warn"></span> Warn</span></td></tr>
+          <tr><td>REC A</td><td>PGM</td><td><span class="pb-status"><span aria-hidden="true" class="pb-dot pb-dot--error"></span> Error</span></td></tr>
+          <tr><td>REC B</td><td>—</td><td><span class="pb-status"><span aria-hidden="true" class="pb-dot pb-dot--idle"></span> Idle</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pb-panel">
+      <div class="pb-header">Routing &amp; signal levels</div>
+      <div class="pb-body pb-col" style="gap: 12px">
+        <div class="pb-row pb-row--wrap">
+          <button class="pb-btn pb-xpt pb-xpt--source">SRC 1</button>
+          <button class="pb-btn pb-xpt pb-xpt--dest">DST 1</button>
+          <button class="pb-btn pb-xpt pb-xpt--tieline">TIE 1</button>
+          <button class="pb-btn pb-xpt pb-xpt--source pb-xpt--locked">Locked</button>
+        </div>
+        <div class="pb-row pb-row--wrap" role="img" aria-label="Signal level colours: video and levels 1 to 16">
+          <span class="pb-level pb-level--video"></span>
+          <span class="pb-level pb-level--01"></span><span class="pb-level pb-level--02"></span>
+          <span class="pb-level pb-level--03"></span><span class="pb-level pb-level--04"></span>
+          <span class="pb-level pb-level--05"></span><span class="pb-level pb-level--06"></span>
+          <span class="pb-level pb-level--07"></span><span class="pb-level pb-level--08"></span>
+          <span class="pb-level pb-level--09"></span><span class="pb-level pb-level--10"></span>
+          <span class="pb-level pb-level--11"></span><span class="pb-level pb-level--12"></span>
+          <span class="pb-level pb-level--13"></span><span class="pb-level pb-level--14"></span>
+          <span class="pb-level pb-level--15"></span><span class="pb-level pb-level--16"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pb-panel">
+      <div class="pb-header">Menu &amp; modal</div>
+      <div class="pb-modal-demo" style="gap: 24px; align-items: flex-start">
+        <ul class="pb-menu" role="menu" aria-label="Crosspoint" style="list-style: none">
+          <li role="none"><button class="pb-menu__item" role="menuitem">Route</button></li>
+          <li role="none"><button class="pb-menu__item active" role="menuitem" aria-current="true">Lock</button></li>
+          <li role="separator"><div class="pb-menu__divider"></div></li>
+          <li role="none"><button class="pb-menu__item" role="menuitem" disabled>Protect</button></li>
+        </ul>
+        <div class="pb-modal pb-modal--sm" role="dialog" aria-labelledby="m-title">
+          <div class="pb-modal__header pb-modal__header--warn"><span class="pb-modal__title" id="m-title">Confirm</span></div>
+          <div class="pb-modal__body">Overwrite the current salvo?</div>
+          <div class="pb-modal__footer">
+            <button class="pb-btn pb-btn--outline">Cancel</button>
+            <button class="pb-btn pb-btn--commit">Overwrite</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script>
+    // No data-theme means "follow the OS"; the toggle forces the other one.
+    const root = document.documentElement;
+    const toggle = document.getElementById("theme-toggle");
+    const osLight = matchMedia("(prefers-color-scheme: light)");
+    const isLight = () => (root.dataset.theme || (osLight.matches ? "light" : "dark")) === "light";
+    const sync = () => { toggle.textContent = isLight() ? "Dark mode" : "Light mode"; };
+    toggle.addEventListener("click", () => {
+      root.classList.add("pb-theme-transition");
+      root.dataset.theme = isLight() ? "dark" : "light";
+      sync();
+      const ms = parseFloat(getComputedStyle(root).getPropertyValue("--pb-motion-theme")) || 0;
+      setTimeout(() => root.classList.remove("pb-theme-transition"), ms + 50);
+    });
+    osLight.addEventListener("change", sync);
+    sync();
+  </script>
+</body>
+</html>

@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patchbay</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/patchbay.tokens.css" rel="stylesheet">
+  <link href="css/patchbay.css" rel="stylesheet">
+  <link href="demo/demo.css" rel="stylesheet">
+</head>
+<body data-icon-base="">
+  <div class="pb-toolbar demo-top" role="toolbar" aria-label="Patchbay">
+    <span class="pb-toolbar__title">Patchbay</span>
+    <div class="pb-toolbar__sep"></div>
+    <a class="pb-btn pb-btn--ghost pb-btn--sm" href="demo/router.html">Router</a>
+    <a class="pb-btn pb-btn--ghost pb-btn--sm" href="demo/settings.html">Settings</a>
+    <a class="pb-btn pb-btn--ghost pb-btn--sm" href="demo/log.html">Log</a>
+    <a class="pb-btn pb-btn--ghost pb-btn--sm" href="demo/phone.html">Phone</a>
+    <span class="pb-toolbar__spacer"></span>
+    <div class="pb-btn-group demo-scale" role="group" aria-label="Interface scale">
+      <button class="pb-btn pb-btn--sm" data-scale="100" aria-pressed="true">100%</button>
+      <button class="pb-btn pb-btn--sm" data-scale="125" aria-pressed="false">125%</button>
+      <button class="pb-btn pb-btn--sm" data-scale="150" aria-pressed="false">150%</button>
+    </div>
+    <button class="pb-btn pb-btn--ghost pb-btn--sm" id="theme-toggle">Light mode</button>
+  </div>
+
+  <div class="demo-shell">
+    <nav class="demo-toc" aria-label="Contents">
+      <p class="demo-toc__group">Foundations</p>
+      <ol>
+        <li><a href="#colour">Colour</a></li>
+        <li><a href="#type">Type &amp; space</a></li>
+        <li><a href="#scaling">Scaling</a></li>
+      </ol>
+      <p class="demo-toc__group">Layout</p>
+      <ol>
+        <li><a href="#layout">Page &amp; panels</a></li>
+        <li><a href="#toolbar">Toolbar</a></li>
+        <li><a href="#tabs">Tabs</a></li>
+      </ol>
+      <p class="demo-toc__group">Controls</p>
+      <ol>
+        <li><a href="#buttons">Buttons</a></li>
+        <li><a href="#chips">Chips</a></li>
+        <li><a href="#inputs">Inputs</a></li>
+        <li><a href="#checks">Check, radio, switch</a></li>
+        <li><a href="#form">Form rows</a></li>
+        <li><a href="#fields">Fields &amp; sections</a></li>
+        <li><a href="#field-states">Field states</a></li>
+        <li><a href="#savebar">Save bar</a></li>
+      </ol>
+      <p class="demo-toc__group">Overlays &amp; feedback</p>
+      <ol>
+        <li><a href="#menus">Menus</a></li>
+        <li><a href="#modals">Modals</a></li>
+        <li><a href="#drawers">Drawers</a></li>
+        <li><a href="#tooltips">Tooltips</a></li>
+        <li><a href="#toasts">Toasts</a></li>
+        <li><a href="#banners">Banners &amp; alerts</a></li>
+      </ol>
+      <p class="demo-toc__group">Data</p>
+      <ol>
+        <li><a href="#tables">Tables</a></li>
+        <li><a href="#status">Status</a></li>
+        <li><a href="#progress">Progress &amp; spinners</a></li>
+        <li><a href="#empty">Empty &amp; skeleton</a></li>
+        <li><a href="#kv">Key/value</a></li>
+        <li><a href="#paging">Breadcrumbs &amp; pages</a></li>
+      </ol>
+      <p class="demo-toc__group">Device</p>
+      <ol>
+        <li><a href="#routing">Routing</a></li>
+        <li><a href="#summary">Summary bar</a></li>
+        <li><a href="#states">Window states</a></li>
+        <li><a href="#rolebars">Role bars</a></li>
+      </ol>
+      <p class="demo-toc__group">Reference</p>
+      <ol>
+        <li><a href="#icons">Icons</a></li>
+        <li><a href="#utilities">Utilities</a></li>
+        <li><a href="#variants">More variants</a></li>
+      </ol>
+    </nav>
+
+    <main class="demo-main">
+      <div class="demo-toc-select">
+        <label class="pb-label" for="toc-select">Jump to</label>
+        <span class="pb-select-wrap"><select id="toc-select" class="pb-select pb-w-lg">
+          <option value="#colour">Colour</option><option value="#type">Type &amp; space</option>
+          <option value="#scaling">Scaling</option><option value="#layout">Page &amp; panels</option>
+          <option value="#toolbar">Toolbar</option><option value="#tabs">Tabs</option>
+          <option value="#buttons">Buttons</option><option value="#chips">Chips</option>
+          <option value="#inputs">Inputs</option><option value="#checks">Check, radio, switch</option>
+          <option value="#form">Form rows</option><option value="#fields">Fields &amp; sections</option>
+          <option value="#field-states">Field states</option><option value="#savebar">Save bar</option>
+          <option value="#menus">Menus</option><option value="#modals">Modals</option>
+          <option value="#drawers">Drawers</option><option value="#tooltips">Tooltips</option>
+          <option value="#toasts">Toasts</option><option value="#banners">Banners &amp; alerts</option>
+          <option value="#tables">Tables</option><option value="#status">Status</option>
+          <option value="#progress">Progress &amp; spinners</option><option value="#empty">Empty &amp; skeleton</option>
+          <option value="#kv">Key/value</option><option value="#paging">Breadcrumbs &amp; pages</option>
+          <option value="#routing">Routing</option><option value="#summary">Summary bar</option>
+          <option value="#states">Window states</option><option value="#rolebars">Role bars</option>
+          <option value="#icons">Icons</option><option value="#utilities">Utilities</option><option value="#variants">More variants</option>
+        </select></span>
+      </div>
+
+      <section class="demo-sec" id="intro" style="gap: var(--pb-space-4)">
+        <h1 style="margin:0; font-size: var(--pb-text-xl); color: var(--pb-text-strong)">Patchbay <span class="pb-badge pb-badge--info">v2</span></h1>
+        <p>A hard-edged, near-black CSS system for dense signal-routing and device-control UIs. Square corners, 1px rims, hard offset shadows, one accent. Every example below is live, and its markup is under it.</p>
+        <p id="reduced-note" class="pb-note pb-note--warn" hidden>Reduced motion is on: pulses and stripes are still, spinners keep turning.</p>
+        <dl class="demo-rules">
+          <dt>One accent</dt><dd>Periwinkle marks selection and focus. Nothing else.</dd>
+          <dt>Five states</dt><dd>ok, warn, error, info, idle &mdash; always with text or an icon, never colour alone.</dd>
+          <dt>Amber is unsaved</dt><dd><code>pb-btn--commit</code> and <code>pb-state-commit</code>. Green <code>pb-btn--ok</code> finishes a job.</dd>
+          <dt>Tokens only</dt><dd>No raw colours, sizes or radii in components. Page CSS is layout.</dd>
+        </dl>
+      </section>
+
+      <!-- ================================================================ FOUNDATIONS -->
+
+      <section class="demo-sec" id="colour">
+        <h2>Colour</h2>
+        <p>Every colour token is a <code>light-dark()</code> pair, so the theme follows the OS unless <code>&lt;html data-theme&gt;</code> forces one. Hues are defined once as <code>--pb-hue-*</code> primitives; components only read the semantic tokens.</p>
+
+        <h3>Surfaces</h3>
+        <div class="demo-ex"><div class="demo-ex__view demo-grid">
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-surface-sunken)"></div><div class="demo-swatch__name">surface-sunken</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-surface-base)"></div><div class="demo-swatch__name">surface-base</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-surface-raised)"></div><div class="demo-swatch__name">surface-raised</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-surface-overlay)"></div><div class="demo-swatch__name">surface-overlay</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-surface-high)"></div><div class="demo-swatch__name">surface-high</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-surface-control)"></div><div class="demo-swatch__name">surface-control</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-surface-hover)"></div><div class="demo-swatch__name">surface-hover</div></div>
+        </div></div>
+
+        <h3>Accent, commit and status</h3>
+        <div class="demo-ex"><div class="demo-ex__view demo-grid">
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-accent)"></div><div class="demo-swatch__name">accent</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-commit)"></div><div class="demo-swatch__name">commit</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-protect)"></div><div class="demo-swatch__name">protect</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-brand)"></div><div class="demo-swatch__name">brand</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-status-ok)"></div><div class="demo-swatch__name">status-ok</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-status-warn)"></div><div class="demo-swatch__name">status-warn</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-status-error)"></div><div class="demo-swatch__name">status-error</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-status-info)"></div><div class="demo-swatch__name">status-info</div></div>
+          <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-status-idle)"></div><div class="demo-swatch__name">status-idle</div></div>
+        </div></div>
+
+        <h3>Routing roles and signal levels</h3>
+        <div class="demo-ex"><div class="demo-ex__view demo-stack">
+          <div class="demo-grid">
+            <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-source)"></div><div class="demo-swatch__name">source</div></div>
+            <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-dest)"></div><div class="demo-swatch__name">dest</div></div>
+            <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-tieline)"></div><div class="demo-swatch__name">tieline</div></div>
+          </div>
+          <div class="demo-ramp" role="img" aria-label="Signal level colours: video and levels 1 to 16">
+            <span class="pb-level pb-level--video"></span><span class="pb-level pb-level--01"></span><span class="pb-level pb-level--02"></span><span class="pb-level pb-level--03"></span><span class="pb-level pb-level--04"></span><span class="pb-level pb-level--05"></span><span class="pb-level pb-level--06"></span><span class="pb-level pb-level--07"></span><span class="pb-level pb-level--08"></span><span class="pb-level pb-level--09"></span><span class="pb-level pb-level--10"></span><span class="pb-level pb-level--11"></span><span class="pb-level pb-level--12"></span><span class="pb-level pb-level--13"></span><span class="pb-level pb-level--14"></span><span class="pb-level pb-level--15"></span><span class="pb-level pb-level--16"></span>
+          </div>
+        </div></div>
+
+        <h3>Contrast</h3>
+        <p>Both themes are audited against WCAG 2.2 AA. Lowest ratios over the audited backgrounds, from <code>node tools/contrast.mjs --worst</code>:</p>
+        <div class="demo-ex"><div class="demo-ex__view demo-ex__view--flush">
+          <table class="pb-table pb-table--compact">
+            <thead><tr><th>Token</th><th class="pb-num">Dark</th><th class="pb-num">Light</th><th class="pb-num">Minimum</th></tr></thead>
+            <tbody>
+              <tr><td>text</td><td class="pb-num">4.79:1</td><td class="pb-num">10.41:1</td><td class="pb-num">4.5:1</td></tr>
+              <tr><td>text-muted</td><td class="pb-num">5.54:1</td><td class="pb-num">5.97:1</td><td class="pb-num">4.5:1</td></tr>
+              <tr><td>status-ok</td><td class="pb-num">8.56:1</td><td class="pb-num">5.26:1</td><td class="pb-num">4.5:1</td></tr>
+              <tr><td>status-warn / commit</td><td class="pb-num">9.31:1</td><td class="pb-num">5.00:1</td><td class="pb-num">4.5:1</td></tr>
+              <tr><td>status-error</td><td class="pb-num">5.18:1</td><td class="pb-num">5.10:1</td><td class="pb-num">4.5:1</td></tr>
+              <tr><td>accent</td><td class="pb-num">5.13:1</td><td class="pb-num">4.71:1</td><td class="pb-num">3:1 (focus ring)</td></tr>
+              <tr><td>edge (control outline)</td><td class="pb-num">3.27:1</td><td class="pb-num">3.31:1</td><td class="pb-num">3:1</td></tr>
+            </tbody>
+          </table>
+        </div></div>
+      </section>
+
+      <section class="demo-sec" id="type">
+        <h2>Type &amp; space</h2>
+        <p>IBM Plex Sans for the interface; numbers an operator compares use <code>--pb-font-num</code> (Plex Mono unless you set it to <code>var(--pb-font)</code>). The base size is 13px at a 16px root.</p>
+        <div class="demo-ex"><div class="demo-ex__view demo-stack">
+          <div class="demo-type-row"><span class="pb-label">text-2xs</span><span style="font-size: var(--pb-text-2xs)">Route MON 2 to CAM 2</span></div>
+          <div class="demo-type-row"><span class="pb-label">text-xs</span><span style="font-size: var(--pb-text-xs)">Route MON 2 to CAM 2</span></div>
+          <div class="demo-type-row"><span class="pb-label">text-sm</span><span style="font-size: var(--pb-text-sm)">Route MON 2 to CAM 2</span></div>
+          <div class="demo-type-row"><span class="pb-label">text-md</span><span style="font-size: var(--pb-text-md)">Route MON 2 to CAM 2</span></div>
+          <div class="demo-type-row"><span class="pb-label">text-lg</span><span style="font-size: var(--pb-text-lg)">Route MON 2 to CAM 2</span></div>
+          <div class="demo-type-row"><span class="pb-label">text-xl</span><span style="font-size: var(--pb-text-xl)">Route MON 2 to CAM 2</span></div>
+          <div class="demo-type-row"><span class="pb-label">num</span><span class="pb-num">1080p59.94 &nbsp; 0123456789</span></div>
+        </div></div>
+        <div class="demo-ex"><div class="demo-ex__view demo-stack">
+          <div class="demo-space-row"><span class="pb-label">space-1</span><span class="pb-num">2px</span><span class="demo-bar" style="width: var(--pb-space-1)"></span></div>
+          <div class="demo-space-row"><span class="pb-label">space-2</span><span class="pb-num">4px</span><span class="demo-bar" style="width: var(--pb-space-2)"></span></div>
+          <div class="demo-space-row"><span class="pb-label">space-3</span><span class="pb-num">6px</span><span class="demo-bar" style="width: var(--pb-space-3)"></span></div>
+          <div class="demo-space-row"><span class="pb-label">space-4</span><span class="pb-num">8px</span><span class="demo-bar" style="width: var(--pb-space-4)"></span></div>
+          <div class="demo-space-row"><span class="pb-label">space-5</span><span class="pb-num">12px</span><span class="demo-bar" style="width: var(--pb-space-5)"></span></div>
+          <div class="demo-space-row"><span class="pb-label">space-6</span><span class="pb-num">14px</span><span class="demo-bar" style="width: var(--pb-space-6)"></span></div>
+          <div class="demo-space-row"><span class="pb-label">space-7</span><span class="pb-num">16px</span><span class="demo-bar" style="width: var(--pb-space-7)"></span></div>
+          <div class="demo-space-row"><span class="pb-label">space-8</span><span class="pb-num">20px</span><span class="demo-bar" style="width: var(--pb-space-8)"></span></div>
+          <div class="demo-space-row"><span class="pb-label">space-9</span><span class="pb-num">24px</span><span class="demo-bar" style="width: var(--pb-space-9)"></span></div>
+          <div class="demo-space-row"><span class="pb-label">space-10</span><span class="pb-num">32px</span><span class="demo-bar" style="width: var(--pb-space-10)"></span></div>
+        </div></div>
+      </section>
+
+      <section class="demo-sec" id="scaling">
+        <h2>Scaling</h2>
+        <p>Sizes are <code>rem</code>, so the whole interface follows the root font size. Use the <strong>100 / 125 / 150%</strong> buttons in the toolbar to see this page rescale, then do the same in your app with one line. Hairlines (borders, rims, bars) stay px so they stay crisp.</p>
+        <div class="demo-ex"><div class="demo-ex__view">
+<pre><code>html { font-size: 125%; }  /* a control room read from across the room */</code></pre>
+        </div></div>
+        <p class="pb-note pb-note--warn">Do not use <code>zoom</code>, and never combine it with a root font size: it scales twice. <code>@media</code> breakpoints in rem follow the browser's initial font size, not <code>html</code>'s.</p>
+      </section>
+
+      <!-- ================================================================== LAYOUT -->
+
+      <section class="demo-sec" id="layout">
+        <h2>Page &amp; panels</h2>
+        <p><code>pb-page</code> fills the window; <code>pb-split</code> divides it into <code>pb-pane</code>s (drag behaviour is yours). A <code>pb-panel</code> is a titled box. Below <code>--pb-page-min-w</code> the page scrolls sideways instead of reflowing; <code>data-pb-layout="phone"</code> opts out.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--sunken">
+            <div class="pb-panel">
+              <div class="pb-header">Sources <span class="pb-header__actions"><button class="pb-btn pb-btn--ghost pb-btn--icon pb-btn--sm" aria-label="Refresh"><svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#refresh-cw"/></svg></button></span></div>
+              <div class="pb-body">A panel body. Panels use <code>--pb-surface-raised</code> and a hard 1px rim.</div>
+            </div>
+            <div class="pb-divider" style="margin: var(--pb-space-5) 0"></div>
+            <div class="pb-split" style="height: 8rem">
+              <div class="pb-pane pb-pane--divided"><div class="pb-body">Left pane</div></div>
+              <div class="pb-split-handle" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Resize"></div>
+              <div class="pb-pane"><div class="pb-body">Right pane</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="toolbar">
+        <h2>Toolbar</h2>
+        <p>A single row of title, groups and ghost buttons; <code>pb-toolbar__spacer</code> pushes what follows to the right. This page's own toolbar is one.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--flush">
+            <div class="pb-toolbar" role="toolbar" aria-label="Example">
+              <span class="pb-toolbar__title">Matrix 1</span>
+              <div class="pb-toolbar__sep"></div>
+              <div class="pb-toolbar__group">
+                <button class="pb-btn pb-btn--ghost pb-btn--sm">File</button>
+                <button class="pb-btn pb-btn--ghost pb-btn--sm">Edit</button>
+              </div>
+              <span class="pb-toolbar__spacer"></span>
+              <span class="pb-status"><span class="pb-dot pb-dot--ok" aria-hidden="true"></span> Connected</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="tabs">
+        <h2>Tabs</h2>
+        <p><code>role=tablist</code>, tabs with <code>aria-selected</code> and <code>aria-controls</code>, panels with <code>role=tabpanel</code>. Arrow keys and focus are app JS; this page's script shows one way.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--flush">
+            <div class="pb-tabs" role="tablist" aria-label="Sections">
+              <button class="pb-tab" role="tab" id="t-routing" aria-selected="true" aria-controls="p-routing">Routing</button>
+              <button class="pb-tab" role="tab" id="t-config" aria-selected="false" aria-controls="p-config" tabindex="-1">Config</button>
+              <button class="pb-tab" role="tab" aria-selected="false" disabled>Disabled</button>
+            </div>
+            <div class="pb-tabpanel active pb-body" role="tabpanel" id="p-routing" aria-labelledby="t-routing">Routing panel</div>
+            <div class="pb-tabpanel pb-body" role="tabpanel" id="p-config" aria-labelledby="t-config">Config panel</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ CONTROLS -->
+
+      <section class="demo-sec" id="buttons">
+        <h2>Buttons</h2>
+        <p>Lifted grey blocks. <strong>Commit</strong> (amber) applies unsaved edits; <strong>ok</strong> (green) is a positive finish &mdash; Done, Unlock; <strong>danger</strong> is irreversible only. <strong>Loading</strong> keeps the width, hides the label and shows a spinner; set <code>aria-busy</code>.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-row pb-row--wrap">
+            <button class="pb-btn">Default</button>
+            <button class="pb-btn" aria-pressed="true">Selected</button>
+            <button class="pb-btn pb-btn--outline">Cancel</button>
+            <button class="pb-btn pb-btn--commit">Apply</button>
+            <button class="pb-btn pb-btn--ok">Done</button>
+            <button class="pb-btn pb-btn--danger">Delete</button>
+            <button class="pb-btn" disabled>Disabled</button>
+            <button class="pb-btn pb-btn--ghost">Ghost</button>
+            <button class="pb-btn pb-btn--sm">Small</button>
+            <button class="pb-btn pb-btn--lg">Large</button>
+            <button class="pb-btn pb-btn--icon" aria-label="Play"><svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#play"/></svg></button>
+            <button class="pb-btn pb-btn--ok pb-btn--loading" aria-busy="true">Unlock</button>
+            <button class="pb-btn pb-btn--commit" data-loading data-demo-attr>Apply (click me)</button>
+          </div>
+        </div>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-row pb-row--wrap">
+            <div class="pb-btn-group" role="group" aria-label="Mode">
+              <button class="pb-btn" aria-pressed="true">A</button>
+              <button class="pb-btn" aria-pressed="false">B</button>
+              <button class="pb-btn" aria-pressed="false">C</button>
+            </div>
+            <div class="pb-btn-group" role="group" aria-label="Latching">
+              <input type="radio" name="lat" class="pb-btn-check" id="lat1" checked><label class="pb-btn" for="lat1">Video</label>
+              <input type="radio" name="lat" class="pb-btn-check" id="lat2"><label class="pb-btn" for="lat2">Audio</label>
+              <input type="radio" name="lat" class="pb-btn-check" id="lat3"><label class="pb-btn" for="lat3">Data</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="chips">
+        <h2>Chips</h2>
+        <p>Token-like buttons for filters and tags. <code>pb-chip-input</code> is a contenteditable well that holds chips.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-col">
+            <div class="pb-row pb-row--wrap">
+              <button class="pb-chip">Chip</button>
+              <button class="pb-chip pb-chip--selected">Selected</button>
+              <span class="pb-chip pb-chip--static">Static</span>
+              <span class="pb-chip">CAM 1 <button class="pb-chip__remove" aria-label="Remove CAM 1">&times;</button></span>
+            </div>
+            <div class="pb-chip-input" contenteditable="true" role="textbox" aria-label="Filter" data-placeholder="Type to filter"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="inputs">
+        <h2>Inputs</h2>
+        <p>Inputs are wells: black in dark, white in light. Selects and number fields need their wrapper for the glyphs.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-row pb-row--wrap" style="align-items: flex-start">
+            <input class="pb-input pb-w-md" placeholder="Source name" aria-label="Source name">
+            <input class="pb-input pb-w-md pb-input--invalid" value="bad value" aria-label="Invalid example">
+            <input class="pb-input pb-w-md" value="Disabled" disabled aria-label="Disabled example">
+            <span class="pb-select-wrap pb-w-md"><select class="pb-select" aria-label="Format"><option>1080p59.94</option><option>2160p59.94</option></select></span>
+            <span class="pb-number-wrap pb-w-sm"><input type="number" class="pb-input" value="16" min="0" aria-label="Levels"></span>
+            <div class="pb-input-group pb-w-lg"><input class="pb-input" value="10.0.0.20" aria-label="Address"><span class="pb-input-group__addon">:9990</span></div>
+            <input type="range" class="pb-range pb-w-md" aria-label="Gain">
+            <textarea class="pb-textarea pb-w-xl" rows="2" aria-label="Notes">Textarea</textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="checks">
+        <h2>Check, radio, switch</h2>
+        <p>A switch has an <em>instant</em> effect. If a change needs Apply, use a checkbox.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-row pb-row--wrap">
+            <label class="pb-check"><input type="checkbox" class="pb-check__input" checked><span class="pb-check__label">Enabled</span></label>
+            <label class="pb-check"><input type="checkbox" class="pb-check__input"><span class="pb-check__label">Off</span></label>
+            <label class="pb-check"><input type="radio" name="r1" class="pb-check__input" checked><span class="pb-check__label">A</span></label>
+            <label class="pb-check"><input type="radio" name="r1" class="pb-check__input"><span class="pb-check__label">B</span></label>
+            <label class="pb-check"><input type="checkbox" role="switch" class="pb-switch__input" checked><span class="pb-check__label">Live</span></label>
+            <label class="pb-check"><input type="checkbox" class="pb-check__input" disabled><span class="pb-check__label">Disabled</span></label>
+            <label class="pb-check"><input type="checkbox" role="switch" class="pb-switch__input" disabled><span class="pb-check__label">Disabled switch</span></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="form">
+        <h2>Form rows</h2>
+        <p>The workhorse: a right-aligned label beside its control on one line, for scanning a long form. A label dims when its control is disabled.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view">
+            <div class="pb-form">
+              <label class="pb-form__label" for="fr-name">Name</label>
+              <div class="pb-form__field"><input id="fr-name" class="pb-input pb-w-md" value="Studio A"></div>
+              <label class="pb-form__label" for="fr-fmt">Format</label>
+              <div class="pb-form__field"><span class="pb-select-wrap pb-w-md"><select id="fr-fmt" class="pb-select"><option>1080p59.94</option></select></span></div>
+              <label class="pb-form__label" for="fr-ref">Reference</label>
+              <div class="pb-form__field"><input id="fr-ref" class="pb-input pb-w-md" value="Locked" disabled></div>
+              <div class="pb-form__full pb-note">Notes and helper text look like this.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="fields">
+        <h2>Fields &amp; sections</h2>
+        <p>The stacked alternative for settings pages and narrow panes: caption above the control, wrapping into as many columns as fit (<code>--pb-field-min-w</code>). <code>pb-section</code> puts a rule across the column with its name under it.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view">
+            <section class="pb-section">
+              <h3 class="pb-section__title">Router</h3>
+              <div class="pb-fields">
+                <div class="pb-field"><label for="fs-addr">Address</label><input id="fs-addr" class="pb-input" value="10.0.0.20:8910"><span class="pb-hint">host:port of the SW-P-08 router</span></div>
+                <div class="pb-field"><label for="fs-matrix">Matrix</label><span class="pb-number-wrap"><input id="fs-matrix" type="number" class="pb-input" value="0"></span></div>
+                <div class="pb-field"><label for="fs-lev">Levels</label><span class="pb-number-wrap"><input id="fs-lev" type="number" class="pb-input" value="16"></span></div>
+                <div class="pb-field"><label for="fs-poll">Name refresh</label><input id="fs-poll" class="pb-input" value="60" disabled><span class="pb-hint">seconds; set by an administrator</span></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="field-states">
+        <h2>Field states</h2>
+        <p>Wrap a control and its hint in <code>pb-field--error</code> or <code>--ok</code> so the rim and hint change together. The hint's words carry the meaning.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view">
+            <div class="pb-fields">
+              <div class="pb-field pb-field--error"><label for="fe-1">Address</label><input id="fe-1" class="pb-input" value="10.0.0" aria-invalid="true" aria-describedby="fe-1h"><span class="pb-hint" id="fe-1h">Enter host:port, for example 10.0.0.20:8910.</span></div>
+              <div class="pb-field pb-field--ok"><span class="pb-field__label" id="fe-2l">Address</span><input id="fe-2" class="pb-input" value="10.0.0.20:8910" aria-labelledby="fe-2l" aria-describedby="fe-2h"><span class="pb-hint" id="fe-2h">Reachable.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="savebar">
+        <h2>Save bar</h2>
+        <p>Sticks to the bottom of a long page. Tick the box to make the page dirty: amber means unsaved, and Apply goes amber with it.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--sunken" id="dirty-stage">
+            <label class="pb-check"><input type="checkbox" class="pb-check__input" id="dirty-box"><span class="pb-check__label">Edit a setting</span></label>
+            <div class="pb-savebar" style="position: static; margin-top: var(--pb-space-5)">
+              <div class="pb-savebar__row">
+                <span class="pb-hint" id="dirty-text">No unsaved changes.</span>
+                <span class="pb-row"><button class="pb-btn pb-btn--outline">Revert</button><button class="pb-btn" id="dirty-apply" disabled>Apply</button></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =========================================================== OVERLAYS -->
+
+      <section class="demo-sec" id="menus">
+        <h2>Menus</h2>
+        <p><code>role=menu</code>, items <code>role=menuitem</code>, list items <code>role=none</code>. Keyboard handling is app JS.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--sunken">
+            <ul class="pb-menu" role="menu" aria-label="Crosspoint" style="list-style: none; display: inline-block; position: static">
+              <li role="none"><button class="pb-menu__item" role="menuitem">Route <span class="pb-menu__hint">R</span></button></li>
+              <li role="none"><button class="pb-menu__item active" role="menuitem" aria-current="true">Lock <span class="pb-menu__hint">L</span></button></li>
+              <li role="separator"><div class="pb-menu__divider"></div></li>
+              <li role="none"><button class="pb-menu__item" role="menuitem" disabled>Protect</button></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="modals">
+        <h2>Modals</h2>
+        <p>Cancel on the left, confirm on the right. The header carries the severity: <code>--info</code>, <code>--warn</code>, <code>--error</code>, <code>--ok</code>. The page behind a real modal gets <code>pb-modal-backdrop</code>.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--sunken">
+            <div class="pb-modal-demo" style="gap: var(--pb-space-9); flex-wrap: wrap; align-items: flex-start">
+              <div class="pb-modal pb-modal--sm" role="dialog" aria-labelledby="dm-1">
+                <div class="pb-modal__header pb-modal__header--warn"><span class="pb-modal__title" id="dm-1">Confirm</span></div>
+                <div class="pb-modal__body">Overwrite the current salvo?</div>
+                <div class="pb-modal__footer"><button class="pb-btn pb-btn--outline">Cancel</button><button class="pb-btn pb-btn--commit">Overwrite</button></div>
+              </div>
+              <div class="pb-modal pb-modal--sm" role="dialog" aria-labelledby="dm-2">
+                <div class="pb-modal__header pb-modal__header--error"><span class="pb-modal__title" id="dm-2">Delete salvo</span></div>
+                <div class="pb-modal__body">This cannot be undone.</div>
+                <div class="pb-modal__footer"><button class="pb-btn pb-btn--outline">Cancel</button><button class="pb-btn pb-btn--danger">Delete</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="drawers">
+        <h2>Drawers</h2>
+        <p>A panel that slides in from an edge of its positioned parent. Add <code>pb-drawer--open</code>; <code>--right</code> and <code>--wide</code> change side and width.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--flush demo-ex__view--stage demo-stage">
+            <div class="pb-toolbar" role="toolbar" aria-label="Drawer demo"><button class="pb-btn pb-btn--sm" data-toggle="#drawer-demo" data-class="pb-drawer--open" aria-expanded="false" aria-controls="drawer-demo" data-demo-attr>Details</button></div>
+            <aside class="pb-drawer pb-drawer--right" id="drawer-demo" aria-label="Details">
+              <div class="pb-drawer__body pb-body">
+                <dl class="pb-kv"><div class="pb-kv__item"><dt class="pb-kv__key">Destination</dt><dd class="pb-kv__val">MON 2</dd></div><div class="pb-kv__item"><dt class="pb-kv__key">Source</dt><dd class="pb-kv__val">CAM 2</dd></div></dl>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="tooltips">
+        <h2>Tooltips</h2>
+        <p><code>data-pb-tip</code> on a button or wrapper, shown on hover <em>and</em> keyboard focus. The text is decoration: give the trigger its own name, or <code>aria-describedby</code>. <code>pb-tip--top|start|end</code> move it. <code>pb-tip</code> is a script-placed tip for truncated text.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-row pb-row--wrap" style="padding-block: var(--pb-space-10)">
+            <button class="pb-btn" data-pb-tip="Take the selected route" aria-describedby="tip-take">Take</button>
+            <span id="tip-take" class="pb-sr-only">Take the selected route</span>
+            <button class="pb-btn pb-tip--top" data-pb-tip="Appears above">Above</button>
+            <button class="pb-btn pb-tip--start" data-pb-tip="Aligned to the start edge">Start</button>
+            <button class="pb-btn pb-tip--end" data-pb-tip="Aligned to the end edge">End</button>
+            <button class="pb-btn pb-btn--icon" aria-label="Lock" data-pb-tip="Lock"><svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#lock"/></svg></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="toasts">
+        <h2>Toasts</h2>
+        <p>Transient feedback, bottom right. The stack is <code>aria-live="polite"</code>; an error toast is <code>role="alert"</code> and stays until dismissed. New toasts slide in with <code>--pb-motion-enter</code>, which is zero under reduced motion.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-stage" style="min-height: 18rem">
+            <div class="pb-row pb-row--wrap" data-demo-only>
+              <button class="pb-btn" data-toast="ok">OK toast</button>
+              <button class="pb-btn" data-toast="warn">Warn toast</button>
+              <button class="pb-btn" data-toast="error">Error toast</button>
+              <button class="pb-btn" data-toast="info">Info toast</button>
+            </div>
+            <div class="pb-toast-stack" id="toast-stack" aria-live="polite">
+              <div class="pb-toast pb-toast--ok" role="status">
+                <svg class="pb-icon pb-toast__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#circle-check"/></svg>
+                <div class="pb-toast__body"><div class="pb-toast__title">Route taken</div><div class="pb-toast__msg">MON 2 now follows CAM 2 on all levels.</div></div>
+                <button class="pb-btn pb-btn--ghost pb-btn--icon pb-btn--sm pb-toast__close" aria-label="Dismiss"><svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#x"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="banners">
+        <h2>Banners &amp; alerts</h2>
+        <p><code>pb-alert</code> is a box inside content. <code>pb-banner</code> is a full-width strip at the top of the page. <code>pb-conn</code> is the compact link chip for a corner.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--flush demo-stack" style="gap: 0">
+            <div class="pb-banner pb-banner--error" role="alert" style="position: static"><svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#wifi-off"/></svg>Router link lost. Routes shown may be out of date; reconnecting&hellip;</div>
+            <div class="pb-banner pb-banner--warn" role="status" style="position: static"><svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#triangle-alert"/></svg>Running on the standby router.</div>
+            <div class="pb-banner pb-banner--ok" role="status" style="position: static"><svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#circle-check"/></svg>All 2048 crosspoints match the router.</div>
+            <div class="pb-banner pb-banner--info" role="status" style="position: static"><svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#info"/></svg>Names are refreshed every 60 seconds.</div>
+          </div>
+        </div>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-col">
+            <div class="pb-alert pb-alert--warn" role="status"><div><div class="pb-alert__title">Unsaved changes</div>Press Apply to commit to the device.</div></div>
+            <div class="pb-alert pb-alert--error" role="alert"><div><div class="pb-alert__title">Router refused</div>Destination is protected.</div></div>
+            <div class="pb-row pb-row--wrap">
+              <span class="pb-conn pb-conn--ok"><span class="pb-dot pb-dot--ok" aria-hidden="true"></span>Connected</span>
+              <span class="pb-conn pb-conn--warn"><span class="pb-dot pb-dot--warn" aria-hidden="true"></span>Degraded</span>
+              <span class="pb-conn pb-conn--error"><span class="pb-dot pb-dot--error pb-dot--pulse" aria-hidden="true"></span>Disconnected</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================== DATA -->
+
+      <section class="demo-sec" id="tables">
+        <h2>Tables</h2>
+        <p>Selected rows use <code>aria-selected="true"</code>; sortable headers use <code>aria-sort</code>. <code>pb-grid</code> gives a fixed-height scroll area with a sticky header. Number cells take <code>pb-num</code> (right-aligned, <code>--pb-font-num</code>); <code>pb-table--numeric</code> does that to every cell.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--flush">
+            <table class="pb-table">
+              <thead><tr><th aria-sort="ascending">Destination</th><th>Source</th><th class="pb-num">Latency</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>MON 1</td><td>CAM 1</td><td class="pb-num">12 ms</td><td><span class="pb-status"><span class="pb-dot pb-dot--ok" aria-hidden="true"></span> OK</span></td></tr>
+                <tr aria-selected="true"><td>MON 2</td><td>CAM 2</td><td class="pb-num">14 ms</td><td><span class="pb-status"><span class="pb-dot pb-dot--warn" aria-hidden="true"></span> Warn</span></td></tr>
+                <tr><td>REC A</td><td>PGM</td><td class="pb-num">9 ms</td><td><span class="pb-status"><span class="pb-dot pb-dot--error" aria-hidden="true"></span> Error</span></td></tr>
+                <tr><td>REC B</td><td>&mdash;</td><td class="pb-num">&mdash;</td><td><span class="pb-status"><span class="pb-dot pb-dot--idle" aria-hidden="true"></span> Idle</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p><code>pb-grid</code> wraps a table in a fixed-height scroll area; its header stays put.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--flush">
+            <div class="pb-grid" style="height: 9rem; border: 0">
+              <div class="pb-grid-body">
+                <table class="pb-table pb-table--compact">
+                  <thead><tr><th>Source</th><th>Name</th></tr></thead>
+                  <tbody>
+                    <tr><td>1</td><td>CAM 1</td></tr><tr><td>2</td><td>CAM 2</td></tr><tr><td>3</td><td>CAM 3</td></tr><tr><td>4</td><td>CAM 4</td></tr>
+                    <tr><td>5</td><td>PGM</td></tr><tr><td>6</td><td>PVW</td></tr><tr><td>7</td><td>BARS</td></tr><tr><td>8</td><td>BLACK</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="status">
+        <h2>Status</h2>
+        <p>Five states only, and always with words. <code>pb-dot--pulse</code> marks an unacknowledged alarm and goes steady under reduced motion.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-row pb-row--wrap">
+            <span class="pb-status"><span class="pb-dot pb-dot--ok" aria-hidden="true"></span> OK</span>
+            <span class="pb-status"><span class="pb-dot pb-dot--warn" aria-hidden="true"></span> Warn</span>
+            <span class="pb-status"><span class="pb-dot pb-dot--error pb-dot--pulse" aria-hidden="true"></span> Alarm</span>
+            <span class="pb-status"><span class="pb-dot pb-dot--info" aria-hidden="true"></span> Info</span>
+            <span class="pb-status"><span class="pb-dot pb-dot--idle" aria-hidden="true"></span> Idle</span>
+            <span class="pb-badge pb-badge--ok">OK</span><span class="pb-badge pb-badge--warn">Warn</span><span class="pb-badge pb-badge--error">Error</span><span class="pb-badge pb-badge--info">Info</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="progress">
+        <h2>Progress &amp; spinners</h2>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-col">
+            <div class="pb-progress" role="progressbar" aria-label="Upload" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"><div class="pb-progress__bar" style="width: 60%"></div></div>
+            <div class="pb-progress" role="progressbar" aria-label="Sync" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"><div class="pb-progress__bar pb-progress__bar--warn pb-progress__bar--striped pb-progress__bar--animated" style="width: 35%"></div></div>
+            <div class="pb-progress pb-progress--indeterminate" role="progressbar" aria-label="Waiting"><div class="pb-progress__bar"></div></div>
+            <div class="pb-row">
+              <span class="pb-spinner pb-spinner--sm" role="status" aria-label="Loading"></span>
+              <span class="pb-spinner" role="status" aria-label="Loading"></span>
+              <span class="pb-spinner pb-spinner--lg" role="status" aria-label="Loading"></span>
+            </div>
+            <div class="pb-loading"><span class="pb-spinner pb-spinner--lg" role="status" aria-label="Loading"></span>Loading sources&hellip;</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="empty">
+        <h2>Empty &amp; skeleton</h2>
+        <p><code>pb-empty</code> is the answer to "nothing here"; <code>pb-skeleton</code> holds the place while data loads (put <code>aria-busy="true"</code> on the region).</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--sunken demo-grid" style="grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr))">
+            <div class="pb-empty">
+              <svg class="pb-icon pb-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#inbox"/></svg>
+              <div class="pb-empty__title">No history yet</div>
+              <div class="pb-empty__msg">Routes you take will be listed here.</div>
+              <div class="pb-empty__actions"><button class="pb-btn pb-btn--sm">Clear filters</button></div>
+            </div>
+            <div aria-busy="true" style="display: flex; flex-direction: column; gap: var(--pb-space-3); padding: var(--pb-space-5)">
+              <span class="pb-skeleton pb-skeleton--heading"></span>
+              <span class="pb-skeleton pb-skeleton--text"></span>
+              <span class="pb-skeleton pb-skeleton--text"></span>
+              <span class="pb-skeleton pb-skeleton--row"></span>
+              <span class="pb-skeleton pb-skeleton--row"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="kv">
+        <h2>Key/value</h2>
+        <p>Facts about one thing. Stacked by default; <code>pb-kv--inline</code> puts keys in their own column.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-grid" style="grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr))">
+            <dl class="pb-kv">
+              <div class="pb-kv__item"><dt class="pb-kv__key">Destination</dt><dd class="pb-kv__val">MON 2</dd></div>
+              <div class="pb-kv__item"><dt class="pb-kv__key">Source</dt><dd class="pb-kv__val">CAM 2</dd></div>
+            </dl>
+            <dl class="pb-kv pb-kv--inline">
+              <div class="pb-kv__item"><dt class="pb-kv__key">Wire level</dt><dd class="pb-kv__val pb-num">3</dd></div>
+              <div class="pb-kv__item"><dt class="pb-kv__key">Tries</dt><dd class="pb-kv__val pb-num">1</dd></div>
+              <div class="pb-kv__item"><dt class="pb-kv__key">Result</dt><dd class="pb-kv__val">ACK</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="paging">
+        <h2>Breadcrumbs &amp; pages</h2>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-col">
+            <nav aria-label="Breadcrumb">
+              <ol class="pb-breadcrumbs">
+                <li><a href="#paging">Matrices</a></li>
+                <li><a href="#paging">Matrix 1</a></li>
+                <li aria-current="page">Destinations</li>
+              </ol>
+            </nav>
+            <nav aria-label="Pages">
+              <ul class="pb-pagination">
+                <li><button class="pb-btn pb-btn--sm" disabled aria-label="Previous page"><svg class="pb-icon pb-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#chevron-left"/></svg></button></li>
+                <li><button class="pb-btn pb-btn--sm" aria-current="page">1</button></li>
+                <li><button class="pb-btn pb-btn--sm">2</button></li>
+                <li><button class="pb-btn pb-btn--sm">3</button></li>
+                <li class="pb-pagination__gap" aria-hidden="true">&hellip;</li>
+                <li><button class="pb-btn pb-btn--sm">12</button></li>
+                <li><button class="pb-btn pb-btn--sm" aria-label="Next page"><svg class="pb-icon pb-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#chevron-right"/></svg></button></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================ DEVICE -->
+
+      <section class="demo-sec" id="routing">
+        <h2>Routing</h2>
+        <p>Crosspoints inherit <code>pb-btn</code> and only restate colour, so a wall of two thousand shares one hover and focus model. Sixteen signal-level colours plus video.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-col">
+            <div class="pb-row pb-row--wrap">
+              <button class="pb-btn pb-xpt pb-xpt--source">SRC 1</button>
+              <button class="pb-btn pb-xpt pb-xpt--dest">DST 1</button>
+              <button class="pb-btn pb-xpt pb-xpt--tieline">TIE 1</button>
+              <button class="pb-btn pb-xpt pb-xpt--source pb-xpt--locked">Locked</button>
+              <button class="pb-btn pb-xpt pb-xpt--dest pb-xpt--protected">Protected</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="summary">
+        <h2>Summary bar</h2>
+        <p>A read-out strip pinned under a grid. It ignores pointer events so it never eats a click; opt a child back in with <code>data-interactive</code>.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--flush">
+            <div class="pb-summary" style="position: static">
+              <span class="pb-summary__item"><span class="pb-summary__key">Sources</span><span class="pb-summary__val">128</span></span>
+              <span class="pb-summary__item"><span class="pb-summary__key">Destinations</span><span class="pb-summary__val">128</span></span>
+              <span class="pb-summary__item"><span class="pb-summary__key">Selected</span><span class="pb-summary__val">CAM 2 &rarr; MON 2</span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="states">
+        <h2>Window states</h2>
+        <p>A whole-window border is the loudest signal there is, so only three states use it: unsaved changes (<code>pb-state-commit</code>), a write-protected database (<code>pb-state-protect</code>), and a lost link (<code>pb-state-offline</code>, which pulses). Put it on the outermost element.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-stack">
+            <div class="pb-row pb-row--wrap" data-demo-only>
+              <button class="pb-btn" aria-pressed="false" data-state-toggle="pb-state-commit" data-target="#state-box">Commit</button>
+              <button class="pb-btn" aria-pressed="false" data-state-toggle="pb-state-protect" data-target="#state-box">Protect</button>
+              <button class="pb-btn" aria-pressed="false" data-state-toggle="pb-state-offline" data-target="#state-box">Offline</button>
+            </div>
+            <div id="state-box" class="pb-panel"><div class="pb-body">Toggle a state above and watch this frame.</div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="rolebars">
+        <h2>Role bars</h2>
+        <p>A bar down the left edge that says what a row is for: <code>pb-rolebar--source|dest|tieline|error</code>.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-col">
+            <div class="pb-rolebar--source pb-body" style="background: var(--pb-surface-base)">Source: CAM 2</div>
+            <div class="pb-rolebar--dest pb-body" style="background: var(--pb-surface-base)">Destination: MON 2</div>
+            <div class="pb-rolebar--tieline pb-body" style="background: var(--pb-surface-base)">Tie-line 4</div>
+            <div class="pb-rolebar--error pb-body" style="background: var(--pb-surface-base)">Take failed on level 3</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================= REFERENCE -->
+
+      <section class="demo-sec" id="icons">
+        <h2>Icons</h2>
+        <p>Lucide, from the bundled sprite. Never write path data, and check the id exists (<code>grep 'id="name"' icons/lucide.svg</code>). <code>viewBox</code> is required. Serve over http: Chrome blocks an external <code>&lt;use&gt;</code> on <code>file://</code>.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-row pb-row--wrap">
+            <svg class="pb-icon pb-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#play"/></svg>
+            <svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#lock"/></svg>
+            <svg class="pb-icon pb-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#settings"/></svg>
+            <svg class="pb-icon pb-icon--ok" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#circle-check"/></svg>
+            <svg class="pb-icon pb-icon--warn" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#triangle-alert"/></svg>
+            <svg class="pb-icon pb-icon--error" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#circle-x"/></svg>
+            <svg class="pb-icon pb-icon--info" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#info"/></svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="utilities">
+        <h2>Utilities</h2>
+        <div class="demo-ex">
+          <div class="demo-ex__view pb-col">
+            <div class="pb-row"><span class="pb-text-strong">Strong</span><span class="pb-text-muted">Muted</span><span class="pb-text-disabled">Disabled</span><span class="pb-text-mono">mono 0123</span><span class="pb-num">num 0123</span><span class="pb-push"><code>pb-push</code> pushes right</span></div>
+            <div class="pb-truncate" style="max-width: 14rem">A long destination name that is cut off with an ellipsis</div>
+            <div class="pb-clamp-2" style="max-width: 14rem">A long note that is allowed two lines and then cut off with an ellipsis so a row never grows without limit.</div>
+            <p style="margin: 0">Inline <code>code</code> and <kbd>Ctrl</kbd> + <kbd>Enter</kbd> key caps.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-sec" id="variants">
+        <h2>More variants</h2>
+        <p>Every remaining modifier, so nothing in <code>patchbay.css</code> goes undemonstrated.</p>
+
+        <h3>Layout</h3>
+        <div class="demo-ex"><div class="demo-ex__view demo-ex__view--sunken pb-col">
+          <div class="pb-page" style="height: 9rem; border: var(--pb-border-w) solid var(--pb-edge-soft)">
+            <div class="pb-split pb-split--vertical">
+              <div class="pb-pane pb-pane--divided pb-scroll"><div class="pb-body">Top pane (<code>pb-page</code> &gt; <code>pb-split--vertical</code>, <code>pb-scroll</code>)</div></div>
+              <div class="pb-pane"><div class="pb-body">Bottom pane</div></div>
+            </div>
+          </div>
+          <div class="pb-panel pb-panel--flush"><div class="pb-header pb-header--sm">Flush panel</div><div class="pb-body pb-body--flush"><div class="pb-row"><span class="pb-grow">Grows</span><span>Fixed</span></div></div></div>
+          <hr class="pb-divider pb-divider--hard">
+          <div class="pb-row" style="height: 2rem"><span>Left</span><span class="pb-divider pb-divider--vertical" role="separator"></span><span>Right</span></div>
+          <fieldset class="pb-fieldset"><legend>Fieldset</legend>Grouped controls</fieldset>
+        </div></div>
+
+        <h3>Tabs</h3>
+        <div class="demo-ex"><div class="demo-ex__view demo-ex__view--flush pb-col" style="gap: 0">
+          <div class="pb-tabs pb-tabs--sub" role="tablist" aria-label="Sub tabs"><button class="pb-tab" role="tab" aria-selected="true">Inputs</button><button class="pb-tab" role="tab" aria-selected="false">Outputs</button></div>
+          <div class="pb-tabs pb-tabs--vertical" role="tablist" aria-orientation="vertical" aria-label="Vertical tabs"><button class="pb-tab" role="tab" aria-selected="true">General</button><button class="pb-tab" role="tab" aria-selected="false">Network</button></div>
+        </div></div>
+
+        <h3>Buttons and icons</h3>
+        <div class="demo-ex"><div class="demo-ex__view pb-row pb-row--wrap pb-row--tight">
+          <button class="pb-btn pb-btn--selected">Selected</button>
+          <button class="pb-btn pb-btn--icon-lg" aria-label="Settings"><svg class="pb-icon pb-icon--filled" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#settings"/></svg></button>
+          <button class="pb-btn pb-btn--block">Block button</button>
+        </div></div>
+
+        <h3>Form variants</h3>
+        <div class="demo-ex"><div class="demo-ex__view">
+          <div class="pb-form pb-form--label-sm">
+            <label class="pb-form__label" for="v-1">Short</label><div class="pb-form__field"><input id="v-1" class="pb-input pb-input--valid pb-w-xs" value="ok"></div>
+            <div class="pb-form__gap"></div>
+            <label class="pb-form__label pb-form__label--indent" for="v-2">Dependent</label><div class="pb-form__field"><textarea id="v-2" class="pb-textarea pb-textarea--fixed pb-w-lg" rows="1">fixed size</textarea></div>
+            <label class="pb-form__label pb-form__label--after" for="v-3">After</label><div class="pb-form__field"><input id="v-3" class="pb-input pb-w-auto" value="auto width"></div>
+          </div>
+          <div class="pb-form pb-form--label-lg" style="margin-top: var(--pb-space-5)">
+            <label class="pb-form__label" for="v-4">A wider label column</label><div class="pb-form__field"><input id="v-4" class="pb-input pb-w-md"></div>
+          </div>
+        </div></div>
+
+        <h3>Menus</h3>
+        <div class="demo-ex"><div class="demo-ex__view demo-ex__view--sunken" style="min-height: 12rem">
+          <ul class="pb-menu pb-menu--scroll" role="menu" aria-label="Output" style="list-style: none; display: inline-block; position: static; max-height: 10rem">
+            <li role="none"><div class="pb-menu__label">Outputs</div></li>
+            <li role="none"><button class="pb-menu__item" role="menuitem">Monitor wall</button></li>
+            <li role="separator"><div class="pb-menu__section"></div></li>
+            <li role="none"><button class="pb-menu__item" role="menuitem">REC A</button></li>
+            <li role="none" style="position: relative"><button class="pb-menu__item" role="menuitem" aria-haspopup="true">More&hellip;</button>
+              <ul class="pb-menu pb-menu__sub" role="menu" aria-label="More" style="list-style: none"><li role="none"><button class="pb-menu__item" role="menuitem">Hover me, opens right</button></li></ul></li>
+          </ul>
+          <ul class="pb-menu pb-menu__sub--left" role="menu" aria-label="Left-opening" style="list-style: none; display: inline-block; position: static; margin-left: var(--pb-space-9)"><li role="none"><button class="pb-menu__item" role="menuitem">A left-opening submenu uses <code>pb-menu__sub--left</code></button></li></ul>
+        </div></div>
+
+        <h3>Modals</h3>
+        <div class="demo-ex"><div class="demo-ex__view demo-ex__view--sunken demo-stack">
+          <div class="pb-modal pb-modal--xs" role="dialog" aria-labelledby="vm-1"><div class="pb-modal__header pb-modal__header--info"><span class="pb-modal__title" id="vm-1">Info, xs</span></div><div class="pb-modal__body pb-modal__body--flush"><div class="pb-body">Flush body</div></div><div class="pb-modal__footer pb-modal__footer--end"><button class="pb-btn">OK</button></div></div>
+          <div class="pb-modal pb-modal--md" role="dialog" aria-labelledby="vm-2"><div class="pb-modal__header pb-modal__header--ok"><span class="pb-modal__title" id="vm-2">Saved, md</span></div><div class="pb-modal__body">Footer buttons all sit to the right with <code>--end</code>.</div><div class="pb-modal__footer pb-modal__footer--end"><button class="pb-btn pb-btn--ok">Done</button></div></div>
+          <div class="pb-modal pb-modal--fit pb-modal--resize" role="dialog" aria-labelledby="vm-3"><div class="pb-modal__header"><span class="pb-modal__title" id="vm-3">Fit and resizable</span></div><div class="pb-modal__body">Drag the corner.</div></div>
+          <div class="pb-modal pb-modal--lg" role="dialog" aria-labelledby="vm-4"><div class="pb-modal__header"><span class="pb-modal__title" id="vm-4">Large (<code>pb-modal--lg</code>)</span></div><div class="pb-modal__body">The page behind a live modal gets a <code>pb-modal-backdrop</code> sibling.</div></div>
+          <div class="pb-modal-backdrop" style="position: static; height: 3rem" aria-hidden="true"></div>
+        </div></div>
+
+        <h3>Drawer, table cells and alerts</h3>
+        <div class="demo-ex"><div class="demo-ex__view pb-col">
+          <button class="pb-btn" data-toggle="#drawer-wide" data-class="pb-drawer--open" aria-expanded="false" aria-controls="drawer-wide" data-demo-attr>Toggle wide drawer</button>
+          <div class="demo-stage" style="height: 8rem; border: var(--pb-border-w) solid var(--pb-edge-soft)"><aside class="pb-drawer pb-drawer--wide" id="drawer-wide" aria-label="Wide drawer"><div class="pb-drawer__body pb-body">A wide drawer, opening from the left.</div></aside></div>
+          <table class="pb-table pb-table--numeric pb-table--compact"><thead><tr><th>Dest</th><th>Level</th></tr></thead><tbody><tr class="pb-selected"><td class="pb-cell-select">MON 1</td><td>3</td></tr><tr><td class="pb-cell-select">MON 2</td><td>4</td></tr></tbody></table>
+          <div class="pb-alert pb-alert--ok" role="status"><div><div class="pb-alert__title">Synced</div>All routes match.</div></div>
+          <div class="pb-progress" role="progressbar" aria-label="Disk" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"><div class="pb-progress__bar pb-progress__bar--ok" style="width: 40%"></div></div>
+          <div class="pb-progress" role="progressbar" aria-label="Errors" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"><div class="pb-progress__bar pb-progress__bar--error" style="width: 70%"></div></div>
+          <p class="pb-note pb-note--error" style="margin: 0">An error note.</p>
+        </div></div>
+
+        <h3>Toasts and utilities</h3>
+        <div class="demo-ex"><div class="demo-ex__view pb-col">
+          <div class="pb-toast pb-toast--warn pb-enter" role="status" style="animation: none"><svg class="pb-icon pb-toast__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#triangle-alert"/></svg><div class="pb-toast__body"><div class="pb-toast__title">Warn</div><div class="pb-toast__msg">Partial take.</div></div></div>
+          <div class="pb-toast pb-toast--error" role="alert" style="animation: none"><svg class="pb-icon pb-toast__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#circle-x"/></svg><div class="pb-toast__body"><div class="pb-toast__title">Error</div><div class="pb-toast__msg">Take refused.</div></div></div>
+          <div class="pb-toast pb-toast--info" role="status" style="animation: none"><svg class="pb-icon pb-toast__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="icons/lucide.svg#info"/></svg><div class="pb-toast__body"><div class="pb-toast__title">Info</div><div class="pb-toast__msg">Names refreshed.</div></div></div>
+          <p class="pb-clamp-3" style="max-width: 14rem; margin: 0">A longer note that may run to three lines before it is cut off with an ellipsis, so a card never grows without limit however much text it is given.</p>
+          <span class="pb-code">pb-code</span>
+          <span class="pb-text-num">0123456789</span>
+          <div class="pb-tip" style="position: static; display: inline-block">pb-tip (script-placed)</div>
+        </div></div>
+      </section>
+
+      <p class="demo-foot">Patchbay <span id="version">v2</span> &middot; MIT (Bootstrap) &middot; ISC (Lucide)</p>
+    </main>
+  </div>
+
+  <script src="demo/demo.js"></script>
+  <script>
+    // The save-bar demo: ticking the box makes the page dirty.
+    const box = document.getElementById("dirty-box");
+    box.addEventListener("change", () => {
+      const apply = document.getElementById("dirty-apply");
+      apply.disabled = !box.checked;
+      apply.classList.toggle("pb-btn--commit", box.checked);
+      document.getElementById("dirty-stage").classList.toggle("pb-state-commit", box.checked);
+      document.getElementById("dirty-text").textContent = box.checked ? "Unsaved changes." : "No unsaved changes.";
+    });
+  </script>
+</body>
+</html>

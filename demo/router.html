@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Router &middot; Patchbay</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/patchbay.tokens.css" rel="stylesheet">
+  <link href="../css/patchbay.css" rel="stylesheet">
+  <link href="apps.css" rel="stylesheet">
+</head>
+<body data-icon-base="../">
+  <div class="app" id="app">
+    <div class="pb-banner pb-banner--error" id="banner" role="alert" hidden>
+      <svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="../icons/lucide.svg#wifi-off"/></svg>
+      Router link lost. The matrix shows the last known routes and cannot be changed; reconnecting&hellip;
+    </div>
+
+    <div class="pb-toolbar" role="toolbar" aria-label="Matrix">
+      <a class="pb-btn pb-btn--ghost pb-btn--sm" href="../index.html">&larr; Patchbay</a>
+      <div class="pb-toolbar__sep"></div>
+      <span class="pb-toolbar__title">Matrix 1</span>
+      <div class="pb-toolbar__sep"></div>
+      <button class="pb-btn pb-btn--outline pb-btn--sm" id="revert" disabled>Revert</button>
+      <button class="pb-btn pb-btn--sm" id="apply" disabled>Apply</button>
+      <span class="pb-toolbar__spacer"></span>
+      <button class="pb-btn pb-btn--sm" id="offline" aria-pressed="false">Simulate link loss</button>
+      <span class="pb-conn pb-conn--ok" id="conn"><span class="pb-dot pb-dot--ok" aria-hidden="true" id="conn-dot"></span><span id="conn-text">Connected</span></span>
+      <button class="pb-btn pb-btn--ghost pb-btn--sm" id="theme-toggle">Light mode</button>
+    </div>
+
+    <div class="pb-grid">
+      <div class="pb-grid-body">
+        <table class="pb-table app-xpt" id="matrix">
+          <caption class="pb-sr-only">Routing matrix: one source selected per destination</caption>
+        </table>
+      </div>
+    </div>
+
+    <div class="pb-summary" role="status" aria-live="polite">
+      <span class="pb-summary__item"><span class="pb-summary__key">Routes</span><span class="pb-summary__val" id="s-routes">0</span></span>
+      <span class="pb-summary__item"><span class="pb-summary__key">Pending</span><span class="pb-summary__val" id="s-pending">0</span></span>
+      <span class="pb-summary__item"><span class="pb-summary__key">Last</span><span class="pb-summary__val" id="s-last">&mdash;</span></span>
+    </div>
+  </div>
+
+  <div class="pb-toast-stack" id="toast-stack" aria-live="polite"></div>
+
+  <script src="demo.js"></script>
+  <script>
+    (() => {
+    const sources = ["CAM 1", "CAM 2", "CAM 3", "CAM 4", "PGM", "PVW", "BARS", "BLACK"];
+    const dests = ["MON 1", "MON 2", "MON 3", "MON 4", "REC A", "REC B", "AIR", "MV"];
+    const protectedDst = "AIR";
+    const live = Object.fromEntries(dests.map((d, i) => [d, (i * 3) % sources.length]));
+    let staged = {};
+    const $ = (id) => document.getElementById(id);
+    const table = $("matrix");
+
+    function build() {
+      const head = `<thead><tr><th scope="col">Dest \\ Src</th>${sources.map((s) => `<th scope="col">${s}</th>`).join("")}</tr></thead>`;
+      const rows = dests.map((d) => {
+        const lock = d === protectedDst;
+        const cells = sources.map((s, i) => `<td><button class="pb-btn pb-xpt pb-xpt--source${lock ? " pb-xpt--locked pb-xpt--protected" : ""}" data-dst="${d}" data-src="${i}" aria-pressed="false" aria-label="${d} from ${s}"${lock ? " disabled" : ""}>${i + 1}</button></td>`).join("");
+        const icon = lock ? `<svg class="pb-icon pb-icon--sm app-lock" viewBox="0 0 24 24" role="img" aria-label="Protected"><use href="../icons/lucide.svg#lock"/></svg>` : "";
+        return `<tr><th scope="row">${d}${icon}</th>${cells}</tr>`;
+      }).join("");
+      table.insertAdjacentHTML("beforeend", `${head}<tbody>${rows}</tbody>`);
+    }
+
+    function paint() {
+      table.querySelectorAll("button[data-dst]").forEach((b) => {
+        const d = b.dataset.dst, i = +b.dataset.src;
+        const route = d in staged ? staged[d] : live[d];
+        b.setAttribute("aria-pressed", String(route === i));
+      });
+      const pending = Object.keys(staged).length;
+      $("s-routes").textContent = dests.length;
+      $("s-pending").textContent = pending;
+      $("apply").disabled = $("revert").disabled = pending === 0;
+      $("apply").classList.toggle("pb-btn--commit", pending > 0);
+      $("app").classList.toggle("pb-state-commit", pending > 0);
+    }
+
+    table.addEventListener("click", (e) => {
+      const b = e.target.closest("button[data-dst]");
+      if (!b) return;
+      const d = b.dataset.dst, i = +b.dataset.src;
+      if (live[d] === i) delete staged[d]; else staged[d] = i;
+      $("s-last").textContent = `${sources[i]} → ${d}`;
+      paint();
+    });
+
+    $("revert").addEventListener("click", () => { staged = {}; paint(); });
+
+    $("apply").addEventListener("click", () => {
+      const n = Object.keys(staged).length;
+      $("apply").classList.add("pb-btn--loading");
+      $("apply").setAttribute("aria-busy", "true");
+      setTimeout(() => {
+        Object.assign(live, staged);
+        staged = {};
+        $("apply").classList.remove("pb-btn--loading");
+        $("apply").removeAttribute("aria-busy");
+        paint();
+        const kind = n > 1 ? "info" : "ok";
+        window.dispatchEvent(new CustomEvent("demo-toast", { detail: { kind, title: "Routes taken", msg: `${n} crosspoint${n === 1 ? "" : "s"} confirmed by the router.` } }));
+      }, 1200);
+    });
+
+    $("offline").addEventListener("click", () => {
+      const down = $("offline").getAttribute("aria-pressed") !== "true";
+      $("offline").setAttribute("aria-pressed", String(down));
+      $("banner").hidden = !down;
+      $("conn").className = `pb-conn pb-conn--${down ? "error" : "ok"}`;
+      $("conn-dot").className = `pb-dot pb-dot--${down ? "error pb-dot--pulse" : "ok"}`;
+      $("conn-text").textContent = down ? "Disconnected" : "Connected";
+      if (down) { $("app").classList.remove("pb-state-commit"); $("app").classList.add("pb-state-offline"); }
+      else { $("app").classList.remove("pb-state-offline"); paint(); }
+      table.querySelectorAll("button[data-dst]").forEach((b) => { b.disabled = down || b.dataset.dst === protectedDst; });
+    });
+
+    build();
+    paint();
+    })();
+  </script>
+</body>
+</html>
