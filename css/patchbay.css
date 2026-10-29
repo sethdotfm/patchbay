@@ -729,14 +729,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-textarea--fixed { resize: none; }
 
-/* Width helpers — dense forms need explicit widths far more than fluid ones. */
-.pb-w-xs { width: 3.125rem; }
-.pb-w-sm { width: 5rem; }
-.pb-w-md { width: 8.75rem; }
-.pb-w-lg { width: 12.5rem; }
-.pb-w-xl { width: 20rem; }
-.pb-w-auto { width: auto; }
-
 /* --- Select ------------------------------------------------------------
    Native <select> with the arrow drawn by the wrapper, because the native
    arrow cannot be themed and looks like a different product. */
@@ -1840,6 +1832,16 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-grow   { flex: 1 1 auto; min-width: 0; }
 .pb-push   { margin-left: auto; }
 
+/* Widths. These sit here, after every control, so they beat the
+   width: 100% that selects' and number fields' wrappers, input groups and
+   ranges set for themselves. Put the class on the wrapper. */
+.pb-w-xs   { width: 3.125rem; }
+.pb-w-sm   { width: 5rem; }
+.pb-w-md   { width: 8.75rem; }
+.pb-w-lg   { width: 12.5rem; }
+.pb-w-xl   { width: 20rem; }
+.pb-w-auto { width: auto; }
+
 .pb-text-strong   { color: var(--pb-text-strong); font-weight: var(--pb-weight-bold); }
 .pb-text-muted    { color: var(--pb-text-muted); }
 .pb-text-disabled { color: var(--pb-text-disabled); }
@@ -2236,9 +2238,9 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-skeleton {
   animation: pb-skeleton 1.5s ease-in-out infinite;
   background: linear-gradient(90deg,
-    var(--pb-surface-raised) 25%,
-    var(--pb-surface-control) 50%,
-    var(--pb-surface-raised) 75%);
+    var(--pb-surface-control) 25%,
+    var(--pb-surface-hover) 50%,
+    var(--pb-surface-control) 75%);
   background-size: 200% 100%;
   display: block;
 }

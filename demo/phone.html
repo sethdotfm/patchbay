@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-pb-layout="phone">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phone &middot; Patchbay</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/patchbay.tokens.css" rel="stylesheet">
+  <link href="../css/patchbay.css" rel="stylesheet">
+  <link href="apps.css" rel="stylesheet">
+</head>
+<body data-icon-base="../">
+  <div class="app app-phone" id="app">
+    <div class="pb-toolbar" role="toolbar" aria-label="Patch">
+      <a class="pb-btn pb-btn--ghost pb-btn--icon" href="../index.html" aria-label="Back to Patchbay"><svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="../icons/lucide.svg#chevron-left"/></svg></a>
+      <span class="pb-toolbar__title">Patch</span>
+      <span class="pb-toolbar__spacer"></span>
+      <span class="pb-conn pb-conn--ok"><span class="pb-dot pb-dot--ok" aria-hidden="true"></span>Connected</span>
+      <button class="pb-btn pb-btn--ghost pb-btn--sm" id="theme-toggle">Light mode</button>
+    </div>
+
+    <div class="app-scroll">
+      <div class="app-phone__body">
+        <section class="pb-section" aria-labelledby="h-dst">
+          <h2 class="pb-section__title" id="h-dst">1. Destination</h2>
+          <div class="app-phone__list" role="group" aria-labelledby="h-dst" id="dst">
+            <button class="pb-btn pb-xpt pb-xpt--dest" aria-pressed="false">MON 1</button>
+            <button class="pb-btn pb-xpt pb-xpt--dest" aria-pressed="true">MON 2</button>
+            <button class="pb-btn pb-xpt pb-xpt--dest" aria-pressed="false">REC A</button>
+            <button class="pb-btn pb-xpt pb-xpt--dest" aria-pressed="false">AIR</button>
+          </div>
+        </section>
+
+        <section class="pb-section" aria-labelledby="h-src">
+          <h2 class="pb-section__title" id="h-src">2. Source</h2>
+          <div class="app-phone__list" role="group" aria-labelledby="h-src" id="src">
+            <button class="pb-btn pb-xpt pb-xpt--source" aria-pressed="false">CAM 1</button>
+            <button class="pb-btn pb-xpt pb-xpt--source" aria-pressed="false">CAM 2</button>
+            <button class="pb-btn pb-xpt pb-xpt--source" aria-pressed="false">PGM</button>
+            <button class="pb-btn pb-xpt pb-xpt--source" aria-pressed="false">BARS</button>
+          </div>
+        </section>
+
+        <section class="pb-section">
+          <h2 class="pb-section__title">3. Options</h2>
+          <div class="pb-fields">
+            <div class="pb-field">
+              <label for="lv">Levels</label>
+              <span class="pb-select-wrap"><select id="lv" class="pb-select"><option>All levels</option><option>Video only</option><option>Audio only</option></select></span>
+              <span class="pb-hint">Fields are 16px on touch screens so iOS does not zoom.</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="pb-savebar">
+          <div class="pb-savebar__row">
+            <span class="pb-hint" id="sel" role="status">Choose a source.</span>
+          </div>
+          <button class="pb-btn pb-btn--commit pb-btn--lg pb-btn--block" id="take" disabled>Take</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pb-toast-stack" id="toast-stack" aria-live="polite"></div>
+
+  <script src="demo.js"></script>
+  <script>
+    (() => {
+    const $ = (id) => document.getElementById(id);
+    let dst = "MON 2", src = null;
+
+    function pick(group, key) {
+      return (e) => {
+        const b = e.target.closest(".pb-btn"); if (!b) return;
+        group.querySelectorAll(".pb-btn").forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+        key(b.textContent);
+        $("take").disabled = !src;
+        $("sel").textContent = src ? `${src} → ${dst}` : "Choose a source.";
+      };
+    }
+    $("dst").addEventListener("click", pick($("dst"), (v) => { dst = v; }));
+    $("src").addEventListener("click", pick($("src"), (v) => { src = v; }));
+
+    $("take").addEventListener("click", () => {
+      $("take").classList.add("pb-btn--loading");
+      $("take").setAttribute("aria-busy", "true");
+      setTimeout(() => {
+        $("take").classList.remove("pb-btn--loading");
+        $("take").removeAttribute("aria-busy");
+        window.dispatchEvent(new CustomEvent("demo-toast", { detail: { kind: "ok", title: "Route taken", msg: `${dst} now follows ${src}.` } }));
+      }, 1000);
+    });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Communication log &middot; Patchbay</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/patchbay.tokens.css" rel="stylesheet">
+  <link href="../css/patchbay.css" rel="stylesheet">
+  <link href="apps.css" rel="stylesheet">
+</head>
+<body data-icon-base="../">
+  <div class="app">
+    <div class="pb-toolbar" role="toolbar" aria-label="Log filters">
+      <a class="pb-btn pb-btn--ghost pb-btn--sm" href="../index.html">&larr; Patchbay</a>
+      <div class="pb-toolbar__sep"></div>
+      <span class="pb-toolbar__title">Communication log</span>
+      <div class="pb-toolbar__sep"></div>
+      <div class="pb-row pb-row--tight" id="kinds" role="group" aria-label="Kinds">
+        <button class="pb-chip pb-chip--selected" data-kind="all">All</button>
+        <button class="pb-chip" data-kind="take">Take</button>
+        <button class="pb-chip" data-kind="poll">Poll</button>
+        <button class="pb-chip" data-kind="failed">Failed</button>
+      </div>
+      <div class="pb-input-group pb-w-lg"><input class="pb-input" id="q" type="search" placeholder="Filter by text" aria-label="Filter by text"></div>
+      <span class="pb-toolbar__spacer"></span>
+      <button class="pb-btn pb-btn--sm" id="reload"><svg class="pb-icon pb-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><use href="../icons/lucide.svg#refresh-cw"/></svg>Reload</button>
+      <button class="pb-btn pb-btn--ghost pb-btn--sm" id="theme-toggle">Light mode</button>
+    </div>
+
+    <div class="app-log" id="log">
+      <div class="app-log__main">
+        <div class="pb-grid" aria-busy="true" id="grid">
+          <div class="pb-grid-body">
+            <table class="pb-table pb-table--compact" id="tbl">
+              <thead><tr><th class="pb-num">#</th><th class="pb-num">Time</th><th>Kind</th><th>Message</th><th class="pb-num">Tries</th><th>Result</th></tr></thead>
+              <tbody id="rows"></tbody>
+            </table>
+            <div id="empty" class="pb-empty" hidden>
+              <svg class="pb-icon pb-icon--lg" viewBox="0 0 24 24" aria-hidden="true"><use href="../icons/lucide.svg#inbox"/></svg>
+              <div class="pb-empty__title">Nothing matches</div>
+              <div class="pb-empty__msg">No message in the log matches these filters.</div>
+              <div class="pb-empty__actions"><button class="pb-btn pb-btn--sm" id="clear">Clear filters</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="app-log__foot">
+          <span class="pb-hint" id="count" role="status"></span>
+          <nav aria-label="Pages"><ul class="pb-pagination" id="pager"></ul></nav>
+        </div>
+      </div>
+
+      <aside class="pb-drawer pb-drawer--right" id="detail" aria-label="Message details">
+        <div class="pb-header"><span id="d-title">Message</span><span class="pb-header__actions"><button class="pb-btn pb-btn--ghost pb-btn--icon pb-btn--sm" id="d-close" aria-label="Close details"><svg class="pb-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="../icons/lucide.svg#x"/></svg></button></span></div>
+        <div class="pb-drawer__body pb-body">
+          <dl class="pb-kv pb-kv--inline" id="d-kv"></dl>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="demo.js"></script>
+  <script>
+    (() => {
+    const $ = (id) => document.getElementById(id);
+    const kinds = ["take", "poll", "failed"];
+    const msgs = {
+      take: (i) => `Route MON ${1 + (i % 4)} ← CAM ${1 + (i % 4)} (levels 1–16)`,
+      poll: (i) => `Interrogate dst ${i % 128}, level ${1 + (i % 16)}`,
+      failed: (i) => `Take MON ${1 + (i % 4)} refused: destination protected`,
+    };
+    const all = Array.from({ length: 87 }, (_, i) => {
+      const kind = kinds[(i * 7 + (i % 5)) % 3];
+      const sec = 3600 * 9 + i * 41;
+      const t = [Math.floor(sec / 3600), Math.floor(sec / 60) % 60, sec % 60].map((n) => String(n).padStart(2, "0")).join(":");
+      return { n: i + 1, t, kind, msg: msgs[kind](i), tries: kind === "failed" ? 3 : 1, res: kind === "failed" ? "NAK" : "ACK" };
+    }).reverse();
+
+    const PER = 12;
+    let kind = "all", q = "", page = 1, loading = true, selected = null;
+
+    const filtered = () => all.filter((m) => (kind === "all" || m.kind === kind) && m.msg.toLowerCase().includes(q.toLowerCase()));
+
+    function skeleton() {
+      $("rows").innerHTML = Array.from({ length: PER }, () => `<tr><td colspan="6"><span class="pb-skeleton pb-skeleton--row"></span></td></tr>`).join("");
+    }
+
+    function render() {
+      $("grid").setAttribute("aria-busy", String(loading));
+      if (loading) { skeleton(); $("empty").hidden = true; $("count").textContent = "Loading…"; $("pager").innerHTML = ""; return; }
+      const list = filtered();
+      const pages = Math.max(1, Math.ceil(list.length / PER));
+      page = Math.min(page, pages);
+      const slice = list.slice((page - 1) * PER, page * PER);
+      $("tbl").hidden = slice.length === 0;
+      $("empty").hidden = slice.length !== 0;
+      $("rows").innerHTML = slice.map((m) => `
+        <tr tabindex="0" data-n="${m.n}"${m.n === selected ? ' aria-selected="true"' : ""}${m.kind === "failed" ? ' class="pb-rolebar--error"' : ""}>
+          <td class="pb-num">${m.n}</td><td class="pb-num">${m.t}</td><td>${m.kind}</td><td>${m.msg}</td><td class="pb-num">${m.tries}</td>
+          <td><span class="pb-status"><span class="pb-dot pb-dot--${m.res === "ACK" ? "ok" : "error"}" aria-hidden="true"></span> ${m.res}</span></td>
+        </tr>`).join("");
+      $("count").textContent = `${list.length} message${list.length === 1 ? "" : "s"}`;
+      const btn = (label, p, extra = "") => `<li><button class="pb-btn pb-btn--sm" data-page="${p}" ${extra}>${label}</button></li>`;
+      const nums = [];
+      for (let p = 1; p <= pages; p++) if (p === 1 || p === pages || Math.abs(p - page) <= 1) nums.push(p); else if (nums[nums.length - 1] !== "…") nums.push("…");
+      $("pager").innerHTML =
+        btn("‹", page - 1, `aria-label="Previous page"${page === 1 ? " disabled" : ""}`) +
+        nums.map((p) => p === "…" ? `<li class="pb-pagination__gap" aria-hidden="true">…</li>` : btn(p, p, p === page ? 'aria-current="page"' : "")).join("") +
+        btn("›", page + 1, `aria-label="Next page"${page === pages ? " disabled" : ""}`);
+    }
+
+    function load() {
+      loading = true; render();
+      setTimeout(() => { loading = false; render(); }, 900);
+    }
+
+    $("kinds").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-kind]"); if (!b) return;
+      kind = b.dataset.kind; page = 1;
+      $("kinds").querySelectorAll(".pb-chip").forEach((c) => c.classList.toggle("pb-chip--selected", c === b));
+      render();
+    });
+    $("q").addEventListener("input", (e) => { q = e.target.value; page = 1; render(); });
+    $("clear").addEventListener("click", () => { kind = "all"; q = ""; $("q").value = ""; page = 1; $("kinds").querySelectorAll(".pb-chip").forEach((c) => c.classList.toggle("pb-chip--selected", c.dataset.kind === "all")); render(); });
+    $("pager").addEventListener("click", (e) => { const b = e.target.closest("[data-page]"); if (b) { page = +b.dataset.page; render(); } });
+    $("reload").addEventListener("click", load);
+
+    function open(n) {
+      const m = all.find((x) => x.n === n); if (!m) return;
+      selected = n;
+      $("d-title").textContent = `Message ${m.n}`;
+      $("d-kv").innerHTML = [["Time", m.t], ["Kind", m.kind], ["Message", m.msg], ["Tries", m.tries], ["Result", m.res]]
+        .map(([k, v]) => `<div class="pb-kv__item"><dt class="pb-kv__key">${k}</dt><dd class="pb-kv__val">${v}</dd></div>`).join("");
+      $("detail").classList.add("pb-drawer--open");
+      render();
+    }
+    $("rows").addEventListener("click", (e) => { const r = e.target.closest("tr[data-n]"); if (r) open(+r.dataset.n); });
+    $("rows").addEventListener("keydown", (e) => { if (e.key === "Enter") { const r = e.target.closest("tr[data-n]"); if (r) open(+r.dataset.n); } });
+    $("d-close").addEventListener("click", () => { $("detail").classList.remove("pb-drawer--open"); selected = null; render(); });
+
+    load();
+    })();
+  </script>
+</body>
+</html>
