@@ -30,6 +30,10 @@
      24  Role bars
      25  Connection, banners & offline state
      26  Touch & phone layout
+     27  Toasts & entry animation
+     28  Key/value lists, empty states & skeletons
+     29  Field states & disabled labels
+     30  Breadcrumbs & pagination
    ========================================================================== */
 
 
@@ -1843,6 +1847,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-num           { font-family: var(--pb-font-num); font-variant-numeric: tabular-nums; }
 .pb-text-mono     { font-family: var(--pb-font-mono); }
 .pb-truncate      { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pb-clamp-2       { -webkit-box-orient: vertical; -webkit-line-clamp: 2; display: -webkit-box; line-clamp: 2; overflow: hidden; }
+.pb-clamp-3       { -webkit-box-orient: vertical; -webkit-line-clamp: 3; display: -webkit-box; line-clamp: 3; overflow: hidden; }
 
 /* Visually hidden but available to screen readers — the correct way to give
    an icon-only button a name. */
@@ -2093,6 +2099,250 @@ textarea::-webkit-scrollbar-thumb:hover {
 [data-pb-layout="phone"] .pb-drawer--open { max-width: 100vw; }
 
 
+/* 27  TOASTS & ENTRY ANIMATION =========================================== */
+
+/* A new thing arriving: a toast, a history row. Zero length under reduced
+   motion, because --pb-motion-enter is zeroed there. */
+@keyframes pb-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--pb-space-5));
+  }
+}
+
+.pb-enter { animation: pb-enter var(--pb-motion-enter) var(--pb-ease); }
+
+/* Fixed to the bottom right. Give the stack aria-live="polite"; an error
+   toast sets role="alert" itself. Dismiss with a pb-btn--ghost pb-btn--icon
+   pb-btn--sm in __close, and always have a keyboard way to do it. */
+.pb-toast-stack {
+  align-items: flex-end;
+  bottom: var(--pb-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-space-3);
+  pointer-events: none;
+  position: fixed;
+  right: var(--pb-space-5);
+  z-index: var(--pb-z-toast);
+}
+
+.pb-toast {
+  --pb-toast-role: var(--pb-status-info);
+  align-items: flex-start;
+  animation: pb-enter var(--pb-motion-enter) var(--pb-ease);
+  background: var(--pb-surface-overlay);
+  border: var(--pb-border-w) solid var(--pb-edge);
+  border-left: var(--pb-accent-bar-w) solid var(--pb-toast-role);
+  box-shadow: var(--pb-shadow-overlay);
+  color: var(--pb-text);
+  display: flex;
+  gap: var(--pb-space-4);
+  max-width: min(25rem, calc(100vw - var(--pb-space-5) * 2));
+  min-width: 15rem;
+  padding: var(--pb-space-4) var(--pb-space-5);
+  pointer-events: auto;
+}
+
+.pb-toast--ok    { --pb-toast-role: var(--pb-status-ok); }
+.pb-toast--warn  { --pb-toast-role: var(--pb-status-warn); }
+.pb-toast--error { --pb-toast-role: var(--pb-status-error); }
+.pb-toast--info  { --pb-toast-role: var(--pb-status-info); }
+
+.pb-toast__icon { color: var(--pb-toast-role); flex: 0 0 auto; }
+
+.pb-toast__body { flex: 1 1 auto; min-width: 0; }
+
+.pb-toast__title {
+  color: var(--pb-text-strong);
+  font-weight: var(--pb-weight-bold);
+}
+
+.pb-toast__msg { color: var(--pb-text-muted); }
+
+.pb-toast__close {
+  flex: 0 0 auto;
+  margin: calc(var(--pb-space-2) * -1) calc(var(--pb-space-2) * -1) 0 0;
+}
+
+
+/* 28  KEY/VALUE LISTS, EMPTY STATES & SKELETONS ========================== */
+
+/* Facts about one thing: a <dl> of __item > __key + __val. Stacked by
+   default; --inline puts keys in a column of their own. The vertical
+   counterpart to the pb-summary bar. */
+.pb-kv {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-space-3);
+  margin: 0;
+}
+
+.pb-kv__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-space-1);
+}
+
+.pb-kv__key {
+  color: var(--pb-text-muted);
+  font-size: var(--pb-text-xs);
+  letter-spacing: var(--pb-tracking-label);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.pb-kv__val {
+  color: var(--pb-text-strong);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.pb-kv--inline {
+  display: grid;
+  gap: var(--pb-space-2) var(--pb-space-5);
+  grid-template-columns: max-content 1fr;
+}
+
+.pb-kv--inline .pb-kv__item { display: contents; }
+
+/* Nothing here yet. The counterpart to .pb-loading. */
+.pb-empty {
+  align-items: center;
+  color: var(--pb-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pb-space-3);
+  padding: var(--pb-space-10);
+  text-align: center;
+}
+
+.pb-empty__title {
+  color: var(--pb-text-strong);
+  font-weight: var(--pb-weight-bold);
+}
+
+.pb-empty__msg { max-width: 40ch; }
+
+.pb-empty__actions {
+  display: flex;
+  gap: var(--pb-space-3);
+  margin-top: var(--pb-space-3);
+}
+
+/* A placeholder block while data loads. Decorative: give the region
+   aria-busy="true" and let the real content replace it. Steady (no sweep)
+   under reduced motion. */
+.pb-skeleton {
+  animation: pb-skeleton 1.5s ease-in-out infinite;
+  background: linear-gradient(90deg,
+    var(--pb-surface-raised) 25%,
+    var(--pb-surface-control) 50%,
+    var(--pb-surface-raised) 75%);
+  background-size: 200% 100%;
+  display: block;
+}
+
+@keyframes pb-skeleton {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.pb-skeleton--text    { height: 1em; width: 100%; }
+.pb-skeleton--heading { height: 1.5em; width: 40%; }
+.pb-skeleton--row     { height: var(--pb-grid-row-h); width: 100%; }
+
+
+/* 29  FIELD STATES & DISABLED LABELS ===================================== */
+
+/* Wrap a control and its pb-hint in .pb-field--error or --ok so the rim and
+   the hint change together. The hint's words are what carry the meaning;
+   colour only backs them up. */
+.pb-field--error .pb-input,
+.pb-field--error .pb-select,
+.pb-field--error .pb-textarea,
+.pb-field--error .pb-chip-input { border-color: var(--pb-status-error); }
+.pb-field--error .pb-hint { color: var(--pb-status-error); }
+
+.pb-field--ok .pb-input,
+.pb-field--ok .pb-select,
+.pb-field--ok .pb-textarea,
+.pb-field--ok .pb-chip-input { border-color: var(--pb-status-ok); }
+.pb-field--ok .pb-hint { color: var(--pb-status-ok); }
+
+.pb-input--valid { border-color: var(--pb-status-ok); }
+
+/* A label dims with the control it names. pb-form lays label and field out
+   as sibling cells, so the label looks ahead to its field. */
+.pb-form__label:has(+ .pb-form__field :disabled),
+.pb-field:has(:disabled) > label,
+.pb-field:has(:disabled) .pb-field__label,
+.pb-field:has(:disabled) .pb-label,
+.pb-check:has(.pb-switch__input:disabled) .pb-check__label {
+  color: var(--pb-text-disabled);
+}
+
+
+/* 30  BREADCRUMBS & PAGINATION =========================================== */
+
+/* <nav aria-label="Breadcrumb"><ol class="pb-breadcrumbs"> with the last
+   item aria-current="page". The separator is decoration, hidden from
+   assistive tech where the alt-text syntax is supported. */
+.pb-breadcrumbs {
+  align-items: center;
+  color: var(--pb-text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pb-space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pb-breadcrumbs li + li::before {
+  content: "/";
+  content: "/" / "";
+  margin-right: var(--pb-space-3);
+}
+
+.pb-breadcrumbs a {
+  color: var(--pb-text);
+  text-decoration: none;
+}
+
+.pb-breadcrumbs a:hover { text-decoration: underline; }
+
+.pb-breadcrumbs [aria-current="page"] {
+  color: var(--pb-text-strong);
+  font-weight: var(--pb-weight-bold);
+}
+
+/* <nav aria-label="Pages"><ul class="pb-pagination"> of pb-btn pb-btn--sm.
+   The current page is aria-current="page"; an unavailable prev/next is
+   disabled (or class="disabled" aria-disabled="true" on a link). */
+.pb-pagination {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--pb-space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pb-pagination [aria-current="page"] {
+  background-color: var(--pb-accent);
+  color: var(--pb-text-on-accent);
+}
+
+.pb-pagination [aria-current="page"]:hover { background-color: var(--pb-accent-hover); }
+
+.pb-pagination__gap {
+  color: var(--pb-text-muted);
+  padding: 0 var(--pb-space-2);
+}
+
+
 /* ICONS ===================================================================
    Icons are inline SVG referencing a sprite, sized by CSS and coloured by
    currentColor — so an icon inside a selected button turns white with the
@@ -2149,5 +2399,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 @media (prefers-reduced-motion: reduce) {
   .pb-dot--pulse,
   .pb-state-offline,
+  .pb-skeleton,
   .pb-progress__bar--animated { animation: none; }
 }
