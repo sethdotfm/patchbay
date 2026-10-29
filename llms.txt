@@ -67,7 +67,7 @@ Utils: pb-row[--tight|--wrap] pb-col pb-grow pb-push pb-text-strong|muted|disabl
 Theme crossfade: add pb-theme-transition to <html>, set data-theme, remove after --pb-motion-theme.
 
 ## Tokens (--pb-*)
-hue-* (primitives; don't read directly) · surface-sunken|base|raised|overlay|high|control|hover · edge-hard|edge|edge-soft|edge-light · accent[-hover|-muted|-wash] · commit · protect · status-ok[-hover]|warn|error|info|idle · status-warn-fill · source|dest|tieline[-hover] · signal-video|01–16 · text[-strong|-muted|-disabled|-on-accent] · font-num · text-2xs|xs|sm(13px)|md|lg|xl (rem) · weight-normal|medium|bold · space-1…10 = 2,4,6,8,12,14,16,20,24,32px · control-h(30)[-sm|-lg] · rolebar-w · page-min-w · touch-text(16px) · row-h · toolbar-h · radius-* = 0 · motion-fast|normal|drawer|theme|enter · z-sticky|summary|drawer|scrim|modal|dropdown|tooltip|toast
+hue-* (primitives; don't read directly) · surface-sunken|base|raised|overlay|high|control|hover · edge-hard|edge|edge-soft|edge-light · accent[-hover|-muted|-wash] · commit · protect · status-ok[-hover]|warn|error|info|idle · status-warn-fill · source|dest|tieline[-hover] · signal-video|01–16 · text[-strong|-muted|-disabled|-on-accent] · font-num · text-2xs|xs|sm(13px)|md|lg|xl (rem) · weight-normal|medium|bold · space-1…10 = 2,4,6,8,12,14,16,20,24,32px · control-h(30)[-sm|-lg] · rolebar-w · page-min-w · touch-text(16px) · row-h · toolbar-h · shadow-overlay (rim + 6px block; block is lifted grey in dark) · radius-* = 0 · motion-fast|normal|drawer|theme|enter · z-sticky|summary|drawer|scrim|modal|dropdown|tooltip|toast
 
 ## Example
 <div class="pb-panel"><div class="pb-header">Output</div><div class="pb-body"><div class="pb-form">
