@@ -2407,8 +2407,19 @@ textarea::-webkit-scrollbar-thumb:hover {
   transition: background-color var(--pb-motion-theme) var(--pb-ease),
               border-color var(--pb-motion-theme) var(--pb-ease),
               color var(--pb-motion-theme) var(--pb-ease),
+              fill var(--pb-motion-theme) var(--pb-ease),
+              stroke var(--pb-motion-theme) var(--pb-ease),
+              outline-color var(--pb-motion-theme) var(--pb-ease),
+              text-decoration-color var(--pb-motion-theme) var(--pb-ease),
               box-shadow var(--pb-motion-theme) var(--pb-ease) !important;
 }
+
+/* With document.startViewTransition(), the browser crossfades one snapshot of
+   the page, so nothing steps or drifts out of sync (native controls and the
+   checkbox glyph images included). Use it in preference to the class above. */
+::view-transition-group(root) { animation-duration: var(--pb-motion-theme); animation-timing-function: var(--pb-ease); }
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: var(--pb-motion-theme); animation-timing-function: var(--pb-ease); }
 
 /* REDUCED MOTION ==========================================================
    Transition durations are zeroed in the tokens; looping decoration stops

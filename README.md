@@ -52,9 +52,11 @@ so they have their own overrides at the bottom of `patchbay.tokens.css`.
 `light-dark()` needs Chrome 123+, Safari 17.5+ or Firefox 120+. Dimming a
 label when its control is disabled uses `:has()`, which needs Firefox 121+.
 
-To crossfade a theme switch, add `pb-theme-transition` to `<html>`, change
-`data-theme`, then remove the class after `--pb-motion-theme` (200ms).
-`demo.html` shows how. It's instant under `prefers-reduced-motion`.
+To crossfade a theme switch smoothly, wrap the `data-theme` change in
+`document.startViewTransition()`; the browser fades one snapshot of the page, so
+nothing steps out of sync. Where that is missing, add `pb-theme-transition` to
+`<html>`, change `data-theme`, then remove the class after `--pb-motion-theme`
+(200ms). `demo/demo.js` shows both. It's instant under `prefers-reduced-motion`.
 
 ### Scaling
 
