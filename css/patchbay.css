@@ -1522,6 +1522,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   text-align: right;
 }
 
+.pb-table--compact thead th { padding: var(--pb-space-3); }
 .pb-table--compact tbody td { height: 1.375rem; padding: 0 var(--pb-space-3); }
 
 .pb-table caption {
