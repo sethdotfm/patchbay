@@ -56,7 +56,7 @@ To crossfade a theme switch smoothly, wrap the `data-theme` change in
 `document.startViewTransition()`; the browser fades one snapshot of the page, so
 nothing steps out of sync. Where that is missing, add `pb-theme-transition` to
 `<html>`, change `data-theme`, then remove the class after `--pb-motion-theme`
-(200ms). `demo/demo.js` shows both. It's instant under `prefers-reduced-motion`.
+(400ms). `demo/demo.js` shows both. It's instant under `prefers-reduced-motion`.
 
 ### Scaling
 

@@ -259,7 +259,7 @@
   --pb-motion-fast:    100ms;
   --pb-motion-normal:  160ms;
   --pb-motion-drawer:  220ms;
-  --pb-motion-theme:   200ms;  /* light/dark crossfade */
+  --pb-motion-theme:   400ms;  /* light/dark crossfade */
   --pb-motion-enter:   400ms;  /* a new row or card arriving */
   --pb-ease:           cubic-bezier(0.25, 0.1, 0.25, 1);
 
