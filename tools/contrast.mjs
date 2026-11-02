@@ -192,6 +192,9 @@ const PAIRS = [
   ["control outline", ["--pb-edge"], RESTING, 3],
   ["focus ring", ["--pb-accent"], SURFACES, 3],
   ["warn fill on the track", ["--pb-status-warn-fill"], ["--pb-surface-sunken"], 3],
+  // Decorative, not a WCAG requirement: the offset block behind overlays must
+  // read against the page, which is what black-on-near-black failed at.
+  ["overlay shadow block", ["--pb-shadow-block"], ["--pb-surface-sunken", "--pb-surface-base", "--pb-surface-raised"], 1.5],
   ["scrollbar thumb", ["--pb-scroll-thumb"], ["--pb-surface-base", "--pb-surface-raised"], 3],
 ];
 

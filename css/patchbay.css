@@ -182,6 +182,9 @@ textarea::-webkit-scrollbar-thumb:hover {
   border-right: var(--pb-accent-bar-w) solid var(--pb-edge-hard);
 }
 
+/* A handle already draws the rule; don't stack the pane's bar beside it. */
+.pb-pane--divided:has(+ .pb-split-handle) { border-right: 0; }
+
 .pb-split--vertical > .pb-pane--divided {
   border-right: 0;
   border-bottom: var(--pb-accent-bar-w) solid var(--pb-edge-hard);
@@ -191,8 +194,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-split-handle {
   flex: 0 0 var(--pb-split-w);
   background: var(--pb-surface-high);
-  border-left: 1px solid var(--pb-edge-hard);
-  border-right: 1px solid var(--pb-edge-hard);
+  border-left: 1px solid var(--pb-edge);
+  border-right: 1px solid var(--pb-edge);
   cursor: col-resize;
   background-image: repeating-linear-gradient(
     to right,
@@ -557,10 +560,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   border-top-right-radius: var(--pb-radius-control);
 }
 
-.pb-btn-group .pb-btn + .pb-btn {
-  border-left: 1px solid var(--pb-edge-hard);
-}
-
 
 /* 06  CHIPS =============================================================== */
 
@@ -777,16 +776,33 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-number-wrap .pb-input {
   padding-right: var(--pb-space-8);
+  position: relative;
 }
 
 .pb-number-wrap input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.pb-number-wrap input::-webkit-outer-spin-button,
+/* The native spin buttons stay live but invisible, laid over the drawn
+   glyphs, so clicks, hold-to-repeat and the wheel all keep working. */
+.pb-number-wrap input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .pb-number-wrap input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+  bottom: 0;
+  cursor: pointer;
+  height: auto;
   margin: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 1.375rem;
+}
+
+/* Firefox cannot restyle its spinner: show the native one, not the glyphs. */
+@supports (-moz-appearance: none) {
+  .pb-number-wrap input[type="number"] { -moz-appearance: number-input; }
+  .pb-number-wrap::before,
+  .pb-number-wrap::after { display: none; }
 }
 
 .pb-number-wrap::before,
@@ -1522,6 +1538,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   text-align: right;
 }
 
+.pb-table--compact thead th { padding: var(--pb-space-3); }
 .pb-table--compact tbody td { height: 1.375rem; padding: 0 var(--pb-space-3); }
 
 .pb-table caption {
@@ -1638,6 +1655,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   gap: var(--pb-space-3);
   line-height: 1;
   padding: var(--pb-space-2) var(--pb-space-4);
+  vertical-align: middle;
   white-space: nowrap;
 }
 
@@ -2389,8 +2407,19 @@ textarea::-webkit-scrollbar-thumb:hover {
   transition: background-color var(--pb-motion-theme) var(--pb-ease),
               border-color var(--pb-motion-theme) var(--pb-ease),
               color var(--pb-motion-theme) var(--pb-ease),
+              fill var(--pb-motion-theme) var(--pb-ease),
+              stroke var(--pb-motion-theme) var(--pb-ease),
+              outline-color var(--pb-motion-theme) var(--pb-ease),
+              text-decoration-color var(--pb-motion-theme) var(--pb-ease),
               box-shadow var(--pb-motion-theme) var(--pb-ease) !important;
 }
+
+/* With document.startViewTransition(), the browser crossfades one snapshot of
+   the page, so nothing steps or drifts out of sync (native controls and the
+   checkbox glyph images included). Use it in preference to the class above. */
+::view-transition-group(root) { animation-duration: var(--pb-motion-theme); animation-timing-function: var(--pb-ease); }
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: var(--pb-motion-theme); animation-timing-function: var(--pb-ease); }
 
 /* REDUCED MOTION ==========================================================
    Transition durations are zeroed in the tokens; looping decoration stops

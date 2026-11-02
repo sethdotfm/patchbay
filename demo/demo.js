@@ -29,9 +29,16 @@ if (themeToggle) {
   const isLight = () => (root.dataset.theme || (osLight.matches ? "light" : "dark")) === "light";
   const sync = () => { themeToggle.textContent = isLight() ? "Dark mode" : "Light mode"; };
   themeToggle.addEventListener("click", () => {
+    const next = isLight() ? "dark" : "light";
+    const apply = () => { root.dataset.theme = next; sync(); };
+    // Best: crossfade one snapshot of the whole page, so every surface, glyph and
+    // native control moves together. Fallback: fade each property (pb-theme-transition).
+    if (document.startViewTransition && !reduced.matches) {
+      document.startViewTransition(apply);
+      return;
+    }
     root.classList.add("pb-theme-transition");
-    root.dataset.theme = isLight() ? "dark" : "light";
-    sync();
+    apply();
     const ms = parseFloat(getComputedStyle(root).getPropertyValue("--pb-motion-theme")) || 0;
     setTimeout(() => root.classList.remove("pb-theme-transition"), ms + 50);
   });
