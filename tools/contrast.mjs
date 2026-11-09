@@ -88,8 +88,8 @@ function resolve(value, theme, seen = []) {
     const [light, dark] = splitTop(out.slice(at + 11, end));
     out = out.slice(0, at) + (theme === "light" ? light : dark) + out.slice(end + 1);
   }
-  // Only `color-mix(in srgb, <colour> N%, transparent)` is supported: it is
-  // the one form the tokens use, and it is just the colour at N% alpha.
+  // Supported: `color-mix(in srgb, <colour> N%, transparent)` (the colour at
+  // N% alpha) and `color-mix(in oklab, <colour> N%, <colour>)` (opaque).
   for (let guard = 0; guard < 50; guard++) {
     const cm = out.indexOf("color-mix(");
     if (cm < 0) break;
@@ -97,15 +97,53 @@ function resolve(value, theme, seen = []) {
     const [space, source, tail] = splitTop(out.slice(cm + 10, end));
     const m = source.match(/^(.*\S)\s+([\d.]+)%$/);
     const c = m && parseColor(m[1]);
-    if (space !== "in srgb" || tail !== "transparent" || !c) {
-      throw new Error(`unsupported color-mix: ${out.slice(cm, end + 1)}`);
+    let mixed = null;
+    if (c && space === "in srgb" && tail === "transparent") {
+      mixed = { ...c, a: c.a * (m[2] / 100) };
+    } else if (c && space === "in oklab" && parseColor(tail)) {
+      mixed = mixOklab(c, parseColor(tail), m[2] / 100);
     }
-    out = out.slice(0, cm) + canonical({ ...c, a: c.a * (m[2] / 100) }) + out.slice(end + 1);
+    if (!mixed) throw new Error(`unsupported color-mix: ${out.slice(cm, end + 1)}`);
+    out = out.slice(0, cm) + canonical(mixed) + out.slice(end + 1);
   }
   return out;
 }
 
 // ---- colour maths -----------------------------------------------------------
+
+const toLin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+const fromLin = (v) => 255 * (v <= 0.0031308 ? 12.92 * v : 1.055 * v ** (1 / 2.4) - 0.055);
+
+function toOklab({ r, g, b }) {
+  const [R, G, B] = [r, g, b].map(toLin);
+  const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B);
+  const m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B);
+  const s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B);
+  return [
+    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
+  ];
+}
+
+function fromOklab([L, a, b]) {
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+  const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+  const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  const lin = [
+    4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+    -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+    -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s,
+  ];
+  const [r, g, bl] = lin.map((v) => Math.min(255, Math.max(0, fromLin(v))));
+  return { r, g, b: bl, a: 1 };
+}
+
+// `p` is the share of colour `x`; the rest is `y`.
+function mixOklab(x, y, p) {
+  const [ox, oy] = [toOklab(x), toOklab(y)];
+  return fromOklab(ox.map((v, i) => v * p + oy[i] * (1 - p)));
+}
 
 const hex = (n) => Math.round(n).toString(16).padStart(2, "0");
 
@@ -179,7 +217,7 @@ const RESTING = SURFACES.filter((s) => s !== "--pb-surface-hover");
 const STATUS_TEXT = ["ok", "warn", "error", "info", "idle"].map((s) => `--pb-status-${s}`);
 const ACCENT_TEXT = ["--pb-accent", "--pb-accent-hover", "--pb-commit", "--pb-commit-hover"];
 const ON_ACCENT = ["--pb-accent", "--pb-accent-hover", "--pb-commit", "--pb-commit-hover",
-  "--pb-status-error", "--pb-danger-hover", "--pb-status-ok", "--pb-status-ok-hover"]
+  "--pb-status-error", "--pb-danger-hover", "--pb-status-ok", "--pb-status-ok-hover", "--pb-view"]
   .filter((t) => raw[t] !== undefined);
 
 // [label, foreground tokens, background tokens, minimum ratio]
@@ -189,6 +227,7 @@ const PAIRS = [
   ["protect colour on surfaces", ["--pb-protect"], RESTING, 3],
   ["text on routing roles", ["--pb-text", "--pb-text-strong"], ROLES, 4.5],
   ["on-accent text on fills", ["--pb-text-on-accent"], ON_ACCENT, 4.5],
+  ["text on routing state tints", ["--pb-text", "--pb-text-strong"], ["--pb-view-idle", "--pb-current-idle"], 4.5],
   ["control outline", ["--pb-edge"], RESTING, 3],
   ["focus ring", ["--pb-accent"], SURFACES, 3],
   ["warn fill on the track", ["--pb-status-warn-fill"], ["--pb-surface-sunken"], 3],
