@@ -628,7 +628,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-chip-input:focus-within { border-color: var(--pb-accent); }
 
 .pb-chip-input:empty:not(:focus)::before {
-  color: var(--pb-text-disabled);
+  color: var(--pb-text-muted);
   content: attr(data-placeholder);
   pointer-events: none;
 }
@@ -687,9 +687,10 @@ textarea::-webkit-scrollbar-thumb:hover {
   outline: none;
 }
 
+/* Muted, not disabled: a placeholder is often a compact field's only label (WCAG 1.4.3). */
 .pb-input::placeholder,
 .pb-textarea::placeholder {
-  color: var(--pb-text-disabled);
+  color: var(--pb-text-muted);
 }
 
 /* Disabled: the control is present but not yours to change. Keep the
