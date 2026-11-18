@@ -287,6 +287,18 @@
   --pb-z-tooltip: 1200;
   --pb-z-toast:   1300;
 
+
+  /* ----------------------------------------------------------------------
+     DEPRECATED
+     Patchbay reads none of these. Kept so apps that read them still
+     resolve; they go in the next major.
+     ---------------------------------------------------------------------- */
+  --pb-accent-tab:       color-mix(in srgb, var(--pb-accent) 10%, transparent);
+  --pb-icon:             light-dark(rgba(0, 0, 0, 0.85), rgba(230, 230, 230, 0.90));
+  --pb-icon-disabled:    light-dark(rgba(0, 0, 0, 0.38), rgba(230, 230, 230, 0.36));
+  --pb-tab-h:            2.25rem;
+  --pb-motion-instant:   0ms;
+
 }
 
 /* iOS zooms into a focused field under 16px and does not zoom back out. */

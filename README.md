@@ -49,8 +49,10 @@ Firefox 121+.
 
 ## See it
 
-Serve the repo over http (`python3 -m http.server`) and open `index.html`. It
-is the reference: every component live, with its markup and a copy button.
+Serve the repo over http (`python3 -m http.server`) and open `index.html`,
+the home page, which has a live control panel built from Patchbay.
+`reference.html` shows every component live, with its markup and a copy
+button.
 `demo/` has four mock apps built only from Patchbay classes: a router
 matrix, a settings page, a communication log and a phone layout.
 
@@ -66,7 +68,7 @@ Chrome blocks the icon sprite and the fonts on `file://`, so use http.
 | `icons/lucide.svg` | Lucide v0.460.0 icon sprite, 1,539 icons. |
 | `llms.txt` | Compact rules and class reference for coding assistants. |
 | `CHANGELOG.md` | What changed in each release and how to upgrade. |
-| `index.html`, `demo/` | The reference page and mock apps. Not part of the package. |
+| `index.html`, `reference.html`, `demo/` | The home page, the component reference and the mock apps. Not part of the package. |
 | `tools/contrast.mjs` | Checks every documented contrast pair in both themes. |
 | `tools/classes.mjs` | Checks that pages use only defined classes and show every one. |
 
@@ -182,7 +184,7 @@ An app built with Patchbay still has to:
 
 - Associate every `pb-form__label` with its control (`for` and `id`).
 - Give status dots, level swatches and icon-only buttons a text alternative.
-- Use the right ARIA for tabs, menus and dialogs. `index.html` shows the
+- Use the right ARIA for tabs, menus and dialogs. `reference.html` shows the
   pattern; keyboard behaviour (arrow keys, focus trapping) is app JS.
 - Give a tooltip trigger its own accessible name or `aria-describedby`. The
   `data-pb-tip` text is decoration. Give a toast stack `aria-live="polite"`

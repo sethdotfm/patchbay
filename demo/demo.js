@@ -6,22 +6,24 @@ const $ = (sel, scope = document) => scope.querySelector(sel);
 const $$ = (sel, scope = document) => [...scope.querySelectorAll(sel)];
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 const query = new URLSearchParams(location.search);
+const scaleFromUrl = parseFloat(query.get("scale")) || null;
 
 // ?theme=, ?scale=, ?instant and ?only=id,id, for links and screenshots.
 if (query.get("theme")) root.dataset.theme = query.get("theme");
-if (query.get("scale")) root.style.fontSize = `${parseFloat(query.get("scale"))}%`;
+if (scaleFromUrl) root.style.fontSize = `${scaleFromUrl}%`;
 if (query.has("instant")) root.style.scrollBehavior = "auto";
 if (query.get("only")) {
   const keep = query.get("only").split(",");
   $$(".demo-sec").forEach((sec) => { sec.hidden = !keep.includes(sec.id); });
 }
 
-// Read from VERSION, so a release bumps one file.
+// Filled from VERSION, so a release bumps one file. Slots start hidden and
+// stay hidden where VERSION can't be fetched (file://).
 const versionSlots = $$("[data-version]");
 if (versionSlots.length) {
-  fetch("VERSION")
+  fetch(root.dataset.versionUrl || "VERSION")
     .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
-    .then((v) => versionSlots.forEach((el) => { el.textContent = `v${v.trim()}`; }))
+    .then((v) => versionSlots.forEach((el) => { el.textContent = `v${v.trim()}`; el.hidden = false; }))
     .catch(() => {});
 }
 
@@ -52,7 +54,7 @@ if (themeToggle) {
 
 const scaleButtons = $$("[data-scale]");
 const pressScale = (b) => scaleButtons.forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
-if (query.get("scale")) pressScale(scaleButtons.find((o) => o.dataset.scale === String(parseFloat(query.get("scale")))));
+if (scaleFromUrl) pressScale(scaleButtons.find((o) => o.dataset.scale === String(scaleFromUrl)));
 scaleButtons.forEach((b) => b.addEventListener("click", () => {
   root.style.fontSize = b.dataset.scale === "100" ? "" : `${b.dataset.scale}%`;
   pressScale(b);

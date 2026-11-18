@@ -8,11 +8,11 @@ Patchbay is a static CSS design system with no build step and no dependencies. I
 
 ## Developing
 
-- Verify changes in `index.html` (the reference page, one `<section id>` per component group, grouped by topic in its table of contents) and the mock apps in `demo/`. Serve over http (`python3 -m http.server`) rather than `file://`, because Chrome blocks the external `<use href="icons/lucide.svg#…">` icon sprite and the `fonts/` files on `file://`. `?theme=dark|light`, `?scale=125`, `?only=id,id` and `?instant` on `index.html` help with screenshots.
+- Verify changes in `reference.html` (the reference page, one `<section id>` per component group, grouped by topic in its table of contents) and the mock apps in `demo/`. `index.html` is the home page; it shows a live console and links into the reference. Serve over http (`python3 -m http.server`) rather than `file://`, because Chrome blocks the external `<use href="icons/lucide.svg#…">` icon sprite and the `fonts/` files on `file://`. `?theme=dark|light`, `?scale=125`, `?only=id,id` and `?instant` on `reference.html` help with screenshots.
 - Check both themes and `prefers-reduced-motion`, and at 125% scale (the toolbar buttons) since sizes are rem.
 - `node tools/contrast.mjs` must exit 0 (checks documented text and non-text pairs in both themes). `--dump` prints every resolved token; diff it before and after a token refactor, since it normalises rem to px and colours to hex. `--worst` gives the per-token ratios quoted in the tokens file.
-- `node tools/classes.mjs --llms [pages…]` must print "All … defined and shown": every `.pb-*` class in `patchbay.css` needs a live example in `index.html` and a mention in `llms.txt`, and no page may use an undefined one. CI (`.github/workflows/check.yml`) runs this and the contrast check over `index.html` and every mock app.
-- `demo/v1-regression.html` is a frozen page for pixel diffs (`?theme=` forces a theme; animations are off). Change it only on purpose.
+- `node tools/classes.mjs --llms [pages…]` must print "All … defined and shown": every `.pb-*` class in `patchbay.css` needs a live example in `reference.html` and a mention in `llms.txt`, and no page may use an undefined one. CI (`.github/workflows/check.yml`) runs this and the contrast check over the reference, the home page and every mock app.
+- `demo/v1-regression.html` is a frozen page for pixel diffs (`?theme=` forces a theme; animations are off). Change it only on purpose. In 3.0 it lost its Bootstrap `<link>`; against 2.3 it differs only by the locked-crosspoint cursor.
 - For a release, bump `VERSION` and `package.json` together (CI checks they match) and add a `CHANGELOG.md` entry with upgrade steps. Apps copy `VERSION` when they vendor `css/`, `fonts/` and `icons/`.
 
 ## Architecture

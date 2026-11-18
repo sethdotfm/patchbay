@@ -34,10 +34,10 @@ stylesheet and an icon sprite, and it installs from npm as `patchbay-css`.
   - `legend` inherits its font size.
   - There is no styling for `.h1`-style classes, `small`, `mark` or
     `abbr[title]`.
-- **Unused tokens are removed:** `--pb-accent-tab`, `--pb-icon`,
-  `--pb-icon-disabled`, `--pb-tab-h` and `--pb-motion-instant`. Nothing in
-  Patchbay read them.
-- **`demo.html` is removed.** It only redirected to `index.html`.
+- **The reference page moved to `reference.html`.** `index.html` is now a
+  home page with a live routing console, install steps and links into the
+  reference and the mock apps. Update bookmarks and `classes.mjs` arguments.
+- **`demo.html` is removed.** It only redirected to the reference page.
 - **`transition.md` is removed.** Its v1 upgrade guide is the 2.0.0 entry
   below.
 
@@ -59,6 +59,9 @@ mode. Each variant now keeps `--pb-text-on-accent` on hover.
 - `package.json`, for `npm install patchbay-css`. A bare
   `@import "patchbay-css"` loads `css/index.css` (tokens, then components).
   It also exports `tokens.css`, `patchbay.css`, `fonts.css` and `icons.svg`.
+- Deprecated tokens: `--pb-accent-tab`, `--pb-icon`, `--pb-icon-disabled`,
+  `--pb-tab-h` and `--pb-motion-instant`. Patchbay reads none of them; they
+  stay until the next major so apps that read them still resolve.
 - `LICENSE`: Patchbay is released into the public domain under the
   Unlicense. Plex (OFL 1.1) and Lucide (ISC) keep their own licences.
 - Tokens: `--pb-status-tint` (how much status colour washes an alert or

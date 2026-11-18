@@ -41,7 +41,7 @@
     "*.css"
   ],
   "scripts": {
-    "check": "node tools/contrast.mjs && node tools/classes.mjs --llms index.html demo/router.html demo/settings.html demo/log.html demo/phone.html",
+    "check": "node tools/contrast.mjs && node tools/classes.mjs --llms reference.html index.html demo/router.html demo/settings.html demo/log.html demo/phone.html",
     "serve": "python3 -m http.server"
   }
 }

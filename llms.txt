@@ -5,7 +5,7 @@ Load: <meta name="color-scheme" content="light dark"> → fonts/plex.css (self-h
 ## Rules
 - Never hard-code colour/size/radius/shadow; use var(--pb-*). New value → new token in patchbay.tokens.css.
 - Page CSS = layout only. New component → new pb- section in patchbay.css, tokens only.
-- No framework. patchbay.css includes its own reset (box-sizing, margins, form fonts, tables). Don't add Bootstrap or utility classes (d-flex, mb-3); use pb-row/pb-col and page layout CSS. Bare h1–h6 follow the type scale; bare links take the text colour, underlined.
+- No framework. patchbay.css includes its own reset (box-sizing, margins, form fonts, tables). Don't add Bootstrap or utility classes (d-flex, mb-3); use pb-row/pb-col and page layout CSS. Bare h1 to h6 follow the type scale; bare links take the text colour, underlined.
 - No border-radius. Shadows hard, no blur. Never remove focus outlines.
 - One accent (--pb-accent) = selection/focus only.
 - Status = ok|warn|error|info|idle only, always with text, never colour alone.
@@ -67,7 +67,7 @@ Utils: pb-row[--tight|--wrap] pb-col pb-grow pb-push pb-text-strong|muted|disabl
 Theme crossfade: wrap the data-theme change in document.startViewTransition(); fallback: add pb-theme-transition to <html>, set data-theme, remove after --pb-motion-theme.
 
 ## Tokens (--pb-*)
-hue-* (primitives; don't read directly) · surface-sunken|base|raised|overlay|high|control|hover · edge-hard|edge|edge-soft|edge-light · accent[-hover|-muted|-wash] · commit · protect · view[-idle]|current-idle (routing state: viewed/staged destination, muted idle tints) · status-ok[-hover]|warn|error|info|idle · status-warn-fill · status-tint (alert/banner wash %) · source|dest|tieline[-hover] · signal-video|01–16 · text[-strong|-muted|-disabled|-on-accent] · font-num · text-2xs|xs|sm(13px)|md|lg|xl (rem) · weight-normal|medium|bold · space-1…10 = 2,4,6,8,12,14,16,20,24,32px · control-h(30)[-sm|-lg] · rolebar-w · page-min-w · touch-text(16px) · field-text-min · scroll-w|inset|thumb|thumb-hover|thumb-min|track|w-lg|inset-lg · row-h · toolbar-h · caret-w|caret-h · shadow-overlay (rim + 6px block; block is lifted grey in dark) · radius-* = 0 · motion-fast|normal|drawer|theme|enter · z-sticky|summary|drawer|scrim|modal|dropdown|tooltip|toast
+hue-* (primitives; don't read directly) · surface-sunken|base|raised|overlay|high|control|hover · edge-hard|edge|edge-soft|edge-light · accent[-hover|-muted|-wash] · commit · protect · view[-idle]|current-idle (routing state: viewed/staged destination, muted idle tints) · status-ok[-hover]|warn|error|info|idle · status-warn-fill · status-tint (alert/banner wash %) · source|dest|tieline[-hover] · signal-video|01…16 · text[-strong|-muted|-disabled|-on-accent] · font-num · text-2xs|xs|sm(13px)|md|lg|xl (rem) · weight-normal|medium|bold · space-1…10 = 2,4,6,8,12,14,16,20,24,32px · control-h(30)[-sm|-lg] · rolebar-w · page-min-w · touch-text(16px) · field-text-min · scroll-w|inset|thumb|thumb-hover|thumb-min|track|w-lg|inset-lg · row-h · toolbar-h · caret-w|caret-h · shadow-overlay (rim + 6px block; block is lifted grey in dark) · radius-* = 0 · motion-fast|normal|drawer|theme|enter · z-sticky|summary|drawer|scrim|modal|dropdown|tooltip|toast
 
 ## Example
 <div class="pb-panel"><div class="pb-header">Output</div><div class="pb-body"><div class="pb-form">
