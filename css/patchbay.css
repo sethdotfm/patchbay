@@ -100,12 +100,25 @@ pre code {
 
 /* 02  SCROLLBARS ========================================================== */
 
-.pb-scroll,
-.pb-pane,
-.pb-grid-body,
-textarea {
-  scrollbar-color: var(--pb-scroll-thumb) var(--pb-scroll-track);
-  scrollbar-width: thin;
+/* Chrome and Safari draw the ::-webkit-scrollbar rules: a set width, an
+   inset thumb, a hover colour and a least thumb length, always shown rather
+   than as overlay bars. They skip all of it on an element whose
+   scrollbar-width or scrollbar-color is not auto, inherited included, so
+   the standard properties go only to browsers without the pseudo (Firefox).
+   <html class="pb-scroll"> styles the page's own bar. */
+@supports not selector(::-webkit-scrollbar) {
+  .pb-scroll,
+  .pb-pane,
+  .pb-grid-body,
+  textarea {
+    scrollbar-color: var(--pb-scroll-thumb) var(--pb-scroll-track);
+    scrollbar-width: thin;
+  }
+
+  .pb-scroll--lg {
+    scrollbar-color: var(--pb-scroll-thumb) var(--pb-surface-control);
+    scrollbar-width: auto;
+  }
 }
 
 .pb-scroll::-webkit-scrollbar,
@@ -123,25 +136,59 @@ textarea::-webkit-scrollbar-track {
   background: var(--pb-scroll-track);
 }
 
+/* padding-box: the border is the inset, and a transparent track would
+   otherwise show the thumb's own colour through it. */
 .pb-scroll::-webkit-scrollbar-thumb,
 .pb-pane::-webkit-scrollbar-thumb,
 .pb-grid-body::-webkit-scrollbar-thumb,
 textarea::-webkit-scrollbar-thumb {
+  background-clip: padding-box;
   background-color: var(--pb-scroll-thumb);
+  border: var(--pb-scroll-inset) solid transparent;
   border-radius: 0;
-  border: 3px solid var(--pb-scroll-track);
+}
+
+.pb-scroll::-webkit-scrollbar-thumb:vertical,
+.pb-pane::-webkit-scrollbar-thumb:vertical,
+.pb-grid-body::-webkit-scrollbar-thumb:vertical,
+textarea::-webkit-scrollbar-thumb:vertical {
+  min-height: var(--pb-scroll-thumb-min);
+}
+
+.pb-scroll::-webkit-scrollbar-thumb:horizontal,
+.pb-pane::-webkit-scrollbar-thumb:horizontal,
+.pb-grid-body::-webkit-scrollbar-thumb:horizontal,
+textarea::-webkit-scrollbar-thumb:horizontal {
+  min-width: var(--pb-scroll-thumb-min);
 }
 
 .pb-scroll::-webkit-scrollbar-thumb:hover,
 .pb-pane::-webkit-scrollbar-thumb:hover,
 .pb-grid-body::-webkit-scrollbar-thumb:hover,
 textarea::-webkit-scrollbar-thumb:hover {
-  background-color: var(--pb-surface-hover);
+  background-color: var(--pb-scroll-thumb-hover);
 }
 
 .pb-scroll::-webkit-scrollbar-corner,
-.pb-pane::-webkit-scrollbar-corner {
+.pb-pane::-webkit-scrollbar-corner,
+.pb-grid-body::-webkit-scrollbar-corner {
   background: var(--pb-scroll-track);
+}
+
+/* A large bar on a visible track: class="pb-scroll pb-scroll--lg". After
+   the base rules, which have the same specificity. */
+.pb-scroll--lg::-webkit-scrollbar {
+  width: var(--pb-scroll-w-lg);
+  height: var(--pb-scroll-w-lg);
+}
+
+.pb-scroll--lg::-webkit-scrollbar-track,
+.pb-scroll--lg::-webkit-scrollbar-corner {
+  background: var(--pb-surface-control);
+}
+
+.pb-scroll--lg::-webkit-scrollbar-thumb {
+  border-width: var(--pb-scroll-inset-lg);
 }
 
 
@@ -662,7 +709,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   color: var(--pb-text);
   display: inline-block;
   font-family: inherit;
-  font-size: var(--pb-text-sm);
+  font-size: max(var(--pb-field-text-min), var(--pb-text-sm));
   font-weight: var(--pb-weight-normal);
   height: var(--pb-control-h);
   margin: 0;
@@ -1259,7 +1306,9 @@ textarea::-webkit-scrollbar-thumb:hover {
   overscroll-behavior: contain;
 }
 
-/* Submenus open on hover, flipping left when near the right edge. */
+/* Submenus open on hover or keyboard focus, flipping left when near the
+   right edge. :focus-visible, not :focus-within, so a clicked parent does
+   not hold its submenu open after the pointer leaves. */
 .pb-menu li { position: relative; }
 
 .pb-menu__sub {
@@ -1270,7 +1319,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 }
 
 .pb-menu__sub--left { left: auto; right: 100%; }
-.pb-menu li:hover > .pb-menu__sub { display: block; }
+.pb-menu li:hover > .pb-menu__sub,
+.pb-menu li:has(:focus-visible) > .pb-menu__sub { display: block; }
 
 
 /* 12  MODALS ============================================================== */
@@ -1925,6 +1975,15 @@ textarea::-webkit-scrollbar-thumb:hover {
   visibility: visible;
 }
 
+/* A tap leaves :hover on the button, so the tip would stay over it after the
+   press. Keyboard focus still shows it. */
+@media (hover: none) {
+  [data-pb-tip]:hover:not(:focus-visible)::after {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 .pb-tip--top[data-pb-tip]::after {
   bottom: calc(100% + var(--pb-space-2));
   top: auto;
@@ -2097,14 +2156,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 
 /* 26  TOUCH & PHONE LAYOUT =============================================== */
-
-/* iOS zooms into a focused field under 16px and does not zoom back out.
-   Zero specificity so an app's own sizes still win. */
-@media (pointer: coarse) {
-  :where(.pb-input, .pb-select, .pb-textarea) {
-    font-size: max(var(--pb-touch-text), var(--pb-text-sm));
-  }
-}
 
 /* <html data-pb-layout="phone">: drop the page floor and let the dense
    layouts reflow. The routing matrix still scrolls inside its own pane. */

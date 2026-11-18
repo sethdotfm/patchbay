@@ -234,7 +234,7 @@ const PAIRS = [
   // Decorative, not a WCAG requirement: the offset block behind overlays must
   // read against the page, which is what black-on-near-black failed at.
   ["overlay shadow block", ["--pb-shadow-block"], ["--pb-surface-sunken", "--pb-surface-base", "--pb-surface-raised"], 1.5],
-  ["scrollbar thumb", ["--pb-scroll-thumb"], ["--pb-surface-base", "--pb-surface-raised"], 3],
+  ["scrollbar thumb", ["--pb-scroll-thumb", "--pb-scroll-thumb-hover"], ["--pb-surface-base", "--pb-surface-raised", "--pb-surface-sunken", "--pb-surface-control"], 3],
 ];
 
 const colour = (token, theme) => {

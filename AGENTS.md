@@ -8,18 +8,18 @@ Patchbay is a static CSS design system (no build step, no package manager, no te
 
 ## Developing
 
-- Verify changes in `index.html` (the reference page, one `<section id>` per component group, in the order of `patchbay.css`'s numbered sections) and the mock apps in `demo/`. Serve over http (`python3 -m http.server`) rather than `file://`, because Chrome blocks the external `<use href="icons/lucide.svg#…">` icon sprite on `file://`. `?theme=dark|light`, `?scale=125`, `?only=id,id` and `?instant` on `index.html` help with screenshots.
+- Verify changes in `index.html` (the reference page, one `<section id>` per component group, in the order of `patchbay.css`'s numbered sections) and the mock apps in `demo/`. Serve over http (`python3 -m http.server`) rather than `file://`, because Chrome blocks the external `<use href="icons/lucide.svg#…">` icon sprite and the `fonts/` files on `file://`. `?theme=dark|light`, `?scale=125`, `?only=id,id` and `?instant` on `index.html` help with screenshots.
 - Check both themes and `prefers-reduced-motion`, and at 125% scale (the toolbar buttons) since sizes are rem.
 - `node tools/contrast.mjs` must exit 0 (checks documented text and non-text pairs in both themes). `--dump` prints every resolved token; diff it before and after a token refactor, since it normalises rem to px and colours to hex. `--worst` gives the per-token ratios quoted in the tokens file.
 - `node tools/classes.mjs [pages…]` must print "All … defined and shown": every `.pb-*` class in `patchbay.css` needs a live example in `index.html`, and no page may use an undefined one.
 - `demo/v1-regression.html` is a frozen page for pixel diffs (`?theme=` forces a theme; animations are off). Change it only on purpose.
-- Bump `VERSION` for a release; apps copy it when they vendor `css/` and `icons/`.
+- Bump `VERSION` for a release; apps copy it when they vendor `css/`, `fonts/` and `icons/`.
 
 ## Architecture
 
 Three CSS layers, loaded in this order: Bootstrap (reset only) → tokens → components.
 
-- **`patchbay.tokens.css` is the only place values live.** Colours, type, spacing, sizing, motion and z-index are all `--pb-*` custom properties. Hues are defined once as `--pb-hue-*` primitives that the semantic tokens (accent, commit, status…) point at; components read only the semantic ones. Sizes are rem (hairlines, rims, bars and `--pb-touch-text` stay px on purpose), so apps scale with `html { font-size }`, never `zoom`. Colour tokens use `light-dark(<light>, <dark>)`, so theming is driven by `color-scheme` (OS default, forced by `data-theme`). Never write per-theme CSS rules; the exceptions are the checkbox/radio glyphs, which are images and have overrides at the bottom of the tokens file.
+- **`patchbay.tokens.css` is the only place values live.** Colours, type, spacing, sizing, motion and z-index are all `--pb-*` custom properties. Hues are defined once as `--pb-hue-*` primitives that the semantic tokens (accent, commit, status…) point at; components read only the semantic ones. Sizes are rem (hairlines, rims, bars, the default scrollbar and `--pb-touch-text` stay px on purpose; `pb-scroll--lg` is rem so it scales), so apps scale with `html { font-size }`, never `zoom`. Colour tokens use `light-dark(<light>, <dark>)`, so theming is driven by `color-scheme` (OS default, forced by `data-theme`). Never write per-theme CSS rules; the exceptions are the checkbox/radio glyphs, which are images and have overrides at the bottom of the tokens file.
 - **`patchbay.css` reads only tokens.** Never hard-code a colour, size, radius or shadow there. A new value means a new token. The file is organised into numbered sections (listed at the top), so add new components as a new `pb-` section and update that contents block.
 - **Bootstrap is a reset plus optional JS hooks.** Don't use Bootstrap utilities or bare components. Where Bootstrap JS needs its class, pair it with the `pb-` one (`btn pb-btn`, `form-control pb-input`, and so on; the full list is in `llms.txt`).
 - Naming is `pb-` prefix with BEM (`pb-btn--commit`, `pb-form__label`). Page-level CSS should be layout only.

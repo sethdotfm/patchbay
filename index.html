@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Patchbay</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="fonts/plex.css" rel="stylesheet">
   <link href="css/bootstrap.min.css" rel="stylesheet">
   <link href="css/patchbay.tokens.css" rel="stylesheet">
   <link href="css/patchbay.css" rel="stylesheet">
@@ -235,6 +235,14 @@
               <div class="pb-split-handle" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Resize"></div>
               <div class="pb-pane"><div class="pb-body">Right pane</div></div>
             </div>
+          </div>
+        </div>
+        <h3>Scrollbars</h3>
+        <p><code>pb-scroll</code> (and every <code>pb-pane</code>, <code>pb-grid-body</code> and textarea) gets a 10px bar that stays shown in Chrome and Safari, with a least thumb length of <code>--pb-scroll-thumb-min</code> so a long list still has a thumb to grab. Add <code>pb-scroll--lg</code> for a large bar on a visible track, for touch screens or a screen read from across a room; it is rem, so it grows with the UI. <code>&lt;html class="pb-scroll"&gt;</code> styles the page's own bar. Don't set <code>scrollbar-color</code> or <code>scrollbar-width</code> on an ancestor: Chrome and Safari then drop these rules.</p>
+        <div class="demo-ex">
+          <div class="demo-ex__view demo-ex__view--sunken" style="display: flex; gap: var(--pb-space-7); flex-wrap: wrap">
+            <div class="pb-scroll pb-panel" style="height: 6rem; width: 14rem; overflow: auto"><div class="pb-body" style="flex: none; width: 22rem; height: 40rem">A <code>pb-scroll</code> box. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sources 1 to 2,500 scroll here, both ways, so the corner shows. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div></div>
+            <div class="pb-scroll pb-scroll--lg pb-panel" style="height: 6rem; width: 14rem; overflow: auto"><div class="pb-body" style="flex: none; width: 22rem; height: 40rem">A <code>pb-scroll pb-scroll--lg</code> box. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div></div>
           </div>
         </div>
       </section>
@@ -810,15 +818,23 @@
 
         <h3>Menus</h3>
         <div class="demo-ex"><div class="demo-ex__view demo-ex__view--sunken" style="min-height: 12rem">
-          <ul class="pb-menu pb-menu--scroll" role="menu" aria-label="Output" style="list-style: none; display: inline-block; position: static; max-height: 10rem">
+          <ul class="pb-menu" role="menu" aria-label="Output" style="list-style: none; display: inline-block; position: static">
             <li role="none"><div class="pb-menu__label">Outputs</div></li>
             <li role="none"><button class="pb-menu__item" role="menuitem">Monitor wall</button></li>
             <li role="separator"><div class="pb-menu__section"></div></li>
             <li role="none"><button class="pb-menu__item" role="menuitem">REC A</button></li>
             <li role="none" style="position: relative"><button class="pb-menu__item" role="menuitem" aria-haspopup="true">More&hellip;</button>
-              <ul class="pb-menu pb-menu__sub" role="menu" aria-label="More" style="list-style: none"><li role="none"><button class="pb-menu__item" role="menuitem">Hover me, opens right</button></li></ul></li>
+              <ul class="pb-menu pb-menu__sub" role="menu" aria-label="More" style="list-style: none"><li role="none"><button class="pb-menu__item" role="menuitem">Opens right on hover or Tab</button></li></ul></li>
           </ul>
           <ul class="pb-menu pb-menu__sub--left" role="menu" aria-label="Left-opening" style="list-style: none; display: inline-block; position: static; margin-left: var(--pb-space-9)"><li role="none"><button class="pb-menu__item" role="menuitem">A left-opening submenu uses <code>pb-menu__sub--left</code></button></li></ul>
+          <ul class="pb-menu pb-menu--scroll" role="menu" aria-label="Long list" style="list-style: none; display: block; width: max-content; position: static; max-height: 7rem; margin-top: var(--pb-space-9)">
+            <li role="none"><div class="pb-menu__label"><code>pb-menu--scroll</code></div></li>
+            <li role="none"><button class="pb-menu__item" role="menuitem">VTR 1</button></li>
+            <li role="none"><button class="pb-menu__item" role="menuitem">VTR 2</button></li>
+            <li role="none"><button class="pb-menu__item" role="menuitem">VTR 3</button></li>
+            <li role="none"><button class="pb-menu__item" role="menuitem">VTR 4</button></li>
+            <li role="none"><button class="pb-menu__item" role="menuitem">VTR 5</button></li>
+          </ul>
         </div></div>
 
         <h3>Modals</h3>

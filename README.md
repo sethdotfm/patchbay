@@ -20,6 +20,7 @@ phone) built only from Patchbay classes.
 | `tools/contrast.mjs` | Resolves tokens per theme, checks the documented contrast pairs, dumps values. |
 | `tools/classes.mjs` | Reports classes a page uses that the CSS lacks, and classes the CSS defines that the page never shows. |
 | `VERSION` | The version to copy when you vendor Patchbay. |
+| `fonts/` | IBM Plex Sans (400, 500, 600) and Plex Mono (400, 500) as woff2, with `plex.css` (SIL OFL 1.1 in `fonts/OFL.txt`). |
 | `icons/lucide.svg` | Lucide icon sprite (1,539 icons, ISC licence in `icons/LICENSE`). |
 | `llms.txt` | Compact usage rules and class reference for AI coding assistants. |
 
@@ -28,11 +29,20 @@ phone) built only from Patchbay classes.
 Load in this order:
 
 ```html
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="fonts/plex.css" rel="stylesheet">
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/patchbay.tokens.css" rel="stylesheet">
 <link href="css/patchbay.css" rel="stylesheet">
 <!-- your page CSS: layout only -->
+```
+
+The fonts are served with the page, so a device UI on a closed network still
+gets Plex. To fetch the body face before the CSS asks for it, preload it; a
+font preload needs `crossorigin` even on the same origin, or the browser
+fetches it twice:
+
+```html
+<link rel="preload" href="fonts/IBMPlexSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
 ```
 
 ### Light and dark
@@ -67,7 +77,8 @@ from across a control room:
 html { font-size: 125%; }
 ```
 
-Hairlines (borders, rims, bars, scrollbars) stay `px` so they stay crisp. Do
+Hairlines (borders, rims, bars, scrollbars) stay `px` so they stay crisp; the
+large scrollbar, `pb-scroll--lg`, is `rem` so it grows with the UI. Do
 not use `zoom`, and never combine it with a root font size: that scales twice.
 `@media` breakpoints in `rem` follow the browser's initial font size, not
 `html`'s. Numbers an operator compares use `--pb-font-num` (Plex Mono by
@@ -111,7 +122,7 @@ Both themes are audited against WCAG 2.2 AA:
   commit / danger / ok fills. Lowest is 4.79:1 in dark (text on a hovered
   source crosspoint) and 5.00:1 in light (amber on a button).
 - **Non-text contrast ≥ 3:1.** `--pb-edge` (control outlines), the focus
-  ring, checkbox/radio glyphs, scrollbar thumbs, and state borders on every
+  ring, checkbox/radio glyphs, scrollbar thumbs (resting and hovered), and state borders on every
   resting surface. (`--pb-edge` on the hover step is 2.7–2.9:1; hovered
   controls keep their own rim, so the outline is not the only cue.)
   Disabled controls are exempt by design.
@@ -165,4 +176,23 @@ Three things break if you miss them:
 themselves. Put the class on the wrapper. Before, a `pb-w-*` on one of those
 silently lost.
 
-When you vendor Patchbay, copy `css/`, `icons/` and `VERSION`.
+### Upgrading to 2.3
+
+2.3 fixes things apps had to patch locally. You can usually delete:
+
+| Local workaround | 2.3 |
+| --- | --- |
+| A 16px field rule for iOS, because the built-in one never applied | Built in: fields read `--pb-field-text-min`, which is `--pb-touch-text` under `pointer: coarse` |
+| `scrollbar-width: auto` resets so Chrome draws `::-webkit-scrollbar` rules | Built in: the standard properties now go to Firefox only |
+| `li:focus-within > .pb-menu__sub { display: block }` | Built in: submenus open on keyboard focus |
+| Hiding `data-pb-tip` under `hover: none` | Built in: a tap no longer leaves the tip up; keyboard focus still shows it |
+| A Google Fonts link, or a local copy of Plex | `fonts/plex.css` |
+| Hand-drawn large or always-shown scrollbars (CSS) | `pb-scroll pb-scroll--lg`, `--pb-scroll-thumb-min` |
+
+Two scrollbar behaviours to know. Chrome and Safari skip every
+`::-webkit-scrollbar` rule on an element whose `scrollbar-color` or
+`scrollbar-width` is not `auto`, including a value inherited from an ancestor,
+so don't set either on `html` or `body` if you use `pb-scroll`. Firefox has no
+least thumb length and still uses overlay bars on macOS.
+
+When you vendor Patchbay, copy `css/`, `fonts/`, `icons/` and `VERSION`.
