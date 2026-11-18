@@ -12,7 +12,8 @@
    To enlarge it (a control-room monitor read from a distance), set
    html { font-size: 125%; } in page CSS. Do not use `zoom`, and do not
    combine the two. Hairlines (borders, rims, bars, scrollbars) stay px so
-   they remain crisp. @media breakpoints in rem follow the browser's initial
+   they remain crisp; the large scrollbar (pb-scroll--lg) is rem so it
+   grows with the UI. @media breakpoints in rem follow the browser's initial
    font size, not html's.
 
    Load order matters:
@@ -245,8 +246,16 @@
   --pb-state-border-w: 3px;
 
   --pb-scroll-w:       10px;
+  --pb-scroll-inset:   3px;   /* track showing round the thumb */
   --pb-scroll-thumb:   #6e6e6e;
+  --pb-scroll-thumb-hover: var(--pb-text-muted);
   --pb-scroll-track:   transparent;
+  /* Least thumb length, so a list of thousands still has one to grab.
+     Chrome and Safari only; Firefox draws its own. */
+  --pb-scroll-thumb-min: 3rem;
+  /* pb-scroll--lg: for touch screens and screens read from across a room. */
+  --pb-scroll-w-lg:     1.125rem;
+  --pb-scroll-inset-lg: 0.1875rem;
 
   --pb-split-w:        9px;
 
@@ -257,6 +266,9 @@
   /* iOS zooms into any field under 16px computed. Deliberately px: a rem
      value would drop below 16px under a smaller root font size. */
   --pb-touch-text:     16px;
+  /* Floor under every field's text: 0 here, --pb-touch-text on touch
+     screens (below). */
+  --pb-field-text-min: 0px;
 
 
   /* ----------------------------------------------------------------------
@@ -294,6 +306,18 @@
   --bs-border-color:   var(--pb-edge);
   --bs-primary:        var(--pb-accent);
   --bs-gutter-x:       0;
+}
+
+/* iOS zooms into a focused field under 16px and does not zoom back out. */
+@media (pointer: coarse) {
+  :root { --pb-field-text-min: var(--pb-touch-text); }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --pb-scroll-thumb:       var(--pb-text-strong);
+    --pb-scroll-thumb-hover: var(--pb-text);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
