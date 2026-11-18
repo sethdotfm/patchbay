@@ -105,19 +105,18 @@ pre code {
    than as overlay bars. They skip all of it on an element whose
    scrollbar-width or scrollbar-color is not auto, inherited included, so
    the standard properties go only to browsers without the pseudo (Firefox).
-   <html class="pb-scroll"> styles the page's own bar. */
+   <html class="pb-scroll"> styles the page's own bar. Firefox keeps
+   scrollbar-width: auto, because a thin thumb is too small a target. */
 @supports not selector(::-webkit-scrollbar) {
   .pb-scroll,
   .pb-pane,
   .pb-grid-body,
   textarea {
     scrollbar-color: var(--pb-scroll-thumb) var(--pb-scroll-track);
-    scrollbar-width: thin;
   }
 
   .pb-scroll--lg {
     scrollbar-color: var(--pb-scroll-thumb) var(--pb-surface-control);
-    scrollbar-width: auto;
   }
 }
 
