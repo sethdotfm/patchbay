@@ -173,6 +173,11 @@
   --pb-glyph-dash:  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%2314131f' stroke-width='2.5' d='M4 8h8'/%3E%3C/svg%3E");
   --pb-glyph-radio: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%2314131f'/%3E%3C/svg%3E");
 
+  /* Windows High Contrast (forced-colors: active) system colours; the OS
+     picks the values, so they need no contrast audit. */
+  --pb-forced-ink:    CanvasText;
+  --pb-forced-select: Highlight;
+
 
   /* ----------------------------------------------------------------------
      TYPOGRAPHY
@@ -281,6 +286,8 @@
   --pb-motion-theme:   400ms;  /* light/dark crossfade */
   --pb-motion-enter:   400ms;  /* a new row or card arriving */
   --pb-ease:           cubic-bezier(0.25, 0.1, 0.25, 1);
+  --pb-motion-spin:    0.9s;   /* one spinner turn */
+  --pb-motion-sweep:   1.4s;   /* one indeterminate bar pass */
 
 
   /* ----------------------------------------------------------------------
@@ -327,6 +334,9 @@
     --pb-motion-drawer: 0ms;
     --pb-motion-theme:  0ms;
     --pb-motion-enter:  0ms;
+    /* Slowed, not stopped: the motion is the only sign of work. */
+    --pb-motion-spin:   3s;
+    --pb-motion-sweep:  4.2s;
   }
 }
 

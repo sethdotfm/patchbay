@@ -29,6 +29,7 @@ phone) built only from Patchbay classes.
 Load in this order:
 
 ```html
+<meta name="color-scheme" content="light dark"> <!-- paints the dark canvas before the CSS loads -->
 <link href="fonts/plex.css" rel="stylesheet">
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/patchbay.tokens.css" rel="stylesheet">
@@ -130,7 +131,15 @@ Both themes are audited against WCAG 2.2 AA:
   their border to 2px accent on focus.
 - **Motion.** `prefers-reduced-motion` zeroes transitions and stops looping
   decoration (alarm pulse, offline frame, striped progress, skeleton sweep,
-  toast arrival). Spinners keep turning.
+  toast arrival). Spinners and the indeterminate bar slow to about a third of
+  their speed rather than stop, because they are the only sign of work.
+- **Forced colours.** In Windows High Contrast, focused fields keep an
+  outline, the selected tab and table row get a `Highlight` outline,
+  checkboxes and radios fall back to the native control, and the switch thumb
+  stays visible.
+- **Validation.** `pb-input` shows the native invalid state through
+  `:user-invalid`, so a required field turns red only after the user edits and
+  leaves it. `pb-input--invalid` is for errors your app decides.
 
 When you build with Patchbay, you still need to:
 
