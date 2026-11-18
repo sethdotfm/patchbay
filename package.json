@@ -1,0 +1,37 @@
+{
+  "name": "patchbay-css",
+  "version": "3.0.0",
+  "description": "Hard-edged CSS design system for dense signal-routing and device-control UIs. Plain files, no build step.",
+  "license": "Unlicense",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sethdotfm/patchbay.git"
+  },
+  "homepage": "https://github.com/sethdotfm/patchbay#readme",
+  "keywords": ["css", "design-system", "broadcast", "routing", "control-room", "dark-mode"],
+  "style": "css/patchbay.css",
+  "exports": {
+    "./tokens.css": "./css/patchbay.tokens.css",
+    "./patchbay.css": "./css/patchbay.css",
+    "./fonts.css": "./fonts/plex.css",
+    "./icons.svg": "./icons/lucide.svg",
+    "./css/*": "./css/*",
+    "./fonts/*": "./fonts/*",
+    "./icons/*": "./icons/*",
+    "./llms.txt": "./llms.txt",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "css/",
+    "fonts/",
+    "icons/",
+    "llms.txt",
+    "VERSION",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": ["*.css"],
+  "scripts": {
+    "check": "node tools/contrast.mjs && node tools/classes.mjs",
+    "serve": "python3 -m http.server"
+  }
+}

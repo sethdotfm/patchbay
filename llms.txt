@@ -1,11 +1,11 @@
-# Patchbay CSS — rules for LLMs
+# Patchbay CSS: rules for LLMs
 Hard-edged light/dark CSS for dense device-control UIs. Prefix pb-, BEM (block__el--mod). [x] = optional modifier.
-Load: <meta name="color-scheme" content="light dark"> → fonts/plex.css (self-hosted IBM Plex) → css/bootstrap.min.css → css/patchbay.tokens.css → css/patchbay.css → page CSS.
+Load: <meta name="color-scheme" content="light dark"> → fonts/plex.css (self-hosted IBM Plex) → css/patchbay.tokens.css → css/patchbay.css → page CSS. npm: patchbay-css (exports tokens.css, patchbay.css, fonts.css, icons.svg).
 
 ## Rules
 - Never hard-code colour/size/radius/shadow; use var(--pb-*). New value → new token in patchbay.tokens.css.
 - Page CSS = layout only. New component → new pb- section in patchbay.css, tokens only.
-- Bootstrap = reset + optional JS only. No Bootstrap utilities (d-flex, mb-3, text-*, bg-*) or bare components (btn, form-control, card, nav-tabs). If Bootstrap JS needs its class, pair it: btn pb-btn, form-control pb-input, form-select pb-select, form-check-input pb-check__input, dropdown-menu pb-menu, dropdown-item pb-menu__item, modal-content pb-modal, navbar pb-toolbar.
+- No framework. patchbay.css includes its own reset (box-sizing, margins, form fonts, tables). Don't add Bootstrap or utility classes (d-flex, mb-3); use pb-row/pb-col and page layout CSS. Bare h1–h6 follow the type scale; bare links take the text colour, underlined.
 - No border-radius. Shadows hard, no blur. Never remove focus outlines.
 - One accent (--pb-accent) = selection/focus only.
 - Status = ok|warn|error|info|idle only, always with text, never colour alone.
@@ -38,7 +38,7 @@ Inputs: pb-input[--invalid] (native invalid shows after editing, via :user-inval
   pb-input-group > pb-input + pb-input-group__addon
 Check/radio: <label class="pb-check"><input type=checkbox|radio class="pb-check__input"><span class="pb-check__label">Text</span></label>
 Switch: identical but <input type=checkbox role=switch class="pb-switch__input">.
-Form: pb-form[--label-sm|--label-lg] > pairs of pb-form__label + pb-form__field; pb-form__full spans both; pb-form__gap spacer; pb-form__label--indent dependent row. pb-fieldset + legend.
+Form: pb-form[--label-sm|--label-lg] > pairs of pb-form__label + pb-form__field; pb-form__full spans both; pb-form__gap spacer; pb-form__label--indent dependent row; pb-form__label--after = left-aligned label. pb-fieldset + legend.
 Tabs: pb-tabs[--sub|--vertical] > pb-tab (aria-selected or .active); pb-tabpanel.active shows.
 Menu: pb-menu[--scroll] > pb-menu__item (.active/aria-current) + __hint __divider __section __label; submenu pb-menu__sub[--left] inside li (opens on hover or keyboard focus).
 Modal: pb-modal-backdrop; pb-modal[--xs|sm|md|lg|fit|resize] > pb-modal__header[--info|warn|error|ok] (>pb-modal__title) + pb-modal__body[--flush] + pb-modal__footer. Footer: cancel left, confirm right; [--end] all right, single-action. pb-modal-demo = docs only.
@@ -55,19 +55,19 @@ Role bar: pb-rolebar--source|dest|tieline|error (left bar, --pb-rolebar-w).
 KV: dl.pb-kv[--inline] > div.pb-kv__item > dt.pb-kv__key + dd.pb-kv__val. Empty: pb-empty > __title __msg __actions (+icon). Skeleton: pb-skeleton--text|heading|row, region aria-busy=true.
 Breadcrumbs: nav > ol.pb-breadcrumbs, last li aria-current=page. Pagination: nav > ul.pb-pagination of pb-btn pb-btn--sm; aria-current=page; pb-pagination__gap.
 Phone: <html data-pb-layout="phone"> drops the page min-width and reflows split/form/modal. Touch (pointer:coarse) fields are >=16px via --pb-field-text-min (= --pb-touch-text, px on purpose).
-Status: <span class="pb-status"><span class="pb-dot pb-dot--ok" aria-hidden=true></span>Text</span>. pb-dot--pulse = unacked alarm. pb-badge--ok|warn|error|info. pb-alert--ok|warn|error > pb-alert__title.
+Status: <span class="pb-status"><span class="pb-dot pb-dot--ok" aria-hidden=true></span>Text</span>. pb-dot--ok|warn|error|info|idle; pb-dot--pulse = unacked alarm. pb-badge--ok|warn|error|info. pb-alert--ok|warn|error > pb-alert__title.
 Reduced motion: pulse and --animated stop; spinners keep turning. Text must carry meaning.
 Routing: pb-btn pb-xpt pb-xpt--source|dest|tieline [+--locked|--protected]. pb-level pb-level--video|01…16 swatch.
 Summary: pb-summary > pb-summary__item > __key + __val; clickable child needs data-interactive.
 Window state, on outermost element, only for these states: pb-state-commit (unsaved), pb-state-protect (locked DB), pb-state-offline (link to device lost; pulses).
 Icons: Lucide sprite at icons/lucide.svg. Never write path data. Use only ids that exist (check: grep 'id="name"' icons/lucide.svg):
   <svg class="pb-icon" viewBox="0 0 24 24" aria-hidden=true><use href="icons/lucide.svg#name"/></svg>
-  viewBox is required (symbols have none). CSS sets 18px, 1.6 stroke, currentColor. [--sm|--lg|--filled|--ok|--warn|--error|--info]. External <use> needs http(s), not file://.
+  viewBox is required (symbols have none). CSS sets 18px, 1.6 stroke, currentColor. pb-icon[--sm|--lg|--filled|--ok|--warn|--error|--info]. External <use> needs http(s), not file://.
 Utils: pb-row[--tight|--wrap] pb-col pb-grow pb-push pb-text-strong|muted|disabled|num|mono pb-num pb-truncate pb-clamp-2|3 pb-sr-only pb-code (also bare code, kbd).
 Theme crossfade: wrap the data-theme change in document.startViewTransition(); fallback: add pb-theme-transition to <html>, set data-theme, remove after --pb-motion-theme.
 
 ## Tokens (--pb-*)
-hue-* (primitives; don't read directly) · surface-sunken|base|raised|overlay|high|control|hover · edge-hard|edge|edge-soft|edge-light · accent[-hover|-muted|-wash] · commit · protect · view[-idle]|current-idle (routing state: viewed/staged destination, muted idle tints) · status-ok[-hover]|warn|error|info|idle · status-warn-fill · source|dest|tieline[-hover] · signal-video|01–16 · text[-strong|-muted|-disabled|-on-accent] · font-num · text-2xs|xs|sm(13px)|md|lg|xl (rem) · weight-normal|medium|bold · space-1…10 = 2,4,6,8,12,14,16,20,24,32px · control-h(30)[-sm|-lg] · rolebar-w · page-min-w · touch-text(16px) · field-text-min · scroll-w|inset|thumb|thumb-hover|thumb-min|track|w-lg|inset-lg · row-h · toolbar-h · shadow-overlay (rim + 6px block; block is lifted grey in dark) · radius-* = 0 · motion-fast|normal|drawer|theme|enter · z-sticky|summary|drawer|scrim|modal|dropdown|tooltip|toast
+hue-* (primitives; don't read directly) · surface-sunken|base|raised|overlay|high|control|hover · edge-hard|edge|edge-soft|edge-light · accent[-hover|-muted|-wash] · commit · protect · view[-idle]|current-idle (routing state: viewed/staged destination, muted idle tints) · status-ok[-hover]|warn|error|info|idle · status-warn-fill · status-tint (alert/banner wash %) · source|dest|tieline[-hover] · signal-video|01–16 · text[-strong|-muted|-disabled|-on-accent] · font-num · text-2xs|xs|sm(13px)|md|lg|xl (rem) · weight-normal|medium|bold · space-1…10 = 2,4,6,8,12,14,16,20,24,32px · control-h(30)[-sm|-lg] · rolebar-w · page-min-w · touch-text(16px) · field-text-min · scroll-w|inset|thumb|thumb-hover|thumb-min|track|w-lg|inset-lg · row-h · toolbar-h · caret-w|caret-h · shadow-overlay (rim + 6px block; block is lifted grey in dark) · radius-* = 0 · motion-fast|normal|drawer|theme|enter · z-sticky|summary|drawer|scrim|modal|dropdown|tooltip|toast
 
 ## Example
 <div class="pb-panel"><div class="pb-header">Output</div><div class="pb-body"><div class="pb-form">

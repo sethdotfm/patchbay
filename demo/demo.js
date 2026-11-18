@@ -16,6 +16,15 @@ if (query.get("only")) {
   $$(".demo-sec").forEach((sec) => { sec.hidden = !keep.includes(sec.id); });
 }
 
+// Read from VERSION, so a release bumps one file.
+const versionSlots = $$("[data-version]");
+if (versionSlots.length) {
+  fetch("VERSION")
+    .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
+    .then((v) => versionSlots.forEach((el) => { el.textContent = `v${v.trim()}`; }))
+    .catch(() => {});
+}
+
 // ---- theme: no data-theme means "follow the OS"; the toggle forces one ----
 
 const themeToggle = $("#theme-toggle");

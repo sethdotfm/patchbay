@@ -8,7 +8,7 @@ web
 
 ## Users
 
-Primary users are developers, and the coding agents working for them, who build device-control apps for broadcast and AV signal routing. They vendor `css/`, `fonts/` and `icons/` into an app and compose screens from `pb-` classes, using `index.html` and `llms.txt` as the reference.
+Primary users are developers, and the coding agents working for them, who build device-control apps for broadcast and AV signal routing. They vendor `css/`, `fonts/` and `icons/` into an app (or install `patchbay-css`) and compose screens from `pb-` classes, using `index.html` and `llms.txt` as the reference.
 
 The people who use those apps are control-room operators. They route sources to destinations, change device settings and watch device state, mostly on fixed monitors read from a distance, sometimes on a phone.
 
@@ -34,7 +34,7 @@ Patchbay encodes routing-domain meaning in its classes: source, destination and 
 
 ## Capabilities and Constraints
 
-- Plain files only: `css/patchbay.tokens.css` and `css/patchbay.css` on a vendored Bootstrap 5.0.1 used as a reset and optional JS hooks. No package manager, build step, tests or linter.
+- Plain files only: `css/patchbay.tokens.css` and `css/patchbay.css`, with Patchbay's own reset. No dependencies or build step. Published to npm as `patchbay-css`; vendoring the files stays the primary path.
 - Tokens hold every value. Components read only semantic tokens. Colours use `light-dark()`, so themes switch on `color-scheme`. Needs Chrome 123+, Safari 17.5+ or Firefox 120+ (121+ for `:has()` label dimming).
 - Sizes are rem, except hairlines and the default scrollbar, which stay px.
 - One accent colour for selection and focus. Exactly five status states: ok, warn, error, info, idle. Every radius is 0. Shadows are hard offsets with no blur. Focus outlines stay.

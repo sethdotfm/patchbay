@@ -109,12 +109,20 @@
       </div>
 
       <section class="demo-sec" id="intro" style="gap: var(--pb-space-4)">
-        <h1 style="margin:0; font-size: var(--pb-text-xl); color: var(--pb-text-strong)">Patchbay <span class="pb-badge pb-badge--info">v2</span></h1>
-        <p>A hard-edged, near-black CSS system for dense signal-routing and device-control UIs. Square corners, 1px rims, hard offset shadows, one accent. Every example below is live, and its markup is under it.</p>
+        <h1 style="margin:0; font-size: var(--pb-text-xl); color: var(--pb-text-strong)">Patchbay <span class="pb-badge pb-badge--info" data-version>v3</span></h1>
+        <p>A hard-edged, near-black CSS system for dense signal-routing and device-control UIs. Square corners, 1px rims, hard offset shadows, one accent. Plain CSS, no build step, no framework. Every example below is live, and its markup is under it.</p>
+        <div class="pb-panel"><div class="pb-body">
+<pre style="margin: 0"><code>&lt;!-- npm install patchbay-css, or copy css/, fonts/ and icons/ into the app --&gt;
+&lt;meta name="color-scheme" content="light dark"&gt;
+&lt;link href="fonts/plex.css" rel="stylesheet"&gt;
+&lt;link href="css/patchbay.tokens.css" rel="stylesheet"&gt;
+&lt;link href="css/patchbay.css" rel="stylesheet"&gt;</code></pre>
+        </div></div>
+        <p class="pb-text-muted">Rules for coding assistants: <a href="llms.txt">llms.txt</a>. Upgrade notes: <a href="CHANGELOG.md">CHANGELOG.md</a>. Usage and accessibility: <a href="README.md">README.md</a>.</p>
         <p id="reduced-note" class="pb-note pb-note--warn" hidden>Reduced motion is on: pulses and stripes are still, spinners keep turning.</p>
         <dl class="demo-rules">
           <dt>One accent</dt><dd>Periwinkle marks selection and focus. Nothing else.</dd>
-          <dt>Five states</dt><dd>ok, warn, error, info, idle &mdash; always with text or an icon, never colour alone.</dd>
+          <dt>Five states</dt><dd>ok, warn, error, info, idle, always with text or an icon, never colour alone.</dd>
           <dt>Amber is unsaved</dt><dd><code>pb-btn--commit</code> and <code>pb-state-commit</code>. Green <code>pb-btn--ok</code> finishes a job.</dd>
           <dt>Tokens only</dt><dd>No raw colours, sizes or radii in components. Page CSS is layout.</dd>
         </dl>
@@ -869,7 +877,7 @@
         </div></div>
       </section>
 
-      <p class="demo-foot">Patchbay <span id="version">v2</span> &middot; MIT (Bootstrap) &middot; ISC (Lucide)</p>
+      <p class="demo-foot">Patchbay <span data-version>v3</span> &middot; Unlicense &middot; IBM Plex (OFL 1.1) &middot; Lucide (ISC)</p>
     </main>
   </div>
 
