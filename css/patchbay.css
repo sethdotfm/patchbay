@@ -1,7 +1,7 @@
 /* ==========================================================================
-   PATCHBAY — Component layer
-   Sits on top of Bootstrap 5. Every value here comes from a token in
-   patchbay.tokens.css; if you need a new colour or size, add a token.
+   PATCHBAY: component layer
+   Load after patchbay.tokens.css. Every value here comes from a token; a
+   new colour or size means a new token.
 
    Contents
      01  Reset & base
@@ -34,16 +34,30 @@
      28  Key/value lists, empty states & skeletons
      29  Field states & disabled labels
      30  Breadcrumbs & pagination
-     31  Forced colours
+     31  Icons
+     32  Theme crossfade
+     33  Reduced motion
+     34  Forced colours
    ========================================================================== */
 
 
 /* 01  RESET & BASE ======================================================== */
 
+/* Element rules stay at element specificity (or zero, in :where) so any pb-
+   class beats them. */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
 html {
   height: 100%;
-  margin: 0;
-  padding: 0;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
 }
 
 body {
@@ -55,17 +69,98 @@ body {
   line-height: var(--pb-leading-normal);
   height: 100%;
   margin: 0;
-  padding: 0;
-  /* Device UIs have a floor below which the matrix cannot usefully shrink.
-     Pick the floor once, here, and let pages scroll horizontally instead of
-     reflowing a routing grid into something unreadable. */
+  /* Device UIs have a floor below which the matrix cannot usefully shrink;
+     past it the page scrolls rather than reflowing the routing grid. */
   min-width: var(--pb-page-min-w);
   overflow-x: auto;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* One focus treatment for the whole system. Keyboard users get a visible
-   ring; pointer users never see it. Never suppress outlines entirely. */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--pb-weight-medium);
+  line-height: var(--pb-leading-tight);
+  margin: 0 0 var(--pb-space-4);
+}
+
+h1 { font-size: var(--pb-text-xl); }
+h2 { font-size: var(--pb-text-lg); }
+h3 { font-size: var(--pb-text-md); }
+h4, h5, h6 { font-size: var(--pb-text-sm); }
+
+p, ol, ul, dl, pre, figure, blockquote {
+  margin: 0 0 var(--pb-space-7);
+}
+
+ol, ul { padding-left: var(--pb-space-10); }
+:is(ol, ul) :is(ol, ul) { margin-bottom: 0; }
+dt { font-weight: var(--pb-weight-bold); }
+dd { margin: 0 0 var(--pb-space-4); }
+b, strong { font-weight: bolder; }
+
+/* Links take the text colour: the accent is for selection and focus only. */
+a { color: inherit; text-underline-offset: 0.15em; }
+a:hover { color: var(--pb-text-strong); }
+
+hr {
+  border: 0;
+  border-top: var(--pb-border-w) solid var(--pb-edge-soft);
+  margin: var(--pb-space-7) 0;
+}
+
+img, svg, video, canvas { vertical-align: middle; }
+iframe { border: 0; }
+progress { vertical-align: baseline; }
+summary { cursor: pointer; display: list-item; }
+[hidden] { display: none !important; }
+
+table { border-collapse: collapse; caption-side: bottom; }
+th { text-align: inherit; text-align: -webkit-match-parent; }
+thead, tbody, tfoot, tr, td, th { border: 0 solid; border-color: inherit; }
+
+label { display: inline-block; }
+
+button, input, optgroup, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+
+button { border-radius: 0; }
+button, select { text-transform: none; }
+select { word-wrap: normal; }
+textarea { resize: vertical; }
+button, [type=button], [type=reset], [type=submit] { -webkit-appearance: button; }
+
+/* Zero specificity, so a component's own cursor (not-allowed on a locked
+   crosspoint) wins. */
+:where(button, [type=button], [type=reset], [type=submit]):not(:disabled) {
+  cursor: pointer;
+}
+
+::-moz-focus-inner { border-style: none; padding: 0; }
+::-webkit-inner-spin-button { height: auto; }
+[type=search] { -webkit-appearance: textfield; outline-offset: -2px; }
+::-webkit-search-decoration { -webkit-appearance: none; }
+::file-selector-button { font: inherit; }
+
+fieldset { border: 0; margin: 0; min-width: 0; padding: 0; }
+
+/* float puts the legend inside the fieldset's box, so it lays out like any
+   other block instead of cutting the border. */
+legend {
+  float: left;
+  font-size: inherit;
+  margin-bottom: var(--pb-space-4);
+  padding: 0;
+  width: 100%;
+}
+
+legend + * { clear: left; }
+
+/* One focus treatment for the whole system: keyboard users get a ring,
+   pointer users never see it. Never suppress outlines entirely. */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--pb-accent);
   outline-offset: 1px;
@@ -90,6 +185,13 @@ kbd {
   font-family: var(--pb-font-mono);
   font-size: var(--pb-text-xs);
   padding: 0 var(--pb-space-1);
+}
+
+pre {
+  font-family: var(--pb-font-mono);
+  font-size: var(--pb-text-xs);
+  margin-top: 0;
+  overflow: auto;
 }
 
 pre code {
@@ -121,62 +223,41 @@ pre code {
   }
 }
 
-.pb-scroll::-webkit-scrollbar,
-.pb-pane::-webkit-scrollbar,
-.pb-grid-body::-webkit-scrollbar,
-textarea::-webkit-scrollbar {
+:is(.pb-scroll, .pb-pane, .pb-grid-body, textarea)::-webkit-scrollbar {
   width: var(--pb-scroll-w);
   height: var(--pb-scroll-w);
 }
 
-.pb-scroll::-webkit-scrollbar-track,
-.pb-pane::-webkit-scrollbar-track,
-.pb-grid-body::-webkit-scrollbar-track,
-textarea::-webkit-scrollbar-track {
+:is(.pb-scroll, .pb-pane, .pb-grid-body, textarea)::-webkit-scrollbar-track {
   background: var(--pb-scroll-track);
 }
 
 /* padding-box: the border is the inset, and a transparent track would
    otherwise show the thumb's own colour through it. */
-.pb-scroll::-webkit-scrollbar-thumb,
-.pb-pane::-webkit-scrollbar-thumb,
-.pb-grid-body::-webkit-scrollbar-thumb,
-textarea::-webkit-scrollbar-thumb {
+:is(.pb-scroll, .pb-pane, .pb-grid-body, textarea)::-webkit-scrollbar-thumb {
   background-clip: padding-box;
   background-color: var(--pb-scroll-thumb);
   border: var(--pb-scroll-inset) solid transparent;
   border-radius: 0;
 }
 
-.pb-scroll::-webkit-scrollbar-thumb:vertical,
-.pb-pane::-webkit-scrollbar-thumb:vertical,
-.pb-grid-body::-webkit-scrollbar-thumb:vertical,
-textarea::-webkit-scrollbar-thumb:vertical {
+:is(.pb-scroll, .pb-pane, .pb-grid-body, textarea)::-webkit-scrollbar-thumb:vertical {
   min-height: var(--pb-scroll-thumb-min);
 }
 
-.pb-scroll::-webkit-scrollbar-thumb:horizontal,
-.pb-pane::-webkit-scrollbar-thumb:horizontal,
-.pb-grid-body::-webkit-scrollbar-thumb:horizontal,
-textarea::-webkit-scrollbar-thumb:horizontal {
+:is(.pb-scroll, .pb-pane, .pb-grid-body, textarea)::-webkit-scrollbar-thumb:horizontal {
   min-width: var(--pb-scroll-thumb-min);
 }
 
-.pb-scroll::-webkit-scrollbar-thumb:hover,
-.pb-pane::-webkit-scrollbar-thumb:hover,
-.pb-grid-body::-webkit-scrollbar-thumb:hover,
-textarea::-webkit-scrollbar-thumb:hover {
+:is(.pb-scroll, .pb-pane, .pb-grid-body, textarea)::-webkit-scrollbar-thumb:hover {
   background-color: var(--pb-scroll-thumb-hover);
 }
 
-.pb-scroll::-webkit-scrollbar-corner,
-.pb-pane::-webkit-scrollbar-corner,
-.pb-grid-body::-webkit-scrollbar-corner {
+:is(.pb-scroll, .pb-pane, .pb-grid-body)::-webkit-scrollbar-corner {
   background: var(--pb-scroll-track);
 }
 
-/* A large bar on a visible track: class="pb-scroll pb-scroll--lg". After
-   the base rules, which have the same specificity. */
+/* After the base rules, which have the same specificity. */
 .pb-scroll--lg::-webkit-scrollbar {
   width: var(--pb-scroll-w-lg);
   height: var(--pb-scroll-w-lg);
@@ -194,8 +275,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 03  LAYOUT ============================================================== */
 
-/* The page shell: a column that owns the full viewport so panes inside can
-   use percentage heights without every ancestor needing height:100%. */
+/* Owns the viewport height, so panes inside can use percentage heights. */
 .pb-page {
   display: flex;
   flex-direction: column;
@@ -203,7 +283,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   min-height: 0;
 }
 
-/* A horizontal split. Children are .pb-pane. */
 .pb-split {
   display: flex;
   flex: 1 1 auto;
@@ -224,7 +303,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   position: relative;
 }
 
-/* The hard rule between two panes. Put it on the left-hand pane. */
+/* Goes on the left-hand (or top) pane. */
 .pb-pane--divided {
   border-right: var(--pb-accent-bar-w) solid var(--pb-edge-hard);
 }
@@ -237,7 +316,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   border-bottom: var(--pb-accent-bar-w) solid var(--pb-edge-hard);
 }
 
-/* A draggable divider. Pair with your own drag JS. */
+/* Drag behaviour is app JS. */
 .pb-split-handle {
   flex: 0 0 var(--pb-split-w);
   background: var(--pb-surface-high);
@@ -258,7 +337,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   background-color: var(--pb-surface-control);
 }
 
-/* A panel: the standard content container. */
 .pb-panel {
   background: var(--pb-surface-raised);
   border: var(--pb-border-w) solid var(--pb-edge-soft);
@@ -274,8 +352,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   border-radius: 0;
 }
 
-/* A section header: a small tracked caps label on the panel's own surface,
-   divided by a hairline. Chrome whispers so content can speak. */
 .pb-header {
   align-items: center;
   background: transparent;
@@ -305,7 +381,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   gap: var(--pb-space-1);
 }
 
-/* Content body inside a panel or modal. */
 .pb-body {
   flex: 1 1 auto;
   min-height: 0;
@@ -315,13 +390,11 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-body--flush { padding: 0; }
 
-/* Dividers. */
 .pb-divider {
   background: var(--pb-edge-soft);
   border: 0;
   height: 1px;
   margin: var(--pb-space-4) 0;
-  opacity: 1;
 }
 
 .pb-divider--hard {
@@ -336,7 +409,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   align-self: stretch;
 }
 
-/* Notes and helper text. */
 .pb-note {
   color: var(--pb-text-muted);
   font-size: var(--pb-text-sm);
@@ -349,10 +421,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 04  TOOLBAR ============================================================= */
 
-/* The icon-button strip that tops nearly every pane. Overrides Bootstrap's
-   .navbar padding so the 28px buttons set the height, not the container. */
-.pb-toolbar,
-.navbar.pb-toolbar {
+.pb-toolbar {
   align-items: center;
   background: var(--pb-surface-high);
   border-bottom: var(--pb-border-w) solid var(--pb-edge-hard);
@@ -372,7 +441,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-toolbar__spacer { margin-left: auto; }
 
-/* Vertical hairline between toolbar groups. */
 .pb-toolbar__sep {
   align-self: stretch;
   background: var(--pb-edge-soft);
@@ -391,8 +459,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 05  BUTTONS ============================================================= */
 
-.pb-btn,
-.btn.pb-btn {
+.pb-btn {
   align-items: center;
   background-color: var(--pb-surface-control);
   border: var(--pb-border-w) solid transparent;
@@ -410,7 +477,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   justify-content: center;
   letter-spacing: var(--pb-tracking-button);
   line-height: 1;
-  margin: 0;
   overflow: hidden;
   padding: 0 var(--pb-space-5);
   text-overflow: ellipsis;
@@ -419,21 +485,18 @@ textarea::-webkit-scrollbar-thumb:hover {
   white-space: nowrap;
 }
 
-.pb-btn:hover,
-.btn.pb-btn:hover {
+.pb-btn:hover {
   background-color: var(--pb-surface-hover);
   color: var(--pb-text);
 }
 
-.pb-btn:active,
-.btn.pb-btn:active {
+.pb-btn:active {
   background-color: var(--pb-surface-control);
   box-shadow: inset 0 1px 2px 0 var(--pb-overlay-press);
 }
 
 .pb-btn:disabled,
-.pb-btn.disabled,
-.btn.pb-btn:disabled {
+.pb-btn.disabled {
   background-color: var(--pb-surface-control);
   box-shadow: none;
   color: var(--pb-text-disabled);
@@ -441,9 +504,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   opacity: 0.55;
 }
 
-/* --- Selected / latched -------------------------------------------------
-   A control that reflects state, not an action. This is the single most
-   important button variant in a console UI: it answers "is it on?". */
+/* Latched: the button shows state ("is it on?"), not an action. */
 .pb-btn--selected,
 .pb-btn[aria-pressed="true"],
 .pb-btn-check:checked + .pb-btn {
@@ -457,7 +518,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   background-color: var(--pb-accent-hover);
 }
 
-/* --- Outline: the secondary / cancel action ---------------------------- */
+/* Outline: the secondary or cancel action. */
 .pb-btn--outline {
   background-color: transparent;
   border-color: var(--pb-surface-control);
@@ -475,7 +536,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   border-color: var(--pb-surface-control);
 }
 
-/* --- Transparent: toolbar and title-bar icons -------------------------- */
 /* Ghost only drops the plate; pair with --icon for a square icon button. */
 .pb-btn--ghost {
   background-color: transparent;
@@ -485,7 +545,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-btn--ghost:hover { background-color: var(--pb-overlay-hover); }
 .pb-btn--ghost:active { background-color: var(--pb-edge-light); }
 
-/* --- Icon-only, square ------------------------------------------------- */
 .pb-btn--icon {
   padding: 0;
   width: var(--pb-icon-btn-w);
@@ -497,7 +556,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   width: var(--pb-control-h-lg);
 }
 
-/* --- Commit: unsaved changes exist ------------------------------------- */
+/* Commit: unsaved edits exist and this applies them. */
 .pb-btn--commit {
   background-color: var(--pb-commit);
   color: var(--pb-text-on-accent);
@@ -505,10 +564,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-btn--commit:hover { background-color: var(--pb-commit-hover); }
 
-/* --- Ok: a positive terminal action ------------------------------------
-   Done, Unlock, or Save once nothing is left unresolved. Commit means "there
-   are unsaved edits and this applies them"; ok means "this finishes the job".
-   Don't use both on one screen for the same action. */
+/* Ok: a positive finish (Done, Unlock). Never both commit and ok on one
+   action. */
 .pb-btn--ok {
   background-color: var(--pb-status-ok);
   color: var(--pb-text-on-accent);
@@ -516,7 +573,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-btn--ok:hover { background-color: var(--pb-status-ok-hover); }
 
-/* --- Danger: irreversible ---------------------------------------------- */
+/* Danger: irreversible actions only. */
 .pb-btn--danger {
   background-color: var(--pb-status-error);
   color: var(--pb-text-on-accent);
@@ -524,9 +581,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-btn--danger:hover { background-color: var(--pb-danger-hover); }
 
-/* --- Loading: waiting on the device ------------------------------------
-   Keeps the button's width, hides its label and shows a spinner. Pair with
-   aria-busy="true" and leave the button in place so focus is not lost. */
+/* Keeps the button's width and place so focus is not lost; pair with
+   aria-busy="true". */
 .pb-btn--loading {
   --pb-loading-ink: var(--pb-text);
   color: transparent;
@@ -544,10 +600,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-btn--loading::after {
   animation: pb-spin var(--pb-motion-spin) linear infinite;
-  border: 2px solid transparent;
-  border-top-color: var(--pb-loading-ink);
-  border-right-color: var(--pb-loading-ink);
-  border-bottom-color: var(--pb-loading-ink);
+  border: 2px solid var(--pb-loading-ink);
+  border-left-color: transparent;
   border-radius: 50%;
   content: "";
   height: var(--pb-icon-size-sm);
@@ -557,7 +611,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   width: var(--pb-icon-size-sm);
 }
 
-/* --- Sizes ------------------------------------------------------------- */
 .pb-btn--sm {
   font-size: var(--pb-text-xs);
   height: var(--pb-control-h-sm);
@@ -574,8 +627,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   width: 100%;
 }
 
-/* A hidden input paired with a label-styled button, for radio/checkbox
-   groups that must look like latching hardware buttons. */
+/* A hidden radio or checkbox; its label is the latching pb-btn. */
 .pb-btn-check {
   clip: rect(0, 0, 0, 0);
   pointer-events: none;
@@ -587,7 +639,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   outline-offset: 1px;
 }
 
-/* A segmented group: buttons butt together into one strip. */
 .pb-btn-group {
   display: inline-flex;
 }
@@ -610,8 +661,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 06  CHIPS =============================================================== */
 
-/* A compact, removable or selectable token. Rounder than a button on
-   purpose — the heavy border is what tells you it is data, not a control. */
+/* The heavy border is what says data, not a control. */
 .pb-chip {
   align-items: center;
   background: var(--pb-surface-control);
@@ -660,7 +710,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-chip__remove:hover { opacity: 1; }
 
-/* A text field that holds chips. contenteditable in practice. */
 .pb-chip-input {
   background: var(--pb-surface-sunken);
   border: var(--pb-border-w) solid var(--pb-edge);
@@ -694,14 +743,10 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 07  FORM CONTROLS ======================================================= */
 
-/* Inputs are black wells, buttons are raised grey blocks. That contrast is
-   the whole affordance language: lifted = you press it, sunken = you type
-   in it. Nothing is rounded. */
+/* Lifted = press it, sunken = type in it. */
 .pb-input,
 .pb-select,
-.pb-textarea,
-.form-control.pb-input,
-.form-select.pb-select {
+.pb-textarea {
   background-color: var(--pb-surface-sunken);
   border: var(--pb-border-w) solid var(--pb-edge);
   border-radius: var(--pb-radius-input);
@@ -723,9 +768,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-input:focus,
 .pb-select:focus,
-.pb-textarea:focus,
-.form-control.pb-input:focus,
-.form-select.pb-select:focus {
+.pb-textarea:focus {
   background-color: var(--pb-surface-sunken);
   border-color: var(--pb-accent);
   /* Doubles the border to 2px so focus is not signalled by hue alone. */
@@ -742,8 +785,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   color: var(--pb-text-muted);
 }
 
-/* Disabled: the control is present but not yours to change. Keep the
-   border so the field's footprint still reads in a dense form. */
+/* Disabled keeps its border so the field's footprint still reads. */
 .pb-input:disabled,
 .pb-select:disabled,
 .pb-textarea:disabled {
@@ -753,8 +795,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   cursor: not-allowed;
 }
 
-/* Read-only: the value matters, the box does not. Strip the chrome so the
-   value reads as text and the eye skips the field. */
+/* Read-only reads as plain text: the value matters, the box does not. */
 .pb-input[readonly],
 .pb-input[readonly]:focus,
 .pb-textarea[readonly] {
@@ -780,9 +821,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-textarea--fixed { resize: none; }
 
-/* --- Select ------------------------------------------------------------
-   Native <select> with the arrow drawn by the wrapper, because the native
-   arrow cannot be themed and looks like a different product. */
+/* The wrapper draws the arrow; the native one cannot be themed. */
 .pb-select {
   appearance: none;
   -webkit-appearance: none;
@@ -797,9 +836,9 @@ textarea::-webkit-scrollbar-thumb:hover {
 }
 
 .pb-select-wrap::after {
-  border-left: 0.25rem solid transparent;
-  border-right: 0.25rem solid transparent;
-  border-top: 0.3125rem solid var(--pb-text-muted);
+  border-left: var(--pb-caret-w) solid transparent;
+  border-right: var(--pb-caret-w) solid transparent;
+  border-top: var(--pb-caret-h) solid var(--pb-text-muted);
   content: "";
   pointer-events: none;
   position: absolute;
@@ -817,9 +856,8 @@ textarea::-webkit-scrollbar-thumb:hover {
   color: var(--pb-text);
 }
 
-/* --- Number stepper ---------------------------------------------------
-   Native spinners are tiny and inconsistent across engines, so they are
-   hidden and replaced by a stacked pair drawn on the wrapper. */
+/* Native spinners are tiny and differ per engine, so the wrapper draws a
+   stacked pair. */
 .pb-number-wrap {
   display: inline-block;
   position: relative;
@@ -884,7 +922,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   content: "\25BC";
 }
 
-/* --- Input group: a control with an attached unit or button ----------- */
 .pb-input-group {
   display: inline-flex;
   align-items: stretch;
@@ -905,14 +942,12 @@ textarea::-webkit-scrollbar-thumb:hover {
   padding: 0 var(--pb-space-3);
 }
 
-/* --- Colour swatch input --------------------------------------------- */
 .pb-input[type="color"] {
   cursor: pointer;
   padding: var(--pb-space-1);
   width: 2.75rem;
 }
 
-/* --- Range / fader --------------------------------------------------- */
 .pb-range {
   -webkit-appearance: none;
   appearance: none;
@@ -962,8 +997,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   min-height: var(--pb-control-h);
 }
 
-.pb-check__input,
-.form-check-input.pb-check__input {
+.pb-check__input {
   appearance: none;
   -webkit-appearance: none;
   background-color: var(--pb-surface-sunken);
@@ -1023,10 +1057,8 @@ textarea::-webkit-scrollbar-thumb:hover {
   cursor: not-allowed;
 }
 
-/* --- Switch -----------------------------------------------------------
-   Reserve the switch for things that take effect immediately. If the
-   change needs an Apply, use a checkbox — the sliding motion of a switch
-   promises the hardware already moved. */
+/* Switch: instant effect only. A change that needs Apply is a checkbox,
+   because the slide promises the hardware already moved. */
 .pb-switch__input {
   appearance: none;
   -webkit-appearance: none;
@@ -1070,9 +1102,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 09  FORM ROWS =========================================================== */
 
-/* The workhorse layout: a right-aligned bold label and its control on one
-   32px line. Right-aligning the label puts it next to the thing it names,
-   which is what lets an operator scan a 20-row form in one pass. */
+/* Right-aligned labels sit next to what they name, so a 20-row form scans
+   in one pass. */
 .pb-form {
   display: grid;
   gap: var(--pb-space-1) var(--pb-space-3);
@@ -1102,19 +1133,16 @@ textarea::-webkit-scrollbar-thumb:hover {
   min-height: var(--pb-row-h);
 }
 
-/* Something that spans both columns: a note, a divider, a nested group. */
 .pb-form__full {
   grid-column: 1 / -1;
 }
 
-/* Vertical breathing room between logical groups of rows. */
 .pb-form__gap { grid-column: 1 / -1; height: var(--pb-space-7); }
 
-/* Wider label column variants. */
 .pb-form--label-sm  { --pb-label-w: 5rem; }
 .pb-form--label-lg  { --pb-label-w: 11.25rem; }
 
-/* Indent for dependent rows ("only applies when the box above is ticked"). */
+/* A row that only applies when the one above is ticked. */
 .pb-form__label--indent { padding-left: var(--pb-space-9); }
 
 .pb-fieldset {
@@ -1135,8 +1163,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 10  TABS ================================================================ */
 
-/* Tabs are a segmented track: the selected tab is a solid block with a
-   2px accent bar across its top edge. */
 .pb-tabs {
   background: var(--pb-surface-sunken);
   border-bottom: var(--pb-border-w) solid var(--pb-edge-soft);
@@ -1180,7 +1206,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   cursor: not-allowed;
 }
 
-/* Second level. A darker plate, so nesting reads as depth without indenting. */
+/* A darker plate, so nesting reads as depth without indenting. */
 .pb-tabs--sub {
   background: var(--pb-surface-raised);
 }
@@ -1190,7 +1216,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   background: var(--pb-accent-subtab);
 }
 
-/* Vertical tabs, for settings trees with long labels. */
 .pb-tabs--vertical {
   border-bottom: 0;
   border-right: var(--pb-border-w) solid var(--pb-edge-hard);
@@ -1219,10 +1244,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 11  DROPDOWN MENUS ====================================================== */
 
-/* A floating slab with a 1px rim and a hard offset shadow. Depth comes
-   from the offset, so an open menu separates from a busy grid behind it. */
-.pb-menu,
-.dropdown-menu.pb-menu {
+.pb-menu {
   background-color: var(--pb-surface-overlay);
   border: 0;
   border-radius: var(--pb-radius-overlay);
@@ -1234,8 +1256,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   z-index: var(--pb-z-dropdown);
 }
 
-.pb-menu__item,
-.dropdown-item.pb-menu__item {
+.pb-menu__item {
   align-items: center;
   background: transparent;
   border: 0;
@@ -1253,8 +1274,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   width: 100%;
 }
 
-.pb-menu__item:hover,
-.dropdown-item.pb-menu__item:hover {
+.pb-menu__item:hover {
   background-color: var(--pb-surface-hover);
   color: var(--pb-text);
 }
@@ -1272,7 +1292,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   pointer-events: none;
 }
 
-/* A trailing shortcut hint or state glyph. */
 .pb-menu__hint {
   color: var(--pb-text-muted);
   margin-left: auto;
@@ -1284,7 +1303,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   border: 0;
   height: 1px;
   margin: 0;
-  opacity: 1;
 }
 
 .pb-menu__section {
@@ -1302,7 +1320,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   text-transform: uppercase;
 }
 
-/* Long menus scroll rather than run off the viewport. */
 .pb-menu--scroll {
   max-height: min(70vh, calc(100dvh - 2.5rem));
   overflow-x: hidden;
@@ -1310,9 +1327,8 @@ textarea::-webkit-scrollbar-thumb:hover {
   overscroll-behavior: contain;
 }
 
-/* Submenus open on hover or keyboard focus, flipping left when near the
-   right edge. :focus-visible, not :focus-within, so a clicked parent does
-   not hold its submenu open after the pointer leaves. */
+/* :focus-visible, not :focus-within, so a clicked parent does not hold its
+   submenu open after the pointer leaves. */
 .pb-menu li { position: relative; }
 
 .pb-menu__sub {
@@ -1329,14 +1345,11 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 12  MODALS ============================================================== */
 
-.pb-modal-backdrop,
-.modal-backdrop.show {
+.pb-modal-backdrop {
   background-color: var(--pb-overlay-scrim);
-  opacity: 1;
 }
 
-.pb-modal,
-.modal-content.pb-modal {
+.pb-modal {
   background: var(--pb-surface-overlay);
   border: 0;
   border-radius: var(--pb-radius-overlay);
@@ -1387,28 +1400,30 @@ textarea::-webkit-scrollbar-thumb:hover {
   padding: var(--pb-space-4) var(--pb-space-5);
 }
 
-/* Cancel left, confirm right, always. A dialog that moves its buttons
-   around trains operators to read every dialog, which is how mistakes
-   happen at 2am. */
+/* Cancel left, confirm right, always; --end is for a single action. */
 .pb-modal__footer--end { justify-content: flex-end; }
 
-/* Severity headers: a coloured top edge and title, nothing louder. */
-.pb-modal__header--info  { border-top-color: var(--pb-status-info);  color: var(--pb-status-info); }
-.pb-modal__header--warn  { border-top-color: var(--pb-status-warn);  color: var(--pb-status-warn); }
-.pb-modal__header--error { border-top-color: var(--pb-status-error); color: var(--pb-status-error); }
-.pb-modal__header--ok    { border-top-color: var(--pb-status-ok);    color: var(--pb-status-ok); }
+/* Severity: a coloured top edge and title, nothing louder. */
+.pb-modal__header--info  { --pb-modal-c: var(--pb-status-info); }
+.pb-modal__header--warn  { --pb-modal-c: var(--pb-status-warn); }
+.pb-modal__header--error { --pb-modal-c: var(--pb-status-error); }
+.pb-modal__header--ok    { --pb-modal-c: var(--pb-status-ok); }
 
-/* Size presets. */
+:is(.pb-modal__header--info, .pb-modal__header--warn, .pb-modal__header--error, .pb-modal__header--ok) {
+  border-top-color: var(--pb-modal-c);
+  color: var(--pb-modal-c);
+}
+
 .pb-modal--xs { width: 20rem; }
 .pb-modal--sm { width: 28.75rem; }
 .pb-modal--md { width: 37.5rem; }
 .pb-modal--lg { width: 53.75rem; }
 .pb-modal--fit { width: max-content; }
 
-/* A resizable dialog, for anything containing a grid. */
+/* For a dialog holding a grid. */
 .pb-modal--resize { resize: both; overflow: auto; }
 
-/* Static demo frame: lets the guide show a dialog in flow. */
+/* Reference page only: shows a dialog in flow. */
 .pb-modal-demo {
   background: var(--pb-surface-sunken);
   display: flex;
@@ -1419,8 +1434,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 13  DRAWERS ============================================================= */
 
-/* An edge panel that slides over content rather than displacing it, so the
-   grid behind keeps its scroll position. */
+/* Slides over content, so the grid behind keeps its scroll position. */
 .pb-drawer {
   background: var(--pb-surface-raised);
   border-right: var(--pb-border-w) solid var(--pb-edge-hard);
@@ -1470,9 +1484,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   white-space: nowrap;
 }
 
-/* Hazard stripes: black bands laid over the bar's own fill, so every
-   status variant stripes in its own colour — amber/black for warn,
-   red/black for error. */
+/* Bands over the bar's own fill, so each status stripes in its colour. */
 .pb-progress__bar--striped {
   background-image: linear-gradient(
     -45deg,
@@ -1488,7 +1500,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-progress__bar--animated { animation: pb-stripe 0.9s linear infinite; }
 
-/* Indeterminate: we know it is working, not how far along it is. */
 .pb-progress--indeterminate .pb-progress__bar {
   animation: pb-indeterminate var(--pb-motion-sweep) var(--pb-ease) infinite;
   width: 35%;
@@ -1510,10 +1521,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-spinner {
   animation: pb-spin var(--pb-motion-spin) linear infinite;
-  border: 2px solid transparent;
-  border-top-color: var(--pb-accent);
-  border-right-color: var(--pb-accent);
-  border-bottom-color: var(--pb-accent);
+  border: 2px solid var(--pb-accent);
+  border-left-color: transparent;
   border-radius: 50%;
   display: inline-block;
   height: var(--pb-icon-size);
@@ -1527,7 +1536,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   to { transform: rotate(360deg); }
 }
 
-/* A centred "working" block for an empty pane. */
 .pb-loading {
   align-items: center;
   color: var(--pb-text-muted);
@@ -1549,8 +1557,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   width: 100%;
 }
 
-/* Headers are small tracked caps; rows are separated by hairlines only —
-   no column rules — so the eye follows the row, not the cell grid. */
+/* Row hairlines only, no column rules, so the eye follows the row. */
 .pb-table thead th {
   background: var(--pb-surface-raised);
   border-bottom: var(--pb-border-w) solid var(--pb-edge);
@@ -1575,8 +1582,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 }
 
 .pb-table tbody tr { background: var(--pb-surface-raised); }
-
-.pb-table tbody tr:nth-child(even) { background: var(--pb-surface-raised); }
 
 .pb-table tbody tr:hover { background: var(--pb-surface-overlay); }
 
@@ -1603,7 +1608,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   text-align: left;
 }
 
-/* The scrolling wrapper. Grid headers stay put; the body scrolls. */
 .pb-grid {
   border: var(--pb-border-w) solid var(--pb-edge-hard);
   display: flex;
@@ -1619,15 +1623,14 @@ textarea::-webkit-scrollbar-thumb:hover {
   overflow: auto;
 }
 
-/* Sortable header affordance. */
 .pb-table th[aria-sort] { cursor: pointer; padding-right: var(--pb-space-7); position: relative; }
 
 .pb-table th[aria-sort]:hover { background: var(--pb-surface-hover); }
 
 .pb-table th[aria-sort="ascending"]::after,
 .pb-table th[aria-sort="descending"]::after {
-  border-left: 0.25rem solid transparent;
-  border-right: 0.25rem solid transparent;
+  border-left: var(--pb-caret-w) solid transparent;
+  border-right: var(--pb-caret-w) solid transparent;
   content: "";
   position: absolute;
   right: var(--pb-space-4);
@@ -1635,16 +1638,16 @@ textarea::-webkit-scrollbar-thumb:hover {
 }
 
 .pb-table th[aria-sort="ascending"]::after {
-  border-bottom: 0.3125rem solid var(--pb-accent);
+  border-bottom: var(--pb-caret-h) solid var(--pb-accent);
   transform: translateY(-60%);
 }
 
 .pb-table th[aria-sort="descending"]::after {
-  border-top: 0.3125rem solid var(--pb-accent);
+  border-top: var(--pb-caret-h) solid var(--pb-accent);
   transform: translateY(-40%);
 }
 
-/* An editable cell: show the drop-down affordance only where one exists. */
+/* Only on cells that really open a picker. */
 .pb-cell-select {
   cursor: pointer;
   position: relative;
@@ -1652,9 +1655,9 @@ textarea::-webkit-scrollbar-thumb:hover {
 }
 
 .pb-cell-select::after {
-  border-left: 0.25rem solid transparent;
-  border-right: 0.25rem solid transparent;
-  border-top: 0.3125rem solid var(--pb-text-muted);
+  border-left: var(--pb-caret-w) solid transparent;
+  border-right: var(--pb-caret-w) solid transparent;
+  border-top: var(--pb-caret-h) solid var(--pb-text-muted);
   content: "";
   position: absolute;
   right: var(--pb-space-3);
@@ -1665,8 +1668,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 16  STATUS ============================================================== */
 
-/* A 10px dot. Always next to a word — the dot speeds up a return visit, the
-   word is what makes it legible to someone colour-blind or new. */
+/* Always next to a word: colour alone fails colour-blind and new users. */
 .pb-dot {
   border-radius: 0;
   display: inline-block;
@@ -1681,7 +1683,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-dot--info  { background: var(--pb-status-info); }
 .pb-dot--idle  { background: var(--pb-status-idle); }
 
-/* A pulsing dot, for an active alarm that has not been acknowledged. */
 .pb-dot--pulse { animation: pb-pulse 1.6s var(--pb-ease) infinite; }
 
 @keyframes pb-pulse {
@@ -1695,8 +1696,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   white-space: nowrap;
 }
 
-/* A badge: an outlined block with a leading square and coloured text, so it
-   still reads as a state in greyscale. */
+/* The leading square keeps a badge readable as a state in greyscale. */
 .pb-badge {
   --pb-badge-c: var(--pb-status-idle);
   align-items: center;
@@ -1722,47 +1722,25 @@ textarea::-webkit-scrollbar-thumb:hover {
   width: 0.375rem;
 }
 
-.pb-badge--ok {
-  --pb-badge-c: var(--pb-status-ok);
-}
+.pb-badge--ok    { --pb-badge-c: var(--pb-status-ok); }
+.pb-badge--warn  { --pb-badge-c: var(--pb-status-warn); }
+.pb-badge--error { --pb-badge-c: var(--pb-status-error); }
+.pb-badge--info  { --pb-badge-c: var(--pb-status-info); }
 
-.pb-badge--warn {
-  --pb-badge-c: var(--pb-status-warn);
-}
-
-.pb-badge--error {
-  --pb-badge-c: var(--pb-status-error);
-}
-
-.pb-badge--info {
-  --pb-badge-c: var(--pb-status-info);
-}
-
-/* An inline alert / banner. */
 .pb-alert {
+  --pb-alert-c: var(--pb-status-info);
   align-items: flex-start;
-  background: color-mix(in srgb, var(--pb-status-info) 14%, var(--pb-surface-raised));
-  border-left: var(--pb-accent-bar-w) solid var(--pb-status-info);
+  background: color-mix(in srgb, var(--pb-alert-c) var(--pb-status-tint), var(--pb-surface-raised));
+  border-left: var(--pb-accent-bar-w) solid var(--pb-alert-c);
   color: var(--pb-text);
   display: flex;
   gap: var(--pb-space-4);
   padding: var(--pb-space-4) var(--pb-space-5);
 }
 
-.pb-alert--ok {
-  background: color-mix(in srgb, var(--pb-status-ok) 14%, var(--pb-surface-raised));
-  border-left-color: var(--pb-status-ok);
-}
-
-.pb-alert--warn {
-  background: color-mix(in srgb, var(--pb-status-warn) 14%, var(--pb-surface-raised));
-  border-left-color: var(--pb-status-warn);
-}
-
-.pb-alert--error {
-  background: color-mix(in srgb, var(--pb-status-error) 14%, var(--pb-surface-raised));
-  border-left-color: var(--pb-status-error);
-}
+.pb-alert--ok    { --pb-alert-c: var(--pb-status-ok); }
+.pb-alert--warn  { --pb-alert-c: var(--pb-status-warn); }
+.pb-alert--error { --pb-alert-c: var(--pb-status-error); }
 
 .pb-alert__title {
   color: var(--pb-text-strong);
@@ -1772,8 +1750,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 17  ROUTING ROLES & SIGNAL IDENTITY ===================================== */
 
-/* Matrix crosspoint buttons. These inherit .pb-btn and only restate colour,
-   so a wall of 2000 of them still shares the one hover and focus model. */
+/* Crosspoints are pb-btn and only restate colour, so a wall of 2000 shares
+   one hover and focus model. */
 .pb-xpt--source { background-color: var(--pb-source); }
 .pb-xpt--source:hover { background-color: var(--pb-source-hover); }
 .pb-xpt--dest { background-color: var(--pb-dest); }
@@ -1781,8 +1759,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-xpt--tieline { background-color: var(--pb-tieline); }
 .pb-xpt--tieline:hover { background-color: var(--pb-tieline-hover); }
 
-/* Locked / protected crosspoints read as the same colour at lower opacity,
-   so the role survives and the state is obvious. */
+/* Lower opacity keeps the role colour while showing the state. */
 .pb-xpt--locked { opacity: 0.5; cursor: not-allowed; }
 .pb-xpt--protected { opacity: 0.8; }
 .pb-xpt--protected::after {
@@ -1794,7 +1771,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-xpt { position: relative; }
 
-/* A level swatch / meter cap. */
 .pb-level {
   border-radius: 0;
   display: inline-block;
@@ -1823,9 +1799,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 18  SUMMARY BAR ========================================================= */
 
-/* A read-out strip pinned to the bottom of a grid pane. Transparent to
-   pointer events so it never eats a click meant for a control beneath it;
-   opt any genuinely interactive child back in. */
+/* Ignores the pointer so it never eats a click meant for the grid beneath;
+   data-interactive opts a child back in. */
 .pb-summary {
   align-items: center;
   background: var(--pb-surface-base);
@@ -1862,38 +1837,31 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 19  WINDOW STATE BORDERS ================================================ */
 
-/* A whole-window border is the loudest signal the system has. Two uses only:
-   unsaved changes exist, and the database is write-protected. Because it
-   frames everything, it is still visible when the operator is heads-down in
-   a submenu three panes deep. */
-.pb-state-commit {
-  border: var(--pb-state-border-w) solid var(--pb-commit);
-  position: relative;
-  z-index: 0;
-}
-
-.pb-state-protect {
-  border: var(--pb-state-border-w) solid var(--pb-protect);
-  position: relative;
-  z-index: 0;
-}
-
-/* The link to the device is down. Same frame as the other states, pulsing so
-   it cannot be missed from across a room. It goes steady under reduced
-   motion; a pb-conn or pb-banner carries the meaning in words. */
+/* The loudest signal in the system, visible from three panes deep: unsaved
+   edits, write protection, or a lost device link. */
+.pb-state-commit,
+.pb-state-protect,
 .pb-state-offline {
-  animation: pb-offline 1.6s ease-in-out infinite;
-  border: var(--pb-state-border-w) solid var(--pb-status-error);
+  /* Pages read --pb-state-inset to keep fixed children clear of the frame. */
+  --pb-state-inset: var(--pb-state-border-w);
+  border: var(--pb-state-border-w) solid var(--pb-state-c);
   position: relative;
   z-index: 0;
+}
+
+.pb-state-commit  { --pb-state-c: var(--pb-commit); }
+.pb-state-protect { --pb-state-c: var(--pb-protect); }
+
+/* Pulses to be seen across a room; steady under reduced motion, where a
+   pb-conn or pb-banner carries the meaning in words. */
+.pb-state-offline {
+  --pb-state-c: var(--pb-status-error);
+  animation: pb-offline 1.6s ease-in-out infinite;
 }
 
 @keyframes pb-offline {
   50% { border-color: color-mix(in srgb, var(--pb-status-error) 35%, transparent); }
 }
-
-/* Pages read this to keep fixed children clear of the frame. */
-.pb-state-commit, .pb-state-protect, .pb-state-offline { --pb-state-inset: var(--pb-state-border-w); }
 
 
 /* 20  UTILITIES =========================================================== */
@@ -1905,9 +1873,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-grow   { flex: 1 1 auto; min-width: 0; }
 .pb-push   { margin-left: auto; }
 
-/* Widths. These sit here, after every control, so they beat the
-   width: 100% that selects' and number fields' wrappers, input groups and
-   ranges set for themselves. Put the class on the wrapper. */
+/* After every control, so these beat the wrappers' own width: 100%. */
 .pb-w-xs   { width: 3.125rem; }
 .pb-w-sm   { width: 5rem; }
 .pb-w-md   { width: 8.75rem; }
@@ -1918,15 +1884,15 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-text-strong   { color: var(--pb-text-strong); font-weight: var(--pb-weight-bold); }
 .pb-text-muted    { color: var(--pb-text-muted); }
 .pb-text-disabled { color: var(--pb-text-disabled); }
-.pb-text-num      { font-family: var(--pb-font-num); font-variant-numeric: tabular-nums; }
+.pb-text-num,
 .pb-num           { font-family: var(--pb-font-num); font-variant-numeric: tabular-nums; }
 .pb-text-mono     { font-family: var(--pb-font-mono); }
 .pb-truncate      { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pb-clamp-2       { -webkit-box-orient: vertical; -webkit-line-clamp: 2; display: -webkit-box; line-clamp: 2; overflow: hidden; }
-.pb-clamp-3       { -webkit-box-orient: vertical; -webkit-line-clamp: 3; display: -webkit-box; line-clamp: 3; overflow: hidden; }
+.pb-clamp-2       { --pb-clamp: 2; }
+.pb-clamp-3       { --pb-clamp: 3; }
+.pb-clamp-2,
+.pb-clamp-3       { -webkit-box-orient: vertical; -webkit-line-clamp: var(--pb-clamp); display: -webkit-box; line-clamp: var(--pb-clamp); overflow: hidden; }
 
-/* Visually hidden but available to screen readers — the correct way to give
-   an icon-only button a name. */
 .pb-sr-only {
   border: 0;
   clip: rect(0, 0, 0, 0);
@@ -1942,10 +1908,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 21  TOOLTIPS =========================================================== */
 
-/* Put data-pb-tip on a button or wrapper (not on a replaced element such as
-   <input>). It shows on hover and on keyboard focus. The text is decoration:
-   a focusable trigger still needs its own accessible name, or
-   aria-describedby pointing at the same words. */
+/* Not on replaced elements such as <input>, which have no ::after. The text
+   is decoration: the trigger still needs its own accessible name. */
 [data-pb-tip] { position: relative; }
 
 .pb-btn[data-pb-tip] { overflow: visible; }  /* pb-btn clips; the tip sits outside */
@@ -1996,7 +1960,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-tip--start[data-pb-tip]::after { left: 0; transform: none; }
 .pb-tip--end[data-pb-tip]::after { left: auto; right: 0; transform: none; }
 
-/* A tip placed by script, for text that was cut off with an ellipsis. */
 .pb-tip {
   background: var(--pb-surface-overlay);
   box-shadow: var(--pb-shadow-overlay);
@@ -2015,9 +1978,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 22  FIELDS, SECTIONS & HINTS =========================================== */
 
-/* The stacked alternative to the pb-form label column: caption above the
-   control, wrapping into as many columns as fit. Use it for settings pages
-   and narrow panes; keep pb-form for dense one-line rows. */
 .pb-fields {
   display: grid;
   gap: var(--pb-space-5);
@@ -2043,7 +2003,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-field .pb-number-wrap,
 .pb-field .pb-textarea { width: 100%; }
 
-/* A small muted uppercase caption. */
 .pb-label {
   color: var(--pb-text-muted);
   font-size: var(--pb-text-xs);
@@ -2056,8 +2015,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   font-size: var(--pb-text-xs);
 }
 
-/* A rule across the column with the section's name under it. Works on a
-   <section> with a heading or on a <fieldset> with a <legend>. */
+/* A <section> with a heading, or a <fieldset> with a <legend>. */
 .pb-section {
   border: 0;
   display: flex;
@@ -2083,8 +2041,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 23  SAVE BAR =========================================================== */
 
-/* Sticks to the bottom of a long settings page. Put the primary action in
-   __row with its status text; a second line can carry a pb-hint. */
 .pb-savebar {
   background: var(--pb-surface-base);
   border-top: var(--pb-border-w) solid var(--pb-edge);
@@ -2107,8 +2063,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 24  ROLE BARS ========================================================== */
 
-/* A coloured bar down the left edge that says what a row or box is for:
-   a source, a destination, a tie-line, or a failure. */
 .pb-rolebar--source  { border-left: var(--pb-rolebar-w) solid var(--pb-source); }
 .pb-rolebar--dest    { border-left: var(--pb-rolebar-w) solid var(--pb-dest); }
 .pb-rolebar--tieline { border-left: var(--pb-rolebar-w) solid var(--pb-tieline); }
@@ -2117,8 +2071,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 25  CONNECTION, BANNERS & OFFLINE STATE ================================ */
 
-/* A compact link-status chip for a corner of the page. Always pair the dot
-   with its words. */
 .pb-conn {
   align-items: center;
   background: var(--pb-surface-base);
@@ -2138,7 +2090,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   font-weight: var(--pb-weight-bold);
 }
 
-/* A full-width strip at the top of the page or a panel. */
 .pb-banner {
   align-items: center;
   background: var(--pb-surface-raised);
@@ -2153,16 +2104,21 @@ textarea::-webkit-scrollbar-thumb:hover {
   z-index: var(--pb-z-sticky);
 }
 
-.pb-banner--ok    { background: color-mix(in srgb, var(--pb-status-ok) 14%, var(--pb-surface-raised)); border-bottom-color: var(--pb-status-ok); }
-.pb-banner--warn  { background: color-mix(in srgb, var(--pb-status-warn) 14%, var(--pb-surface-raised)); border-bottom-color: var(--pb-status-warn); }
-.pb-banner--error { background: color-mix(in srgb, var(--pb-status-error) 14%, var(--pb-surface-raised)); border-bottom-color: var(--pb-status-error); }
-.pb-banner--info  { background: color-mix(in srgb, var(--pb-status-info) 14%, var(--pb-surface-raised)); border-bottom-color: var(--pb-status-info); }
+.pb-banner--ok    { --pb-banner-c: var(--pb-status-ok); }
+.pb-banner--warn  { --pb-banner-c: var(--pb-status-warn); }
+.pb-banner--error { --pb-banner-c: var(--pb-status-error); }
+.pb-banner--info  { --pb-banner-c: var(--pb-status-info); }
+
+:is(.pb-banner--ok, .pb-banner--warn, .pb-banner--error, .pb-banner--info) {
+  background: color-mix(in srgb, var(--pb-banner-c) var(--pb-status-tint), var(--pb-surface-raised));
+  border-bottom-color: var(--pb-banner-c);
+}
 
 
 /* 26  TOUCH & PHONE LAYOUT =============================================== */
 
-/* <html data-pb-layout="phone">: drop the page floor and let the dense
-   layouts reflow. The routing matrix still scrolls inside its own pane. */
+/* <html data-pb-layout="phone"> drops the page floor; the matrix still
+   scrolls inside its own pane. */
 [data-pb-layout="phone"] body { min-width: 0; }
 [data-pb-layout="phone"] .pb-split { flex-direction: column; }
 [data-pb-layout="phone"] .pb-form { grid-template-columns: 1fr; }
@@ -2177,8 +2133,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 27  TOASTS & ENTRY ANIMATION =========================================== */
 
-/* A new thing arriving: a toast, a history row. Zero length under reduced
-   motion, because --pb-motion-enter is zeroed there. */
 @keyframes pb-enter {
   from {
     opacity: 0;
@@ -2188,9 +2142,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-enter { animation: pb-enter var(--pb-motion-enter) var(--pb-ease); }
 
-/* Fixed to the bottom right. Give the stack aria-live="polite"; an error
-   toast sets role="alert" itself. Dismiss with a pb-btn--ghost pb-btn--icon
-   pb-btn--sm in __close, and always have a keyboard way to do it. */
+/* The stack needs aria-live="polite"; an error toast sets role="alert". */
 .pb-toast-stack {
   align-items: flex-end;
   bottom: var(--pb-space-5);
@@ -2244,9 +2196,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 28  KEY/VALUE LISTS, EMPTY STATES & SKELETONS ========================== */
 
-/* Facts about one thing: a <dl> of __item > __key + __val. Stacked by
-   default; --inline puts keys in a column of their own. The vertical
-   counterpart to the pb-summary bar. */
+/* <dl> of __item > __key + __val; --inline puts keys in their own column. */
 .pb-kv {
   display: flex;
   flex-direction: column;
@@ -2282,7 +2232,6 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-kv--inline .pb-kv__item { display: contents; }
 
-/* Nothing here yet. The counterpart to .pb-loading. */
 .pb-empty {
   align-items: center;
   color: var(--pb-text-muted);
@@ -2306,9 +2255,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   margin-top: var(--pb-space-3);
 }
 
-/* A placeholder block while data loads. Decorative: give the region
-   aria-busy="true" and let the real content replace it. Steady (no sweep)
-   under reduced motion. */
+/* Decorative: the region gets aria-busy="true". */
 .pb-skeleton {
   animation: pb-skeleton 1.5s ease-in-out infinite;
   background: linear-gradient(90deg,
@@ -2331,9 +2278,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 29  FIELD STATES & DISABLED LABELS ===================================== */
 
-/* Wrap a control and its pb-hint in .pb-field--error or --ok so the rim and
-   the hint change together. The hint's words are what carry the meaning;
-   colour only backs them up. */
+/* The hint's words carry the meaning; the colour backs them up. */
 .pb-field--error .pb-input,
 .pb-field--error .pb-select,
 .pb-field--error .pb-textarea,
@@ -2348,8 +2293,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .pb-input--valid { border-color: var(--pb-status-ok); }
 
-/* A label dims with the control it names. pb-form lays label and field out
-   as sibling cells, so the label looks ahead to its field. */
+/* pb-form lays label and field out as sibling cells, so the label looks
+   ahead to its field. */
 .pb-form__label:has(+ .pb-form__field :disabled),
 .pb-field:has(:disabled) > label,
 .pb-field:has(:disabled) .pb-field__label,
@@ -2361,9 +2306,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* 30  BREADCRUMBS & PAGINATION =========================================== */
 
-/* <nav aria-label="Breadcrumb"><ol class="pb-breadcrumbs"> with the last
-   item aria-current="page". The separator is decoration, hidden from
-   assistive tech where the alt-text syntax is supported. */
+/* The second content line gives the separator empty alt text where
+   supported, so screen readers skip it. */
 .pb-breadcrumbs {
   align-items: center;
   color: var(--pb-text-muted);
@@ -2393,9 +2337,6 @@ textarea::-webkit-scrollbar-thumb:hover {
   font-weight: var(--pb-weight-bold);
 }
 
-/* <nav aria-label="Pages"><ul class="pb-pagination"> of pb-btn pb-btn--sm.
-   The current page is aria-current="page"; an unavailable prev/next is
-   disabled (or class="disabled" aria-disabled="true" on a link). */
 .pb-pagination {
   align-items: center;
   display: flex;
@@ -2419,11 +2360,9 @@ textarea::-webkit-scrollbar-thumb:hover {
 }
 
 
-/* ICONS ===================================================================
-   Icons are inline SVG referencing a sprite, sized by CSS and coloured by
-   currentColor — so an icon inside a selected button turns white with the
-   text, for free, with no second "-disabled" asset.
-   ========================================================================= */
+/* 31  ICONS ============================================================= */
+
+/* currentColor, so an icon follows its button's text through every state. */
 
 .pb-icon {
   display: inline-block;
@@ -2451,9 +2390,9 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-icon--info  { color: var(--pb-status-info); }
 
 
-/* THEME CROSSFADE =========================================================
-   Add .pb-theme-transition to <html> for --pb-motion-theme around a theme
-   switch, then remove it. It is not left on permanently because it would
+/* 32  THEME CROSSFADE =================================================== */
+
+/* Add to <html> around a theme switch, then remove: left on, it would
    override every component's own transition. */
 
 .pb-theme-transition,
@@ -2470,18 +2409,16 @@ textarea::-webkit-scrollbar-thumb:hover {
               box-shadow var(--pb-motion-theme) var(--pb-ease) !important;
 }
 
-/* With document.startViewTransition(), the browser crossfades one snapshot of
-   the page, so nothing steps or drifts out of sync (native controls and the
-   checkbox glyph images included). Use it in preference to the class above. */
+/* Prefer document.startViewTransition(): one snapshot crossfades, so native
+   controls and glyph images stay in step. */
 ::view-transition-group(root) { animation-duration: var(--pb-motion-theme); animation-timing-function: var(--pb-ease); }
 ::view-transition-old(root),
 ::view-transition-new(root) { animation-duration: var(--pb-motion-theme); animation-timing-function: var(--pb-ease); }
 
-/* REDUCED MOTION ==========================================================
-   Transition durations are zeroed in the tokens; looping decoration stops
-   here. Spinners and the indeterminate bar slow down (in the tokens) but keep
-   moving, because they are the only signal that work is happening. A pulsing alarm dot goes steady and
-   relies on the text beside it, which it must always have. */
+/* 33  REDUCED MOTION ==================================================== */
+
+/* Durations are zeroed and spinners slowed in the tokens; looping decoration
+   stops here. */
 
 @media (prefers-reduced-motion: reduce) {
   .pb-dot--pulse,
@@ -2491,7 +2428,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 }
 
 
-/* 31  FORCED COLOURS ====================================================== */
+/* 34  FORCED COLOURS ====================================================== */
 
 /* Windows High Contrast drops box-shadow and repaints backgrounds, so state
    drawn that way vanishes. Outlines and native controls survive. */
@@ -2505,8 +2442,7 @@ textarea::-webkit-scrollbar-thumb:hover {
   }
 
   /* The glyphs are fixed-colour images; the native control draws in system colours. */
-  .pb-check__input,
-  .form-check-input.pb-check__input {
+  .pb-check__input {
     appearance: auto;
     -webkit-appearance: auto;
     background-image: none;
