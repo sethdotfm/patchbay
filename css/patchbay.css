@@ -34,6 +34,7 @@
      28  Key/value lists, empty states & skeletons
      29  Field states & disabled labels
      30  Breadcrumbs & pagination
+     31  Forced colours
    ========================================================================== */
 
 
@@ -542,7 +543,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 .pb-btn--loading > * { visibility: hidden; }
 
 .pb-btn--loading::after {
-  animation: pb-spin 0.9s linear infinite;
+  animation: pb-spin var(--pb-motion-spin) linear infinite;
   border: 2px solid transparent;
   border-top-color: var(--pb-loading-ink);
   border-right-color: var(--pb-loading-ink);
@@ -730,7 +731,9 @@ textarea::-webkit-scrollbar-thumb:hover {
   /* Doubles the border to 2px so focus is not signalled by hue alone. */
   box-shadow: 0 0 0 1px var(--pb-accent);
   color: var(--pb-text);
-  outline: none;
+  /* Transparent, not none: forced colours drop the shadow and paint this
+     outline, so focus still shows in Windows High Contrast. */
+  outline: 1px solid transparent;
 }
 
 /* Muted, not disabled: a placeholder is often a compact field's only label (WCAG 1.4.3). */
@@ -760,8 +763,10 @@ textarea::-webkit-scrollbar-thumb:hover {
   padding-left: 0;
 }
 
+/* :user-invalid waits until the user has edited and left the field, so an
+   empty required field is not an error on page load. */
 .pb-input--invalid,
-.pb-input:invalid {
+.pb-input:user-invalid {
   border-color: var(--pb-status-error);
 }
 
@@ -1485,7 +1490,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* Indeterminate: we know it is working, not how far along it is. */
 .pb-progress--indeterminate .pb-progress__bar {
-  animation: pb-indeterminate 1.4s var(--pb-ease) infinite;
+  animation: pb-indeterminate var(--pb-motion-sweep) var(--pb-ease) infinite;
   width: 35%;
 }
 
@@ -1504,7 +1509,7 @@ textarea::-webkit-scrollbar-thumb:hover {
 }
 
 .pb-spinner {
-  animation: pb-spin 0.9s linear infinite;
+  animation: pb-spin var(--pb-motion-spin) linear infinite;
   border: 2px solid transparent;
   border-top-color: var(--pb-accent);
   border-right-color: var(--pb-accent);
@@ -2474,8 +2479,8 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 /* REDUCED MOTION ==========================================================
    Transition durations are zeroed in the tokens; looping decoration stops
-   here. Spinners and the indeterminate bar keep moving — they are the
-   only signal that work is happening. A pulsing alarm dot goes steady and
+   here. Spinners and the indeterminate bar slow down (in the tokens) but keep
+   moving, because they are the only signal that work is happening. A pulsing alarm dot goes steady and
    relies on the text beside it, which it must always have. */
 
 @media (prefers-reduced-motion: reduce) {
@@ -2483,4 +2488,40 @@ textarea::-webkit-scrollbar-thumb:hover {
   .pb-state-offline,
   .pb-skeleton,
   .pb-progress__bar--animated { animation: none; }
+}
+
+
+/* 31  FORCED COLOURS ====================================================== */
+
+/* Windows High Contrast drops box-shadow and repaints backgrounds, so state
+   drawn that way vanishes. Outlines and native controls survive. */
+@media (forced-colors: active) {
+  .pb-tab[aria-selected="true"],
+  .pb-tab.active,
+  .pb-table tbody tr[aria-selected="true"],
+  .pb-table tbody tr.pb-selected {
+    outline: 2px solid var(--pb-forced-select);
+    outline-offset: -2px;
+  }
+
+  /* The glyphs are fixed-colour images; the native control draws in system colours. */
+  .pb-check__input,
+  .form-check-input.pb-check__input {
+    appearance: auto;
+    -webkit-appearance: auto;
+    background-image: none;
+  }
+
+  .pb-check__input:checked,
+  .pb-check__input[type="checkbox"]:checked,
+  .pb-check__input[type="checkbox"]:indeterminate,
+  .pb-check__input[type="radio"]:checked { background-image: none; }
+
+  /* The thumb is a background, which would be repainted to the page colour. */
+  .pb-switch__input::after {
+    background: var(--pb-forced-ink);
+    forced-color-adjust: none;
+  }
+
+  .pb-switch__input:checked::after { background: var(--pb-forced-select); }
 }

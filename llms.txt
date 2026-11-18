@@ -1,6 +1,6 @@
 # Patchbay CSS — rules for LLMs
 Hard-edged light/dark CSS for dense device-control UIs. Prefix pb-, BEM (block__el--mod). [x] = optional modifier.
-Load: fonts/plex.css (self-hosted IBM Plex) → css/bootstrap.min.css → css/patchbay.tokens.css → css/patchbay.css → page CSS.
+Load: <meta name="color-scheme" content="light dark"> → fonts/plex.css (self-hosted IBM Plex) → css/bootstrap.min.css → css/patchbay.tokens.css → css/patchbay.css → page CSS.
 
 ## Rules
 - Never hard-code colour/size/radius/shadow; use var(--pb-*). New value → new token in patchbay.tokens.css.
@@ -32,7 +32,7 @@ Layout: pb-page > pb-split[--vertical] > pb-pane[--divided] (+pb-split-handle; d
 Toolbar: pb-toolbar > pb-toolbar__title|__group|__sep|__spacer (spacer pushes rest right).
 Button: pb-btn + --outline (cancel) --ghost (no plate) --icon (square; ghost+icon for toolbar icons) --icon-lg --commit --ok --danger --sm --lg --block --loading (spinner, label hidden; add aria-busy=true). pb-btn-group. Latching look: <input type=radio|checkbox name=grp class="pb-btn-check" id=x><label class="pb-btn" for=x>Text</label>.
 Chip: pb-chip[--selected|--static] + pb-chip__remove; pb-chip-input = contenteditable container.
-Inputs: pb-input[--invalid], pb-textarea[--fixed], pb-range. Widths pb-w-xs|sm|md|lg|xl|auto. Required wrappers:
+Inputs: pb-input[--invalid] (native invalid shows after editing, via :user-invalid), pb-textarea[--fixed], pb-range. Widths pb-w-xs|sm|md|lg|xl|auto. Required wrappers:
   <span class="pb-select-wrap"><select class="pb-select"></span>
   <span class="pb-number-wrap"><input type=number class="pb-input"></span>
   pb-input-group > pb-input + pb-input-group__addon
