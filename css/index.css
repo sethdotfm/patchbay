@@ -1,0 +1,4 @@
+/* Package entry for bundlers that resolve a bare `@import "patchbay-css"`.
+   Pages that link the files directly load these two instead. */
+@import "patchbay.tokens.css";
+@import "patchbay.css";

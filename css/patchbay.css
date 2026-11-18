@@ -130,6 +130,7 @@ button, input, optgroup, select, textarea {
 button { border-radius: 0; }
 button, select { text-transform: none; }
 select { word-wrap: normal; }
+select:disabled { opacity: 1; }
 textarea { resize: vertical; }
 button, [type=button], [type=reset], [type=submit] { -webkit-appearance: button; }
 
@@ -144,6 +145,8 @@ button, [type=button], [type=reset], [type=submit] { -webkit-appearance: button;
 [type=search] { -webkit-appearance: textfield; outline-offset: -2px; }
 ::-webkit-search-decoration { -webkit-appearance: none; }
 ::file-selector-button { font: inherit; }
+::-webkit-color-swatch-wrapper { padding: 0; }
+[list]::-webkit-calendar-picker-indicator { display: none; }
 
 fieldset { border: 0; margin: 0; min-width: 0; padding: 0; }
 
@@ -485,6 +488,8 @@ pre code {
   white-space: nowrap;
 }
 
+/* color, so an <a class="pb-btn"> ignores the bare-link hover colour. Each
+   coloured variant restates its own ink on hover below. */
 .pb-btn:hover {
   background-color: var(--pb-surface-hover);
   color: var(--pb-text);
@@ -516,6 +521,7 @@ pre code {
 .pb-btn[aria-pressed="true"]:hover,
 .pb-btn-check:checked + .pb-btn:hover {
   background-color: var(--pb-accent-hover);
+  color: var(--pb-text-on-accent);
 }
 
 /* Outline: the secondary or cancel action. */
@@ -562,7 +568,7 @@ pre code {
   color: var(--pb-text-on-accent);
 }
 
-.pb-btn--commit:hover { background-color: var(--pb-commit-hover); }
+.pb-btn--commit:hover { background-color: var(--pb-commit-hover); color: var(--pb-text-on-accent); }
 
 /* Ok: a positive finish (Done, Unlock). Never both commit and ok on one
    action. */
@@ -571,7 +577,7 @@ pre code {
   color: var(--pb-text-on-accent);
 }
 
-.pb-btn--ok:hover { background-color: var(--pb-status-ok-hover); }
+.pb-btn--ok:hover { background-color: var(--pb-status-ok-hover); color: var(--pb-text-on-accent); }
 
 /* Danger: irreversible actions only. */
 .pb-btn--danger {
@@ -579,7 +585,7 @@ pre code {
   color: var(--pb-text-on-accent);
 }
 
-.pb-btn--danger:hover { background-color: var(--pb-danger-hover); }
+.pb-btn--danger:hover { background-color: var(--pb-danger-hover); color: var(--pb-text-on-accent); }
 
 /* Keeps the button's width and place so focus is not lost; pair with
    aria-busy="true". */

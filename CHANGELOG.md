@@ -1,3 +1,5 @@
+DISCLOSURE: This was written by an LLM.
+
 # Changelog
 
 Each release lists what changed and what an app that vendors Patchbay has to
@@ -47,11 +49,16 @@ Bootstrap's reset outranked two Patchbay rules. Both now render as designed:
 - A locked crosspoint (`pb-xpt--locked`) shows the `not-allowed` cursor. It
   showed `pointer`.
 
+Also fixed, and present since 2.0: a hovered commit, ok, danger or latched
+(`pb-btn--selected`) button lost its on-accent text, because `.pb-btn:hover`
+outranked the variant. Hovered Apply showed dark text on dark amber in light
+mode. Each variant now keeps `--pb-text-on-accent` on hover.
+
 ### Added
 
-- `package.json`. `npm install patchbay-css`, or load the files from a
-  package CDN. Exports `patchbay-css/tokens.css`, `patchbay-css/patchbay.css`,
-  `patchbay-css/fonts.css` and `patchbay-css/icons.svg`.
+- `package.json`, for `npm install patchbay-css`. A bare
+  `@import "patchbay-css"` loads `css/index.css` (tokens, then components).
+  It also exports `tokens.css`, `patchbay.css`, `fonts.css` and `icons.svg`.
 - `LICENSE`: Patchbay is released into the public domain under the
   Unlicense. Plex (OFL 1.1) and Lucide (ISC) keep their own licences.
 - Tokens: `--pb-status-tint` (how much status colour washes an alert or

@@ -13,10 +13,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Contrast
-        run: node tools/contrast.mjs
-      - name: Class coverage
-        run: node tools/classes.mjs --llms index.html demo/router.html demo/settings.html demo/log.html demo/phone.html
+      - name: Contrast and class coverage
+        run: npm run check
       - name: Version in step
         run: test "$(cat VERSION)" = "$(node -p 'require("./package.json").version')"
       - name: Package contents

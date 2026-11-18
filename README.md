@@ -1,3 +1,5 @@
+DISCLOSURE: This was written by an LLM.
+
 # Patchbay
 
 A hard-edged, near-black CSS design system for dense signal-routing and
@@ -15,8 +17,7 @@ scales with the root font size, and meets WCAG 2.2 AA.
 
 ```css
 @import "patchbay-css/fonts.css";
-@import "patchbay-css/tokens.css";
-@import "patchbay-css/patchbay.css";
+@import "patchbay-css"; /* tokens, then components */
 ```
 
 The icon sprite is `patchbay-css/icons.svg`. Serve it from your own origin,

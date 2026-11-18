@@ -8,9 +8,17 @@
     "url": "git+https://github.com/sethdotfm/patchbay.git"
   },
   "homepage": "https://github.com/sethdotfm/patchbay#readme",
-  "keywords": ["css", "design-system", "broadcast", "routing", "control-room", "dark-mode"],
-  "style": "css/patchbay.css",
+  "keywords": [
+    "css",
+    "design-system",
+    "broadcast",
+    "routing",
+    "control-room",
+    "dark-mode"
+  ],
+  "style": "css/index.css",
   "exports": {
+    ".": "./css/index.css",
     "./tokens.css": "./css/patchbay.tokens.css",
     "./patchbay.css": "./css/patchbay.css",
     "./fonts.css": "./fonts/plex.css",
@@ -29,9 +37,11 @@
     "VERSION",
     "CHANGELOG.md"
   ],
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "scripts": {
-    "check": "node tools/contrast.mjs && node tools/classes.mjs",
+    "check": "node tools/contrast.mjs && node tools/classes.mjs --llms index.html demo/router.html demo/settings.html demo/log.html demo/phone.html",
     "serve": "python3 -m http.server"
   }
 }
