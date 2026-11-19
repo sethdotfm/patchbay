@@ -822,6 +822,7 @@ textarea::-webkit-scrollbar-thumb:hover {
    hidden and replaced by a stacked pair drawn on the wrapper. */
 .pb-number-wrap {
   display: inline-block;
+  isolation: isolate;
   position: relative;
   width: 100%;
 }
@@ -871,6 +872,8 @@ textarea::-webkit-scrollbar-thumb:hover {
   position: absolute;
   right: var(--pb-border-w);
   width: 1.125rem;
+  /* ::before precedes the positioned input in tree order, so it would paint under it. */
+  z-index: 1;
 }
 
 .pb-number-wrap::after {
