@@ -8,7 +8,7 @@ web
 
 ## Users
 
-Primary users are developers, and the coding agents working for them, who build device-control apps for broadcast and AV signal routing. They vendor `css/`, `fonts/` and `icons/` into an app and compose screens from `pb-` classes, using `index.html` and `llms.txt` as the reference.
+Primary users are developers, and the coding agents working for them, who build device-control apps for broadcast and AV signal routing. They vendor `css/`, `fonts/` and `icons/` into an app (or install `patchbay-css`) and compose screens from `pb-` classes, using `reference.html` and `llms.txt` as the reference.
 
 The people who use those apps are control-room operators. They route sources to destinations, change device settings and watch device state, mostly on fixed monitors read from a distance, sometimes on a phone.
 
@@ -29,12 +29,12 @@ Patchbay encodes routing-domain meaning in its classes: source, destination and 
 - Apps often run on closed networks, so fonts and icons ship with the page and nothing loads from a CDN.
 - Control-room deployments usually pin `data-theme="dark"` so monitors don't follow an OS setting, and scale the UI with `html { font-size: 125% }` for reading at distance.
 - Phone layouts opt in with `<html data-pb-layout="phone">`.
-- Developers verify changes against `index.html`, the mock apps in `demo/`, `node tools/contrast.mjs` and `node tools/classes.mjs`. `demo/v1-regression.html` is frozen for pixel diffs.
+- Developers verify changes against `reference.html`, the mock apps in `demo/`, `node tools/contrast.mjs` and `node tools/classes.mjs`. `demo/v1-regression.html` is frozen for pixel diffs.
 - Apps copy `VERSION` when they vendor a release.
 
 ## Capabilities and Constraints
 
-- Plain files only: `css/patchbay.tokens.css` and `css/patchbay.css` on a vendored Bootstrap 5.0.1 used as a reset and optional JS hooks. No package manager, build step, tests or linter.
+- Plain files only: `css/patchbay.tokens.css` and `css/patchbay.css`, with Patchbay's own reset. No dependencies or build step. Published to npm as `patchbay-css`; vendoring the files stays the primary path.
 - Tokens hold every value. Components read only semantic tokens. Colours use `light-dark()`, so themes switch on `color-scheme`. Needs Chrome 123+, Safari 17.5+ or Firefox 120+ (121+ for `:has()` label dimming).
 - Sizes are rem, except hairlines and the default scrollbar, which stay px.
 - One accent colour for selection and focus. Exactly five status states: ok, warn, error, info, idle. Every radius is 0. Shadows are hard offsets with no blur. Focus outlines stay.
@@ -50,7 +50,8 @@ Patchbay encodes routing-domain meaning in its classes: source, destination and 
 
 ## Evidence on Hand
 
-- `index.html`: the reference page, with every component live alongside its markup.
+- `reference.html`: the reference page, with every component live alongside its markup.
+- `index.html`: the home page, with a live routing console and install steps.
 - `demo/router.html`, `demo/settings.html`, `demo/log.html`, `demo/phone.html`: mock apps built only from Patchbay classes.
 - `tools/contrast.mjs` output and the contrast figures in `README.md` (lowest text pair 4.79:1 dark, 5.00:1 light).
 - There are no named adopters, testimonials, usage numbers or case studies. Don't invent any.

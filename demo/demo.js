@@ -1,24 +1,30 @@
-// Behaviour for the demo site only. Patchbay itself ships no JavaScript:
-// everything here is the "app JS" the README says you supply (theme switch,
-// tabs, toasts), plus the documentation chrome (scale, snippets, TOC).
+// Demo site only. Patchbay ships no JavaScript; this is the app JS the README
+// says you supply, plus the reference page's own chrome.
 
 const root = document.documentElement;
 const $ = (sel, scope = document) => scope.querySelector(sel);
 const $$ = (sel, scope = document) => [...scope.querySelectorAll(sel)];
 const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+const query = new URLSearchParams(location.search);
+const scaleFromUrl = parseFloat(query.get("scale")) || null;
 
-// ---- ?theme=light|dark, ?scale=125 and ?instant: for linking and screenshots ----
+// ?theme=, ?scale=, ?instant and ?only=id,id, for links and screenshots.
+if (query.get("theme")) root.dataset.theme = query.get("theme");
+if (scaleFromUrl) root.style.fontSize = `${scaleFromUrl}%`;
+if (query.has("instant")) root.style.scrollBehavior = "auto";
+if (query.get("only")) {
+  const keep = query.get("only").split(",");
+  $$(".demo-sec").forEach((sec) => { sec.hidden = !keep.includes(sec.id); });
+}
 
-{
-  const q = new URLSearchParams(location.search);
-  if (q.get("theme")) root.dataset.theme = q.get("theme");
-  if (q.get("scale")) root.style.fontSize = `${parseFloat(q.get("scale"))}%`;
-  if (q.has("instant")) root.style.scrollBehavior = "auto";
-  // ?only=id,id shows just those sections (for screenshots and focused links).
-  if (q.get("only")) {
-    const keep = q.get("only").split(",");
-    document.querySelectorAll(".demo-sec").forEach((sec) => { sec.hidden = !keep.includes(sec.id); });
-  }
+// Filled from VERSION, so a release bumps one file. Slots start hidden and
+// stay hidden where VERSION can't be fetched (file://).
+const versionSlots = $$("[data-version]");
+if (versionSlots.length) {
+  fetch(root.dataset.versionUrl || "VERSION")
+    .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
+    .then((v) => versionSlots.forEach((el) => { el.textContent = `v${v.trim()}`; el.hidden = false; }))
+    .catch(() => {});
 }
 
 // ---- theme: no data-theme means "follow the OS"; the toggle forces one ----
@@ -31,8 +37,6 @@ if (themeToggle) {
   themeToggle.addEventListener("click", () => {
     const next = isLight() ? "dark" : "light";
     const apply = () => { root.dataset.theme = next; sync(); };
-    // Best: crossfade one snapshot of the whole page, so every surface, glyph and
-    // native control moves together. Fallback: fade each property (pb-theme-transition).
     if (document.startViewTransition && !reduced.matches) {
       document.startViewTransition(apply);
       return;
@@ -49,13 +53,11 @@ if (themeToggle) {
 // ---- scale: the whole UI follows the root font size -----------------------
 
 const scaleButtons = $$("[data-scale]");
-{
-  const fromUrl = new URLSearchParams(location.search).get("scale");
-  if (fromUrl) scaleButtons.forEach((o) => o.setAttribute("aria-pressed", String(o.dataset.scale === String(parseFloat(fromUrl)))));
-}
+const pressScale = (b) => scaleButtons.forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+if (scaleFromUrl) pressScale(scaleButtons.find((o) => o.dataset.scale === String(scaleFromUrl)));
 scaleButtons.forEach((b) => b.addEventListener("click", () => {
   root.style.fontSize = b.dataset.scale === "100" ? "" : `${b.dataset.scale}%`;
-  scaleButtons.forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+  pressScale(b);
 }));
 
 // ---- snippets: each example shows its own markup --------------------------
@@ -197,7 +199,7 @@ $$("[data-loading]").forEach((b) => b.addEventListener("click", () => {
   }, 1600);
 }));
 
-// ---- window states: data-state="pb-state-offline" on a control ------------
+// ---- window states: data-state-toggle="pb-state-offline" data-target="#id" -
 
 $$("[data-state-toggle]").forEach((b) => b.addEventListener("click", () => {
   const target = $(b.dataset.target);
@@ -206,6 +208,5 @@ $$("[data-state-toggle]").forEach((b) => b.addEventListener("click", () => {
   b.setAttribute("aria-pressed", String(on));
 }));
 
-// Reduced-motion note for the docs page.
 const note = $("#reduced-note");
 if (note) note.hidden = !reduced.matches;

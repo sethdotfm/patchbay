@@ -1,0 +1,21 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Contrast and class coverage
+        run: npm run check
+      - name: Version in step
+        run: test "$(cat VERSION)" = "$(node -p 'require("./package.json").version')"
+      - name: Package contents
+        run: npm pack --dry-run

@@ -1,0 +1,3 @@
+/* For bundlers that resolve a bare `@import "patchbay-css"`. */
+@import "patchbay.tokens.css";
+@import "patchbay.css";
