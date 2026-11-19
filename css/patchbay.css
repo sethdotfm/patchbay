@@ -871,6 +871,8 @@ textarea::-webkit-scrollbar-thumb:hover {
   position: absolute;
   right: var(--pb-border-w);
   width: 1.125rem;
+  /* The positioned input would paint over ::before (earlier in tree order). */
+  z-index: 1;
 }
 
 .pb-number-wrap::after {
