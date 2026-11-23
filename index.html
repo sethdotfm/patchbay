@@ -159,6 +159,7 @@
           <div class="demo-grid">
             <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-source)"></div><div class="demo-swatch__name">source</div></div>
             <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-dest)"></div><div class="demo-swatch__name">dest</div></div>
+            <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-level)"></div><div class="demo-swatch__name">level</div></div>
             <div class="demo-swatch"><div class="demo-swatch__chip" style="background: var(--pb-tieline)"></div><div class="demo-swatch__name">tieline</div></div>
           </div>
           <div class="demo-ramp" role="img" aria-label="Signal level colours: video and levels 1 to 16">
@@ -693,6 +694,7 @@
             <div class="pb-row pb-row--wrap">
               <button class="pb-btn pb-xpt pb-xpt--source">SRC 1</button>
               <button class="pb-btn pb-xpt pb-xpt--dest">DST 1</button>
+              <button class="pb-btn pb-xpt pb-xpt--level">LVL 1</button>
               <button class="pb-btn pb-xpt pb-xpt--tieline">TIE 1</button>
               <button class="pb-btn pb-xpt pb-xpt--source pb-xpt--locked">Locked</button>
               <button class="pb-btn pb-xpt pb-xpt--dest pb-xpt--protected">Protected</button>
@@ -732,11 +734,12 @@
 
       <section class="demo-sec" id="rolebars">
         <h2>Role bars</h2>
-        <p>A bar down the left edge that says what a row is for: <code>pb-rolebar--source|dest|tieline|error</code>.</p>
+        <p>A bar down the left edge that says what a row is for: <code>pb-rolebar--source|dest|level|tieline|error</code>.</p>
         <div class="demo-ex">
           <div class="demo-ex__view pb-col">
             <div class="pb-rolebar--source pb-body" style="background: var(--pb-surface-base)">Source: CAM 2</div>
             <div class="pb-rolebar--dest pb-body" style="background: var(--pb-surface-base)">Destination: MON 2</div>
+            <div class="pb-rolebar--level pb-body" style="background: var(--pb-surface-base)">Levels: V, A1, A2</div>
             <div class="pb-rolebar--tieline pb-body" style="background: var(--pb-surface-base)">Tie-line 4</div>
             <div class="pb-rolebar--error pb-body" style="background: var(--pb-surface-base)">Take failed on level 3</div>
           </div>

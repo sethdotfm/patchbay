@@ -210,7 +210,7 @@ if (flag("--dump")) {
 
 const SURFACES = ["sunken", "base", "raised", "overlay", "high", "control", "hover"]
   .map((s) => `--pb-surface-${s}`);
-const ROLES = ["source", "dest", "tieline"].flatMap((r) => [`--pb-${r}`, `--pb-${r}-hover`]);
+const ROLES = ["source", "dest", "level", "tieline"].flatMap((r) => [`--pb-${r}`, `--pb-${r}-hover`]);
 // Status and accent text sits on resting surfaces, buttons included; the
 // hover step is only for text and icons that are already neutral.
 const RESTING = SURFACES.filter((s) => s !== "--pb-surface-hover");

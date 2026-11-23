@@ -185,6 +185,10 @@ Three things break if you miss them:
 themselves. Put the class on the wrapper. Before, a `pb-w-*` on one of those
 silently lost.
 
+### Upgrading to 2.4
+
+2.4 adds `--pb-level` (lilac) and `--pb-level-hover`, with `pb-xpt--level` and `pb-rolebar--level`. It also changes `--pb-tieline` and its hover from slate to fern. Any app that drew a level or a tie line in its own colour can switch to these tokens.
+
 ### Upgrading to 2.3
 
 2.3 fixes things apps had to patch locally. You can usually delete:
